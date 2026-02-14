@@ -1,0 +1,65 @@
+{
+    "name": "terminal-flow",
+    "displayName": "Terminal Flow",
+    "description": "Manage and execute shell commands and flows from a local .terminal folder",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.80.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "onStartupFinished"
+    ],
+    "main": "./dist/extension.js",
+    "contributes": {
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "terminal-flow-container",
+                    "title": "Terminal Flow",
+                    "icon": "$(terminal)"
+                }
+            ]
+        },
+        "views": {
+            "terminal-flow-container": [
+                {
+                    "id": "terminal-flow-view",
+                    "name": "Terminal Flow"
+                }
+            ]
+        },
+        "commands": [
+            {
+                "command": "terminal-flow.runCommand",
+                "title": "Terminal Flow: Run Command"
+            },
+            {
+                "command": "terminal-flow.runFlow",
+                "title": "Terminal Flow: Run Flow"
+            }
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run package",
+        "compile": "node esbuild.js",
+        "watch": "node esbuild.js --watch",
+        "package": "node esbuild.js --production",
+        "test-compile": "tsc -p ./"
+    },
+    "devDependencies": {
+        "@types/node": "18.x",
+        "@types/vscode": "^1.80.0",
+        "@types/react": "^18.2.0",
+        "@types/react-dom": "^18.2.0",
+        "typescript": "^5.1.3",
+        "esbuild": "^0.18.0",
+        "npm-run-all": "^4.1.5"
+    },
+    "dependencies": {
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0"
+    }
+}
