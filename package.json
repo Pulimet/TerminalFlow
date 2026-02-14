@@ -1,6 +1,11 @@
 {
     "name": "terminal-flow",
     "displayName": "Terminal Flow",
+    "publisher": "AlexeyKorolev",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/AlexeyKorolev/TerminalFlow"
+    },
     "description": "Manage and execute shell commands and flows from a local .terminal folder",
     "version": "0.0.1",
     "engines": {
