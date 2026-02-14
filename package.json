@@ -26,6 +26,7 @@
         "views": {
             "terminal-flow-container": [
                 {
+                    "type": "webview",
                     "id": "terminal-flow-view",
                     "name": "Terminal Flow"
                 }
