@@ -28,9 +28,16 @@ export const FlowForm: React.FC<Props> = ({ initialFlow, availableCommands, onSa
     const [description, setDescription] = useState(initialFlow?.description || '');
     const [category, setCategory] = useState(initialFlow?.category || '');
     const [sequence, setSequence] = useState<string[]>(initialFlow?.sequence || []);
+    const [sleepMs, setSleepMs] = useState('1000');
 
     const addToSequence = (commandId: string) => {
         setSequence([...sequence, commandId]);
+    };
+
+    const addSleep = () => {
+        const ms = parseInt(sleepMs, 10);
+        if (isNaN(ms) || ms <= 0) return;
+        setSequence([...sequence, `__sleep:${ms}`]);
     };
 
     const removeFromSequence = (index: number) => {
@@ -69,7 +76,13 @@ export const FlowForm: React.FC<Props> = ({ initialFlow, availableCommands, onSa
         onSave(newFlow);
     };
 
-    const getCommandTitle = (id: string) => {
+    const isSleepEntry = (id: string) => id.startsWith('__sleep:');
+
+    const getEntryLabel = (id: string): string => {
+        if (isSleepEntry(id)) {
+            const ms = id.replace('__sleep:', '');
+            return `⏱ Sleep ${ms}ms`;
+        }
         const cmd = availableCommands.find(c => c.id === id);
         return cmd ? cmd.title : 'Unknown Command';
     };
@@ -122,15 +135,31 @@ export const FlowForm: React.FC<Props> = ({ initialFlow, availableCommands, onSa
                             </div>
                         ))}
                     </div>
+                    <div className="sleep-adder">
+                        <h4>Built-in: Sleep</h4>
+                        <div className="sleep-controls">
+                            <input
+                                type="number"
+                                min="100"
+                                step="100"
+                                value={sleepMs}
+                                onChange={e => setSleepMs(e.target.value)}
+                                placeholder="ms"
+                                className="sleep-input"
+                            />
+                            <span className="sleep-unit">ms</span>
+                            <button type="button" className="sleep-add-btn" onClick={addSleep}>+ Add Sleep</button>
+                        </div>
+                    </div>
                 </div>
 
                 <div className="sequence-builder">
                     <h4>Sequence</h4>
                     <div className="sequence-list">
                         {sequence.map((cmdId, index) => (
-                            <div key={`${cmdId}-${index}`} className="sequence-item">
+                            <div key={`${cmdId}-${index}`} className={`sequence-item ${isSleepEntry(cmdId) ? 'sequence-sleep' : ''}`}>
                                 <span className="sequence-index">{index + 1}.</span>
-                                <span className="sequence-title">{getCommandTitle(cmdId)}</span>
+                                <span className="sequence-title">{getEntryLabel(cmdId)}</span>
                                 <div className="sequence-actions">
                                     <button type="button" onClick={() => moveUp(index)} disabled={index === 0}>↑</button>
                                     <button type="button" onClick={() => moveDown(index)} disabled={index === sequence.length - 1}>↓</button>

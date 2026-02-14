@@ -125,44 +125,151 @@ body {
     padding-left: 8px;
 }
 
-/* Flow expand toggle */
-.flow-expand-toggle {
-    cursor: pointer;
-    margin-right: 4px;
-    font-size: 12px;
+/* Flow item wrapper */
+.flow-item-wrapper {
+    border-bottom: 1px solid var(--vscode-widget-border);
+    margin-bottom: 4px;
 }
 
-.flow-expand-toggle:hover {
+/* Flow detail toggle at bottom-right */
+.flow-item-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 2px 8px 6px;
+}
+
+.flow-detail-toggle {
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--vscode-textLink-foreground, #3794ff);
+    opacity: 0.8;
+    user-select: none;
+}
+
+.flow-detail-toggle:hover {
     opacity: 1;
+    text-decoration: underline;
 }
 
 /* Flow steps list */
 .flow-steps {
-    margin-top: 6px;
-    padding: 4px 0 4px 6px;
+    margin: 0 8px 8px 8px;
+    padding: 6px 0 6px 8px;
     border-left: 2px solid var(--vscode-panelTitle-activeBorder, #007acc);
+    background-color: var(--vscode-textBlockQuote-background, rgba(0, 0, 0, 0.1));
+    border-radius: 0 4px 4px 0;
 }
 
 .flow-step-item {
     display: flex;
-    align-items: center;
-    padding: 2px 4px;
+    align-items: flex-start;
+    padding: 4px 6px;
     font-size: 11px;
     gap: 6px;
+    border-radius: 3px;
 }
 
 .flow-step-item:hover {
     background-color: var(--vscode-list-hoverBackground);
 }
 
+.flow-step-icon {
+    flex-shrink: 0;
+    font-size: 10px;
+    opacity: 0.5;
+    margin-top: 2px;
+}
+
+.flow-step-run {
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+.flow-step-run:hover {
+    opacity: 1;
+}
+
 .flow-step-index {
     opacity: 0.5;
     min-width: 18px;
     font-family: var(--vscode-editor-font-family);
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.flow-step-details {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    gap: 1px;
 }
 
 .flow-step-name {
+    font-weight: 600;
     opacity: 0.9;
+}
+
+.flow-step-command {
+    font-family: var(--vscode-editor-font-family);
+    font-size: 10px;
+    opacity: 0.6;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.flow-step-sleep {
+    opacity: 0.7;
+    font-style: italic;
+}
+
+/* Sleep adder in FlowForm */
+.sleep-adder {
+    margin-top: 8px;
+    border-top: 1px solid var(--vscode-widget-border);
+    padding-top: 8px;
+}
+
+.sleep-adder h4 {
+    margin: 0 0 6px 0;
+    font-size: 12px;
+}
+
+.sleep-controls {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.sleep-input {
+    width: 70px;
+    padding: 4px;
+    font-size: 12px;
+}
+
+.sleep-unit {
+    font-size: 11px;
+    opacity: 0.7;
+}
+
+.sleep-add-btn {
+    background-color: var(--vscode-button-secondaryBackground, #3a3d41);
+    color: var(--vscode-button-secondaryForeground, #fff);
+    border: none;
+    padding: 4px 8px;
+    border-radius: 2px;
+    cursor: pointer;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.sleep-add-btn:hover {
+    background-color: var(--vscode-button-secondaryHoverBackground, #45494e);
+}
+
+.sequence-sleep {
+    font-style: italic;
+    opacity: 0.8;
 }
 
 .command-item,

@@ -134,6 +134,7 @@ const App = () => {
                     onRun={handleRunFlow}
                     onEdit={startEdit}
                     onDelete={handleDeleteFlow}
+                    onRunCommand={handleRunCommand}
                 />
             );
         }

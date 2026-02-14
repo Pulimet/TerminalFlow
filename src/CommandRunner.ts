@@ -41,6 +41,16 @@ export class CommandRunner {
 
         const commands: string[] = [];
         for (const cmdId of flow.sequence) {
+            // Handle built-in sleep command
+            if (cmdId.startsWith('__sleep:')) {
+                const ms = parseInt(cmdId.replace('__sleep:', ''), 10);
+                if (!isNaN(ms) && ms > 0) {
+                    const seconds = ms / 1000;
+                    commands.push(`echo "Sleeping ${ms}ms..." && sleep ${seconds}`);
+                }
+                continue;
+            }
+
             const cmd = this.dataManager.getCommand(cmdId);
             if (cmd) {
                 commands.push(`echo "Running: ${cmd.title}" && ${cmd.command}`);
