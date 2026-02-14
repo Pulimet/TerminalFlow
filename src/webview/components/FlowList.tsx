@@ -134,14 +134,16 @@ export const FlowList: React.FC<Props> = ({ flows, commands, onRun, onEdit, onDe
                                                 <div className="flow-info">
                                                     <div className="flow-header">
                                                         <span className="flow-title">{flow.title}</span>
-                                                        <span className="flow-badge">{flow.sequence.length} steps</span>
                                                     </div>
                                                     <div className="flow-description">{flow.description}</div>
                                                 </div>
-                                                <div className="flow-actions">
-                                                    <button title="Run" onClick={() => onRun(flow.id)}>▶</button>
-                                                    <button title="Edit" onClick={() => onEdit(flow)}>✎</button>
-                                                    <button title="Delete" onClick={() => onDelete(flow.id)}>🗑</button>
+                                                <div className="flow-right">
+                                                    <div className="flow-actions">
+                                                        <button title="Run" onClick={() => onRun(flow.id)}>▶</button>
+                                                        <button title="Edit" onClick={() => onEdit(flow)}>✎</button>
+                                                        <button title="Delete" onClick={() => onDelete(flow.id)}>🗑</button>
+                                                    </div>
+                                                    <span className="flow-badge">{flow.sequence.length} steps</span>
                                                 </div>
                                             </div>
                                             <div className="flow-item-footer">
