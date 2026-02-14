@@ -478,7 +478,6 @@ button.primary:hover {
 .flow-builder {
     display: flex;
     gap: 16px;
-    height: 300px;
 }
 
 .available-commands,
@@ -499,7 +498,12 @@ button.primary:hover {
     padding-bottom: 4px;
 }
 
-.command-picker-list,
+.command-picker-list {
+    max-height: 405px;
+    /* ~15 items × 27px each */
+    overflow-y: auto;
+}
+
 .sequence-list {
     flex: 1;
     overflow-y: auto;

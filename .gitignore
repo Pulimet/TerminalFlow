@@ -5,3 +5,4 @@ out
 *.vsix
 .DS_Store
 .terminal
+.local
