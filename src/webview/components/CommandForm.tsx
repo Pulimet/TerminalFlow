@@ -23,11 +23,14 @@ export const CommandForm: React.FC<Props> = ({ initialCommand, onSave, onCancel 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
+        // Ensure we always have an ID
+        const commandId = initialCommand?.id || crypto.randomUUID();
+
         const newCommand: Command = {
-            id: initialCommand?.id || crypto.randomUUID(),
-            title,
-            description,
-            category: category || 'General',
+            id: commandId,
+            title: title.trim(),
+            description: description.trim(),
+            category: category.trim() || 'General',
             command: commandString
         };
 

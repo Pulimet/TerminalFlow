@@ -61,10 +61,12 @@ export class DataManager {
         try {
             if (fs.existsSync(this.commandsPath)) {
                 const content = fs.readFileSync(this.commandsPath, 'utf8');
+                if (!content.trim()) return [];
                 return JSON.parse(content);
             }
         } catch (error) {
             console.error('Error reading commands.json:', error);
+            vscode.window.showErrorMessage('Failed to read commands configuration.');
         }
         return [];
     }
@@ -73,10 +75,12 @@ export class DataManager {
         try {
             if (fs.existsSync(this.flowsPath)) {
                 const content = fs.readFileSync(this.flowsPath, 'utf8');
+                if (!content.trim()) return [];
                 return JSON.parse(content);
             }
         } catch (error) {
             console.error('Error reading flows.json:', error);
+            vscode.window.showErrorMessage('Failed to read flows configuration.');
         }
         return [];
     }

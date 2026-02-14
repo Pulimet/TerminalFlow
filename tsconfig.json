@@ -10,7 +10,8 @@
         "sourceMap": true,
         "rootDir": "src",
         "strict": true, /* enable all strict type-checking options */
-        "jsx": "react"
+        "jsx": "react",
+        "esModuleInterop": true
     },
     "exclude": [
         "node_modules",

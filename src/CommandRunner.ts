@@ -56,15 +56,22 @@ export class CommandRunner {
     }
 
     private getTerminal(): vscode.Terminal {
-        let terminal = this._terminals.get('Generic');
-        if (!terminal || terminal.exitStatus !== undefined) {
+        // remove any closed terminals from the map first
+        for (const [key, term] of this._terminals) {
+            if (term.exitStatus !== undefined) {
+                this._terminals.delete(key);
+            }
+        }
+
+        let terminal = this._terminals.get('main');
+        if (!terminal) {
             terminal = vscode.window.createTerminal(`Terminal Flow`);
-            this._terminals.set('Generic', terminal);
+            this._terminals.set('main', terminal);
 
             // Handle terminal close to remove from map
             vscode.window.onDidCloseTerminal(t => {
                 if (t === terminal) {
-                    this._terminals.delete('Generic');
+                    this._terminals.delete('main');
                 }
             });
         }

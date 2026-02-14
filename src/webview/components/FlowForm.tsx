@@ -56,11 +56,13 @@ export const FlowForm: React.FC<Props> = ({ initialFlow, availableCommands, onSa
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
+        const flowId = initialFlow?.id || crypto.randomUUID();
+
         const newFlow: Flow = {
-            id: initialFlow?.id || crypto.randomUUID(),
-            title,
-            description,
-            category: category || 'General',
+            id: flowId,
+            title: title.trim(),
+            description: description.trim(),
+            category: category.trim() || 'General',
             sequence
         };
 
