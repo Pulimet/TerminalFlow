@@ -1,35 +1,92 @@
 # Terminal Flow
 
-**Terminal Flow** is a Visual Studio Code extension that helps you manage, organize, and execute shell commands and sequences ("flows") directly from your editor. It treats your project's `.terminal` folder as a single source of truth, allowing you to share command configurations with your team via Git.
+> Manage, organize, and run shell commands & workflows — right from the VS Code sidebar.
 
-## Features
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-- **📂 Project-Based Storage**: Commands and flows are stored in `.terminal/commands.json` and `.terminal/flows.json` in your workspace root.
-- **⚡️ One-Click Execution**: run complex shell commands instantly from the sidebar.
-- **🔗 Command Flows**: Chain multiple commands together to create reproducible workflows (e.g., "Build" -> "Test" -> "Deploy").
-- **🎨 Modern UI**: Clean, React-based sidebar interface that integrates seamlessly with VS Code.
-- **🔄 Live Sync**: modifying the JSON files manually updates the UI instantly, and vice versa.
+---
 
-## Installation
+## ✨ Features
 
-1. Clone this repository.
-2. Run `npm install` to install dependencies.
-3. Press `F5` to open a new VS Code window with the extension loaded.
+### 📂 Project-Based Storage
+Commands and flows are stored in `.terminal/commands.json` and `.terminal/flows.json` in your workspace root. Commit them to Git and share with your team.
 
-## Usage
+### ⚡️ One-Click Execution
+Run complex shell commands instantly from the sidebar — no need to remember or retype them.
 
-1. Open the **Terminal Flow** view in the Activity Bar (terminal icon).
-2. **Commands Tab**:
-   - Click **+ Add Command** to create a new shell command.
-   - Enter a Title, Description, Category, and the Command itself.
-   - Click ▶️ to run it in the integrated terminal.
-3. **Flows Tab**:
-   - Click **+ Add Flow** to create a sequence.
-   - Select existing commands to add to the sequence.
-   - Reorder them as needed.
-   - Running a flow executes commands strictly sequentially (waiting for success before proceeding).
+### 🔗 Command Flows
+Chain multiple commands together into reproducible workflows (e.g., *Build → Test → Deploy*). Commands execute sequentially, each waiting for the previous to succeed.
 
-## Development
+### ⏱ Built-in Sleep & Echo
+Insert **sleep** (with configurable delay) and **echo** (with custom messages) steps directly into flows — no need to create separate commands for them.
+
+### 🎨 Modern UI
+Clean, React-based sidebar interface that blends seamlessly with your VS Code theme. Categories are collapsible and remember their state.
+
+### 🔄 Live Sync
+Edit the JSON files directly or use the UI — both stay in sync instantly via file watchers.
+
+---
+
+## 📦 Installation
+
+### From VS Code Marketplace
+1. Open VS Code.
+2. Go to **Extensions** (`Ctrl+Shift+X` / `Cmd+Shift+X`).
+3. Search for **"Terminal Flow"**.
+4. Click **Install**.
+
+### From VSIX
+```bash
+code --install-extension terminal-flow-0.0.1.vsix
+```
+
+---
+
+## 🚀 Usage
+
+1. Open the **Terminal Flow** icon in the Activity Bar (terminal icon in the sidebar).
+
+### Commands Tab
+- Click **+ Add Command** to create a new shell command.
+- Enter a **Title**, **Description**, **Category**, and the **Command**.
+- Click ▶ to run it in the integrated terminal.
+- Commands are grouped by category with collapsible sections.
+
+### Flows Tab
+- Click **+ Add Flow** to create a workflow sequence.
+- Pick from your existing commands, or add built-in **Sleep** and **Echo** steps.
+- Reorder steps with ↑↓ arrows.
+- Click ▶ on a flow to run the entire sequence, or expand it and ▶ individual steps.
+
+---
+
+## 📁 File Structure
+
+Terminal Flow stores everything in a `.terminal` folder at your workspace root:
+
+```
+.terminal/
+├── commands.json   # Your saved commands
+└── flows.json      # Your saved workflows
+```
+
+> **Tip**: Commit this folder to Git so your team shares the same commands and workflows.
+
+---
+
+## 🛠 Development
+
+### Prerequisites
+- Node.js 18+
+- VS Code 1.80+
+
+### Setup
+```bash
+git clone https://github.com/AlexeyKorolev/TerminalFlow.git
+cd TerminalFlow
+npm install
+```
 
 ### Build
 ```bash
@@ -41,8 +98,20 @@ npm run compile
 npm run watch
 ```
 
-### File Structure
-- `src/extension.ts`: Main entry point.
-- `src/DataManager.ts`: Handles file I/O and watching.
-- `src/CommandRunner.ts`: Manages VS Code terminals.
-- `src/webview/`: React application for the sidebar UI.
+### Debug
+Press `F5` in VS Code to launch the Extension Development Host.
+
+### Project Structure
+| Path | Description |
+|------|-------------|
+| `src/extension.ts` | Extension entry point & activation |
+| `src/DataManager.ts` | File I/O, JSON persistence, file watchers |
+| `src/CommandRunner.ts` | Terminal creation & command execution |
+| `src/TerminalFlowProvider.ts` | Webview provider for the sidebar |
+| `src/webview/` | React app (UI components, styles) |
+
+---
+
+## 📄 License
+
+[MIT](LICENSE) © Alexey Korolev
