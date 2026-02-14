@@ -51,6 +51,13 @@ export class CommandRunner {
                 continue;
             }
 
+            // Handle built-in echo command
+            if (cmdId.startsWith('__echo:')) {
+                const text = cmdId.replace('__echo:', '');
+                commands.push(`echo "${text}"`);
+                continue;
+            }
+
             const cmd = this.dataManager.getCommand(cmdId);
             if (cmd) {
                 commands.push(`echo "Running: ${cmd.title}" && ${cmd.command}`);

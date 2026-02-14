@@ -93,6 +93,14 @@ export const FlowList: React.FC<Props> = ({ flows, commands, onRun, onEdit, onDe
         return cmdId.replace('__sleep:', '');
     };
 
+    const isEchoCommand = (cmdId: string): boolean => {
+        return cmdId.startsWith('__echo:');
+    };
+
+    const getEchoText = (cmdId: string): string => {
+        return cmdId.replace('__echo:', '');
+    };
+
     const groupedFlows = flows.reduce((acc, flow) => {
         const category = flow.category || 'Uncategorized';
         if (!acc[category]) {
@@ -156,6 +164,18 @@ export const FlowList: React.FC<Props> = ({ flows, commands, onRun, onEdit, onDe
                                                                     <div className="flow-step-details">
                                                                         <span className="flow-step-name">Sleep</span>
                                                                         <span className="flow-step-command">sleep {Number(getSleepMs(cmdId)) / 1000}s</span>
+                                                                    </div>
+                                                                </div>
+                                                            );
+                                                        }
+                                                        if (isEchoCommand(cmdId)) {
+                                                            return (
+                                                                <div key={index} className="flow-step-item">
+                                                                    <span className="flow-step-icon">💬</span>
+                                                                    <span className="flow-step-index">{index + 1}.</span>
+                                                                    <div className="flow-step-details">
+                                                                        <span className="flow-step-name">Echo</span>
+                                                                        <span className="flow-step-command">echo "{getEchoText(cmdId)}"</span>
                                                                     </div>
                                                                 </div>
                                                             );

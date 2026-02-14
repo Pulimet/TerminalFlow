@@ -29,6 +29,7 @@ export const FlowForm: React.FC<Props> = ({ initialFlow, availableCommands, onSa
     const [category, setCategory] = useState(initialFlow?.category || '');
     const [sequence, setSequence] = useState<string[]>(initialFlow?.sequence || []);
     const [sleepMs, setSleepMs] = useState('1000');
+    const [echoText, setEchoText] = useState('');
 
     const addToSequence = (commandId: string) => {
         setSequence([...sequence, commandId]);
@@ -38,6 +39,12 @@ export const FlowForm: React.FC<Props> = ({ initialFlow, availableCommands, onSa
         const ms = parseInt(sleepMs, 10);
         if (isNaN(ms) || ms <= 0) return;
         setSequence([...sequence, `__sleep:${ms}`]);
+    };
+
+    const addEcho = () => {
+        if (!echoText.trim()) return;
+        setSequence([...sequence, `__echo:${echoText.trim()}`]);
+        setEchoText('');
     };
 
     const removeFromSequence = (index: number) => {
@@ -77,11 +84,16 @@ export const FlowForm: React.FC<Props> = ({ initialFlow, availableCommands, onSa
     };
 
     const isSleepEntry = (id: string) => id.startsWith('__sleep:');
+    const isEchoEntry = (id: string) => id.startsWith('__echo:');
 
     const getEntryLabel = (id: string): string => {
         if (isSleepEntry(id)) {
             const ms = id.replace('__sleep:', '');
             return `⏱ Sleep ${ms}ms`;
+        }
+        if (isEchoEntry(id)) {
+            const text = id.replace('__echo:', '');
+            return `💬 Echo: ${text}`;
         }
         const cmd = availableCommands.find(c => c.id === id);
         return cmd ? cmd.title : 'Unknown Command';
@@ -151,22 +163,39 @@ export const FlowForm: React.FC<Props> = ({ initialFlow, availableCommands, onSa
                             <button type="button" className="sleep-add-btn" onClick={addSleep}>+ Add Sleep</button>
                         </div>
                     </div>
+                    <div className="echo-adder">
+                        <h4>Built-in: Echo</h4>
+                        <div className="echo-controls">
+                            <input
+                                type="text"
+                                value={echoText}
+                                onChange={e => setEchoText(e.target.value)}
+                                placeholder="Message to echo..."
+                                className="echo-input"
+                                onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addEcho(); } }}
+                            />
+                            <button type="button" className="echo-add-btn" onClick={addEcho}>+ Add Echo</button>
+                        </div>
+                    </div>
                 </div>
 
                 <div className="sequence-builder">
                     <h4>Sequence</h4>
                     <div className="sequence-list">
-                        {sequence.map((cmdId, index) => (
-                            <div key={`${cmdId}-${index}`} className={`sequence-item ${isSleepEntry(cmdId) ? 'sequence-sleep' : ''}`}>
-                                <span className="sequence-index">{index + 1}.</span>
-                                <span className="sequence-title">{getEntryLabel(cmdId)}</span>
-                                <div className="sequence-actions">
-                                    <button type="button" onClick={() => moveUp(index)} disabled={index === 0}>↑</button>
-                                    <button type="button" onClick={() => moveDown(index)} disabled={index === sequence.length - 1}>↓</button>
-                                    <button type="button" onClick={() => removeFromSequence(index)}>✕</button>
+                        {sequence.map((cmdId, index) => {
+                            const entryClass = isSleepEntry(cmdId) ? 'sequence-sleep' : isEchoEntry(cmdId) ? 'sequence-echo' : '';
+                            return (
+                                <div key={`${cmdId}-${index}`} className={`sequence-item ${entryClass}`}>
+                                    <span className="sequence-index">{index + 1}.</span>
+                                    <span className="sequence-title">{getEntryLabel(cmdId)}</span>
+                                    <div className="sequence-actions">
+                                        <button type="button" onClick={() => moveUp(index)} disabled={index === 0}>↑</button>
+                                        <button type="button" onClick={() => moveDown(index)} disabled={index === sequence.length - 1}>↓</button>
+                                        <button type="button" onClick={() => removeFromSequence(index)}>✕</button>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                         {sequence.length === 0 && <div className="empty-sequence">No commands added yet.</div>}
                     </div>
                 </div>
