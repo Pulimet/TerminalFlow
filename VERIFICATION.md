@@ -94,8 +94,18 @@ Use this method to install and test the extension in your regular VS Code (not j
 - [ ] Run `vsce publish` to publish (or `vsce publish minor` to bump the version).
 - [ ] **Verify**: Visit `https://marketplace.visualstudio.com/items?itemName=<publisher>.terminal-flow` and confirm your extension is live.
 
+### Publishing
+`npm install -g @vscode/vsce`
+`vsce login AlexeyKorolev`
+vsce publish
+
+### URL's
+Extension URL: https://marketplace.visualstudio.com/items?itemName=AlexeyKorolev.terminal-flow
+Hub URL: https://marketplace.visualstudio.com/manage/publishers/AlexeyKorolev/extensions/terminal-flow/hub
+
 ### Update an Existing Published Extension
 - [ ] Bump the version in `package.json` (e.g., `"version": "0.0.2"`).
 - [ ] Run `npm run compile`.
 - [ ] Run `vsce publish`.
 - [ ] **Verify**: The new version appears on the Marketplace within a few minutes.
+
