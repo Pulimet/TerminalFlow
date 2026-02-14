@@ -78,19 +78,91 @@ body {
     display: flex;
     align-items: center;
     cursor: pointer;
-    padding: 4px 0;
+    padding: 6px 4px;
     font-weight: bold;
     text-transform: uppercase;
     font-size: 11px;
     color: var(--vscode-sideBarSectionHeader-foreground);
+    user-select: none;
+    gap: 4px;
 }
 
 .category-header:hover {
     background-color: var(--vscode-list-hoverBackground);
 }
 
+/* Chevron indicator */
+.chevron {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    font-size: 14px;
+    font-weight: bold;
+    transition: transform 0.15s ease;
+    transform: rotate(0deg);
+    flex-shrink: 0;
+    opacity: 0.8;
+}
+
+.chevron.expanded {
+    transform: rotate(90deg);
+}
+
+/* Category item count badge */
+.category-count {
+    font-size: 10px;
+    background-color: var(--vscode-badge-background);
+    color: var(--vscode-badge-foreground);
+    padding: 0px 5px;
+    border-radius: 8px;
+    margin-left: auto;
+    font-weight: normal;
+}
+
 .category-items {
     padding-left: 8px;
+}
+
+/* Flow expand toggle */
+.flow-expand-toggle {
+    cursor: pointer;
+    margin-right: 4px;
+    font-size: 12px;
+}
+
+.flow-expand-toggle:hover {
+    opacity: 1;
+}
+
+/* Flow steps list */
+.flow-steps {
+    margin-top: 6px;
+    padding: 4px 0 4px 6px;
+    border-left: 2px solid var(--vscode-panelTitle-activeBorder, #007acc);
+}
+
+.flow-step-item {
+    display: flex;
+    align-items: center;
+    padding: 2px 4px;
+    font-size: 11px;
+    gap: 6px;
+}
+
+.flow-step-item:hover {
+    background-color: var(--vscode-list-hoverBackground);
+}
+
+.flow-step-index {
+    opacity: 0.5;
+    min-width: 18px;
+    font-family: var(--vscode-editor-font-family);
+}
+
+.flow-step-name {
+    opacity: 0.9;
 }
 
 .command-item,

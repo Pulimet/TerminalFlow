@@ -130,6 +130,7 @@ const App = () => {
             return (
                 <FlowList
                     flows={flows}
+                    commands={commands}
                     onRun={handleRunFlow}
                     onEdit={startEdit}
                     onDelete={handleDeleteFlow}
