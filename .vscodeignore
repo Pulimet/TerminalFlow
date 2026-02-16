@@ -13,3 +13,4 @@ dist/webview.js.map
 .terminal/**
 esbuild.js
 tsconfig.json
+.local
