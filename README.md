@@ -19,6 +19,12 @@ Chain multiple commands together into reproducible workflows (e.g., *Build → T
 ### ⏱ Built-in Sleep & Echo
 Insert **sleep** (with configurable delay) and **echo** (with custom messages) steps directly into flows — no need to create separate commands for them.
 
+### ⚡️ Async Execution
+Configure individual commands or entire flows to run in their own dedicated terminal windows, allowing parallel execution alongside your main work.
+
+### ⏯ Flexible Flows
+Start your flows from any step in the sequence using the "Run from here" (⬇) button.
+
 ### 🎨 Modern UI
 Clean, React-based sidebar interface that blends seamlessly with your VS Code theme. Categories are collapsible and remember their state.
 
@@ -111,9 +117,9 @@ Press `F5` in VS Code to launch the Extension Development Host.
 | Path | Description |
 |------|-------------|
 | `src/extension.ts` | Extension entry point & activation |
-| `src/DataManager.ts` | File I/O, JSON persistence, file watchers |
-| `src/CommandRunner.ts` | Terminal creation & command execution |
-| `src/TerminalFlowProvider.ts` | Webview provider for the sidebar |
+| `src/providers/TerminalFlowProvider.ts` | Webview provider for the sidebar |
+| `src/services/DataManager.ts` | Central data management & file watchers |
+| `src/services/CommandRunner.ts` | Terminal creation & command execution |
 | `src/webview/` | React app (UI components, styles) |
 
 ---

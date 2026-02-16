@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.9] - 2026-02-16
+
+### Added
+- **Settings**: Added `terminalFlow.printCommandTitle` setting to toggle printing command titles before execution.
+- **Flow Control**: Added ability to start a Flow from a specific step (using the "Arrow Down" icon).
+- **Async Execution**: Added "Run in new terminal" option for both Commands and Flows.
+    - Commands configured for new terminals will launch in their own dedicated instance.
+    - Flows can mix shared and new terminal commands seamlessly.
+- **Settings Access**: Added a Settings button to the view title bar for quick access to extension configuration.
+
+### Changed
+- **Settings UI**: Refined settings search to filter specifically for extension settings (`@ext:AlexeyKorolev.terminal-flow`).
+
 ## [0.0.8] - 2026-02-16
 
 ### Fixed

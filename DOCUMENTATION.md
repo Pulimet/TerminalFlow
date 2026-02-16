@@ -22,13 +22,17 @@ In **TerminalFlow**, the extension activates on startup (`onStartupFinished`), i
 | **`src/extension.ts`** | **[ENTRY POINT]** The main entry file where the extension is activated and dependencies are initialized. | Backend |
 | `src/providers/TerminalFlowProvider.ts` | Manages the Webview View, handling initialization and message passing between the UI and backend. | Backend |
 | `src/services/CommandRunner.ts` | Handles the execution of shell commands and flows in the VS Code integrated terminal. | Backend |
-| `src/services/DataManager.ts` | Manages data persistence for Commands and Flows, watching for file changes in `.terminal`. | Backend |
-| `src/utils/Store.ts` | A generic file-based storage utility used by DataManager to read/write JSON files. | Backend |
+| `src/services/DataManager.ts` | Central entry point for data management, coordinating `CommandService` and `FlowService`. | Backend |
+| `src/services/CommandService.ts` | Manages CRUD operations and persistence for Commands (`commands.json`). | Backend |
+| `src/services/FlowService.ts` | Manages CRUD operations and persistence for Flows (`flows.json`). | Backend |
+| `src/utils/Store.ts` | A generic file-based storage utility used by services to read/write JSON files. | Backend |
 | `src/webview/App.tsx` | The main React component for the Webview UI, managing state and routing. | Frontend |
 | `src/webview/index.tsx` | The entry point for the React application, rendering `App` into the DOM. | Frontend |
 | `src/webview/types.ts` | TypeScript interfaces defining the shape of `Command`, `Flow`, and component props. | Shared |
 | `src/webview/vscode.d.ts` | Type definitions for the `acquireVsCodeApi` function available in the Webview environment. | Frontend |
 | `src/webview/hooks/useExtensionData.ts` | A custom React hook that manages communication with the VS Code extension backend. | Frontend |
+| `src/webview/hooks/useCategoryState.ts` | Hook for managing the expanded/collapsed state of categories. | Frontend |
+| `src/webview/hooks/useListLogic.ts` | Shared hook for managing list state, filtering/searching, and reordering of items and categories. | Frontend |
 | `src/webview/components/Command/CommandCategory.tsx` | Renders a collapsible category section containing a list of `CommandItem`s. | Frontend |
 | `src/webview/components/Command/CommandForm.tsx` | A form component for creating and editing Commands. | Frontend |
 | `src/webview/components/Command/CommandItem.tsx` | Displays a single Command with options to run, edit, or delete it. | Frontend |
@@ -37,7 +41,7 @@ In **TerminalFlow**, the extension activates on startup (`onStartupFinished`), i
 | `src/webview/components/ListActions.tsx` | Reusable toolbar component containing the Search Bar and Expand/Collapse All buttons. | Frontend |
 | `src/webview/components/SearchBar.tsx` | A controlled input component for searching through lists. | Frontend |
 | `src/webview/components/Flow/FlowCategory.tsx` | Renders a collapsible category section containing a list of `FlowItem`s. | Frontend |
-| `src/webview/components/Flow/FlowForm.tsx` | A form component for creating and editing Flows (sequences of commands). | Frontend |
+| `src/webview/components/Flow/FlowForm.tsx` | A form for creating and editing Flows. Includes async execution configuration. | Frontend |
 | `src/webview/components/Flow/FlowFormHelpers.tsx` | Helper components for `FlowForm` (e.g., inputs for adding Sleep or Echo steps). | Frontend |
 | `src/webview/components/Flow/FlowItem.tsx` | Displays a single Flow with options to run, edit, delete, and view its steps. | Frontend |
 | `src/webview/components/Flow/FlowList.tsx` | Renders the list of all flows, grouped by category. | Frontend |
@@ -88,9 +92,15 @@ Responsible for execution logic.
 
 #### `src/services/DataManager.ts`
 Central service for data management.
-- Uses `Store` to manage `commands.json` and `flows.json` in the `.terminal` directory of the workspace.
-- **File Watching**: Watches for changes in `.terminal/*.json` to auto-refresh the data.
-- **CRUD Operations**: Methods to `get`, `save`, and `delete` commands and flows.
+- Instantiates `CommandService` and `FlowService`.
+- **File Watching**: Watches for changes in `.terminal/*.json` and triggers updates.
+- Exposes `commandService` and `flowService` for use by the provider and runner.
+
+#### `src/services/CommandService.ts` & `src/services/FlowService.ts`
+Dedicated services for managing Commands and Flows respectively.
+- Uses `Store` to read/write to `commands.json` and `flows.json`.
+- Handles CRUD operations (get, save, delete).
+- Manages category order persistence.
 
 #### `src/utils/Store.ts`
 A generic helper class for reading and writing JSON files.

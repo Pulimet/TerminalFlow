@@ -8,9 +8,16 @@ Follow these steps to validate that the **Terminal Flow** extension is working c
 - [ ] Run `npm install` in the terminal to grab all dependencies.
 - [ ] Run `npm run compile` and ensure there are no errors.
 
-## 2. Extension Startup (Web/UI Validation)
+## 2. Extension Startup & Settings
 - [ ] Press `F5` to launch the **Extension Development Host**.
-- [ ] In the new window, open any folder (or create a dummy folder).
+- [ ] **Settings Button**:
+  - Click the **Gear Icon** in the "Terminal Flow" view title bar (top right of sidebar).
+  - **Verify**: VS Code Settings open, filtered to `@ext:AlexeyKorolev.terminal-flow`.
+- [ ] **Print Title Setting**:
+  - Uncheck `Terminal Flow: Print Command Title`.
+  - Run a command.
+  - **Verify**: The command runs *without* printing `echo "Running: ..."` first.
+  - Re-enable the setting.
 - [ ] **Verify**: A `.terminal` folder is automatically created in the root if it didn't exist.
 - [ ] **Verify**: The "Terminal Flow" icon appears in the Activity Bar / Sidebar.
 - [ ] **Verify**: Clicking the icon loads the React Webview. The UI should look modern and match VS Code's theme.
@@ -31,11 +38,17 @@ Follow these steps to validate that the **Terminal Flow** extension is working c
 - [ ] Fill in:
   - **Title**: `Test Flow`
   - **Category**: `Workflows`
-- [ ] Add the `Test Echo` command to the sequence **twice**.
+- [ ] Add the `Test Echo` command.
+- [ ] Add a **Sleep** step (e.g., 2000ms).
+- [ ] Add an **Echo** step (e.g., "Step 2 Complete").
 - [ ] Click **Save**.
 - [ ] **Verify**: The flow appears in the "Flows" tab.
 - [ ] Click **Run (▶️)** on the flow.
-- [ ] **Verify**: The terminal runs the sequence (e.g., `echo "..." && echo "..."`).
+- [ ] **Verify**: The terminal runs `Test Echo`, waits 2 seconds, then prints "Step 2 Complete".
+- [ ] **Start From Step**:
+  - Expand the flow card.
+  - click the **Arrow Down (⬇)** icon on the **Sleep** step.
+  - **Verify**: The flow skips `Test Echo` and starts directly from the Sleep step.
 
 ## 5. Search Validation
 - [ ] Create multiple commands with distinct titles (e.g., "Deploy", "Build", "Test").
@@ -45,7 +58,21 @@ Follow these steps to validate that the **Terminal Flow** extension is working c
 - [ ] **Verify**: All commands are visible again.
 - [ ] Switch to the **Flows** tab and repeat the test.
 
-## 6. Reordering Validation
+## 6. Async Execution Validation
+- [ ] **Command in New Terminal**:
+  - Create/Edit a command and check **"Run in new terminal"**.
+  - Run it.
+  - **Verify**: A new terminal instance opens (named "Terminal Flow: [Title]") and runs the command.
+- [ ] **Flow in New Terminal**:
+  - Create/Edit a flow and check **"Run in new terminal"**.
+  - Run it.
+  - **Verify**: The entire flow runs in a new terminal instance.
+- [ ] **Mixed Execution**:
+  - Create a flow with one "Async" command and one "Shared" command.
+  - Run the flow.
+  - **Verify**: The Async command opens a new terminal, while the Shared command runs in the main "Terminal Flow" terminal.
+
+## 7. Reordering Validation
 - [ ] **Categories**:
   - Create two categories: "Alpha" and "Beta".
   - Use the **▲ / ▼** buttons on the category headers to swap their order.
@@ -58,7 +85,7 @@ Follow these steps to validate that the **Terminal Flow** extension is working c
   - **Verify**: "Command 2" is now above "Command 1".
   - **Verify**: The order persists after reload.
 
-## 7. Persistence & Sync
+## 8. Persistence & Sync
 - [ ] Close the Extension Development Host window.
 - [ ] Relaunch formatting `F5`.
 - [ ] **Verify**: Your `Test Echo` and `Test Flow` are still there (Persistence works).
@@ -68,7 +95,7 @@ Follow these steps to validate that the **Terminal Flow** extension is working c
   - Save the file.
 - [ ] **Verify**: The Sidebar UI immediately updates to show "Renamed Echo" (Live Sync works).
 
-## 8. Install Locally as a VSIX Package
+## 9. Install Locally as a VSIX Package
 
 Use this method to install and test the extension in your regular VS Code (not just the Extension Development Host).
 
@@ -92,7 +119,7 @@ Use this method to install and test the extension in your regular VS Code (not j
 ### Uninstall (if needed)
 - [ ] Go to **Extensions** → find "Terminal Flow" → click **Uninstall**.
 
-## 9. Publish to the VS Code Marketplace
+## 10. Publish to the VS Code Marketplace
 
 ### One-Time Setup
 - [ ] Create an **Azure DevOps** account at [dev.azure.com](https://dev.azure.com).
