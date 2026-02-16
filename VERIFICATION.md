@@ -127,6 +127,7 @@ Hub URL: https://marketplace.visualstudio.com/manage/publishers/AlexeyKorolev/ex
 ### Update an Existing Published Extension
 - [ ] Bump the version in `package.json` (e.g., `"version": "0.0.2"`).
 - [ ] Run `npm run compile`.
+- [ ] Login `vsce login AlexeyKorolev`.
 - [ ] Run `vsce publish`.
 - [ ] **Verify**: The new version appears on the Marketplace within a few minutes.
 
