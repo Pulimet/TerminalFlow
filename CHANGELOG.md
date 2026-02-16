@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.5] - 2026-02-16
+
+### Fixed
+- **Validation Errors**: Renamed `LICENSE` to `LICENSE.txt` to fix broken link in README and added extension icon to resolve package warning.
+
 ## [0.0.4] - 2026-02-16
 
 ### Fixed
