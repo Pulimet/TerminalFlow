@@ -17,7 +17,7 @@ export class TerminalFlowProvider implements vscode.WebviewViewProvider {
         webviewView.webview.onDidReceiveMessage(async (data) => {
             switch (data.type) {
                 case 'runCommand': vscode.commands.executeCommand('terminal-flow.runCommand', data.id); break;
-                case 'runFlow': vscode.commands.executeCommand('terminal-flow.runFlow', data.id); break;
+                case 'runFlow': vscode.commands.executeCommand('terminal-flow.runFlow', data.id, data.fromIndex); break;
                 case 'saveCommand': await this._dataManager.commandService.saveCommand(data.data); break;
                 case 'deleteCommand': {
                     const answer = await vscode.window.showWarningMessage('Are you sure you want to delete this command?', { modal: true }, 'Delete');
@@ -33,6 +33,7 @@ export class TerminalFlowProvider implements vscode.WebviewViewProvider {
                 case 'reorderCommands': await this._dataManager.commandService.setCommands(data.data); break;
                 case 'reorderFlows': await this._dataManager.flowService.setFlows(data.data); break;
                 case 'saveCommandCategoryOrder': await this._dataManager.commandService.saveCategoryOrder(data.data); break;
+                case 'saveFlowCategoryOrder': await this._dataManager.flowService.saveCategoryOrder(data.data); break;
                 case 'saveFlowCategoryOrder': await this._dataManager.flowService.saveCategoryOrder(data.data); break;
                 case 'refresh': this.refreshData(); break;
             }

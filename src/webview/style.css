@@ -468,6 +468,24 @@ body {
     font-size: 12px;
 }
 
+.checkbox-group {
+    flex-direction: row;
+    align-items: center;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: normal !important;
+    cursor: pointer;
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+}
+
 input,
 textarea {
     background-color: var(--vscode-input-background);

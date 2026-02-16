@@ -6,9 +6,10 @@ interface FlowStepProps {
     index: number;
     command?: Command;
     onRunCommand: (id: string) => void;
+    onRunFlowFromHere: (index: number) => void;
 }
 
-export const FlowStep: React.FC<FlowStepProps> = ({ cmdId, index, command, onRunCommand }) => {
+export const FlowStep: React.FC<FlowStepProps> = ({ cmdId, index, command, onRunCommand, onRunFlowFromHere }) => {
     if (cmdId.startsWith('__sleep:')) {
         const ms = cmdId.replace('__sleep:', '');
         return (
@@ -45,6 +46,7 @@ export const FlowStep: React.FC<FlowStepProps> = ({ cmdId, index, command, onRun
                 <span className="flow-step-name">{command ? command.title : `Unknown`}</span>
                 <span className="flow-step-command">{command ? command.command : cmdId}</span>
             </div>
+            <span className="flow-step-run-from-here" title="Run flow from here" onClick={(e) => { e.stopPropagation(); onRunFlowFromHere(index); }}>⬇</span>
         </div>
     );
 };

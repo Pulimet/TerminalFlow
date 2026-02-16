@@ -35,7 +35,8 @@
                 {
                     "type": "webview",
                     "id": "terminal-flow-view",
-                    "name": "Terminal Flow"
+                    "name": "Terminal Flow",
+                    "icon": "$(terminal)"
                 }
             ]
         },
@@ -47,8 +48,32 @@
             {
                 "command": "terminal-flow.runFlow",
                 "title": "Terminal Flow: Run Flow"
+            },
+            {
+                "command": "terminal-flow.openSettings",
+                "title": "Open Settings",
+                "icon": "$(gear)"
             }
-        ]
+        ],
+        "menus": {
+            "view/title": [
+                {
+                    "command": "terminal-flow.openSettings",
+                    "when": "view == terminal-flow-view",
+                    "group": "navigation"
+                }
+            ]
+        },
+        "configuration": {
+            "title": "Terminal Flow",
+            "properties": {
+                "terminalFlow.printCommandTitle": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Print the title of the command before executing it."
+                }
+            }
+        }
     },
     "scripts": {
         "vscode:prepublish": "npm run package",

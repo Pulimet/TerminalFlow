@@ -10,7 +10,7 @@ interface FlowCategoryProps {
     isFirst: boolean;
     isLast: boolean;
     onToggle: (category: string) => void;
-    onRun: (id: string) => void;
+    onRun: (id: string, fromIndex?: number) => void;
     onEdit: (flow: Flow) => void;
     onDelete: (id: string) => void;
     onRunCommand: (id: string) => void;

@@ -4,6 +4,7 @@ export interface Command {
     description: string;
     category: string;
     command: string;
+    runInNewTerminal?: boolean;
 }
 
 export interface Flow {
@@ -12,6 +13,7 @@ export interface Flow {
     description: string;
     category: string;
     sequence: string[];
+    runInNewTerminal?: boolean;
 }
 
 export interface Props {

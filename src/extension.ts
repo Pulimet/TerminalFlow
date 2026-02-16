@@ -17,7 +17,8 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(
         vscode.commands.registerCommand('terminal-flow.runCommand', (id: string) => commandRunner.runCommand(id)),
-        vscode.commands.registerCommand('terminal-flow.runFlow', (id: string) => commandRunner.runFlow(id)),
+        vscode.commands.registerCommand('terminal-flow.runFlow', (id: string, fromIndex?: number) => commandRunner.runFlow(id, fromIndex)),
+        vscode.commands.registerCommand('terminal-flow.openSettings', () => vscode.commands.executeCommand('workbench.action.openSettings', '@ext:AlexeyKorolev.terminal-flow')),
         vscode.commands.registerCommand('terminal-flow.refresh', () => { })
     );
 

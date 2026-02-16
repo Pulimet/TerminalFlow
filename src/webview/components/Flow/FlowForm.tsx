@@ -17,6 +17,7 @@ export const FlowForm: React.FC<FlowFormProps> = ({ initialFlow, availableComman
     const [description, setDescription] = useState(initialFlow?.description || '');
     const [category, setCategory] = useState(initialFlow?.category || '');
     const [sequence, setSequence] = useState<string[]>(initialFlow?.sequence || []);
+    const [runInNewTerminal, setRunInNewTerminal] = useState(initialFlow?.runInNewTerminal || false);
     const [sleepMs, setSleepMs] = useState('1000');
     const [echoText, setEchoText] = useState('');
 
@@ -41,7 +42,8 @@ export const FlowForm: React.FC<FlowFormProps> = ({ initialFlow, availableComman
             title: title.trim(),
             description: description.trim(),
             category: category.trim() || 'General',
-            sequence
+            sequence,
+            runInNewTerminal
         });
     };
 
@@ -58,6 +60,16 @@ export const FlowForm: React.FC<FlowFormProps> = ({ initialFlow, availableComman
             <div className="form-group"><label>Title</label><input type="text" value={title} onChange={e => setTitle(e.target.value)} required placeholder="e.g. Full Deployment" /></div>
             <div className="form-group"><label>Description</label><input type="text" value={description} onChange={e => setDescription(e.target.value)} placeholder="Short description..." /></div>
             <div className="form-group"><label>Category</label><input type="text" value={category} onChange={e => setCategory(e.target.value)} placeholder="e.g. Workflows" /></div>
+            <div className="form-group checkbox-group">
+                <label className="checkbox-label">
+                    <input
+                        type="checkbox"
+                        checked={runInNewTerminal}
+                        onChange={e => setRunInNewTerminal(e.target.checked)}
+                    />
+                    Run in new terminal
+                </label>
+            </div>
 
             <div className="flow-builder">
                 <div className="available-commands">

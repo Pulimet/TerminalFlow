@@ -2,8 +2,6 @@
 
 Follow these steps to validate that the **Terminal Flow** extension is working correctly.
 
-> **Note**: These steps are specific to the VS Code Extension. If you were looking for validation steps for the "Cross-Platform Data Sharing App" (Web/Android), please check that specific project's repository.
-
 ## 1. Environment Setup
 - [ ] Ensure **Node.js** (v18+) and **npm** are installed.
 - [ ] Open the repository in VS Code.

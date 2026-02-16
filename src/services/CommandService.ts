@@ -1,7 +1,7 @@
 import { Store } from '../utils/Store';
 
 export interface Command {
-    id: string; title: string; description: string; category: string; command: string;
+    id: string; title: string; description: string; category: string; command: string; runInNewTerminal?: boolean;
 }
 
 export class CommandService {

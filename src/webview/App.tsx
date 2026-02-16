@@ -48,7 +48,7 @@ const App = () => {
                 flows={flows}
                 commands={commands}
                 categoryOrder={flowCategoryOrder}
-                onRun={(id) => sendMessage('runFlow', { id })}
+                onRun={(id, fromIndex) => sendMessage('runFlow', { id, fromIndex })}
                 onRunCommand={(id) => sendMessage('runCommand', { id })}
                 onEdit={(f) => { setEditingItem(f); setView('form'); }}
                 onDelete={(id) => handleDelete('Flow', id)}
@@ -66,7 +66,9 @@ const App = () => {
                     <button className={activeTab === 'flows' ? 'active' : ''} onClick={() => { setActiveTab('flows'); setView('list'); }}>Flows</button>
                 </div>
                 {view === 'list' && (
-                    <button className="add-button" onClick={() => { setEditingItem(undefined); setView('form'); }}>+ Add {activeTab === 'commands' ? 'Command' : 'Flow'}</button>
+                    <button className="add-button" onClick={() => { setEditingItem(undefined); setView('form'); }}>
+                        + Add {activeTab === 'commands' ? 'Command' : 'Flow'}
+                    </button>
                 )}
             </div>
             <div className="content">{view === 'form' ? renderForm() : renderList()}</div>

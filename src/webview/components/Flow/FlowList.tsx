@@ -8,7 +8,7 @@ interface FlowListProps {
     flows: Flow[];
     commands: Command[];
     categoryOrder?: string[];
-    onRun: (id: string) => void;
+    onRun: (id: string, fromIndex?: number) => void;
     onEdit: (flow: Flow) => void;
     onDelete: (id: string) => void;
     onRunCommand: (id: string) => void;

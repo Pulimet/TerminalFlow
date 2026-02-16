@@ -7,7 +7,7 @@ interface FlowItemProps {
     commands: Command[];
     isFirst: boolean;
     isLast: boolean;
-    onRun: (id: string) => void;
+    onRun: (id: string, fromIndex?: number) => void;
     onEdit: (flow: Flow) => void;
     onDelete: (id: string) => void;
     onRunCommand: (id: string) => void;
@@ -52,7 +52,14 @@ export const FlowItem: React.FC<FlowItemProps> = ({
             {isExpanded && flow.sequence.length > 0 && (
                 <div className="flow-steps">
                     {flow.sequence.map((cmdId, index) => (
-                        <FlowStep key={`${flow.id}-${index}`} cmdId={cmdId} index={index} command={commands.find(c => c.id === cmdId)} onRunCommand={onRunCommand} />
+                        <FlowStep
+                            key={`${flow.id}-${index}`}
+                            cmdId={cmdId}
+                            index={index}
+                            command={commands.find(c => c.id === cmdId)}
+                            onRunCommand={onRunCommand}
+                            onRunFlowFromHere={(idx) => onRun(flow.id, idx)}
+                        />
                     ))}
                 </div>
             )}

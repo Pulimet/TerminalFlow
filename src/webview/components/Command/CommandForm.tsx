@@ -12,6 +12,7 @@ export const CommandForm: React.FC<CommandFormProps> = ({ initialCommand, onSave
     const [description, setDescription] = useState(initialCommand?.description || '');
     const [category, setCategory] = useState(initialCommand?.category || '');
     const [commandString, setCommandString] = useState(initialCommand?.command || '');
+    const [runInNewTerminal, setRunInNewTerminal] = useState(initialCommand?.runInNewTerminal || false);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -20,7 +21,8 @@ export const CommandForm: React.FC<CommandFormProps> = ({ initialCommand, onSave
             title: title.trim(),
             description: description.trim(),
             category: category.trim() || 'General',
-            command: commandString
+            command: commandString,
+            runInNewTerminal
         });
     };
 
@@ -41,6 +43,16 @@ export const CommandForm: React.FC<CommandFormProps> = ({ initialCommand, onSave
             <div className="form-group">
                 <label>Command</label>
                 <textarea value={commandString} onChange={e => setCommandString(e.target.value)} required placeholder="npm run build" rows={3} className="code-input" />
+            </div>
+            <div className="form-group checkbox-group">
+                <label className="checkbox-label">
+                    <input
+                        type="checkbox"
+                        checked={runInNewTerminal}
+                        onChange={e => setRunInNewTerminal(e.target.checked)}
+                    />
+                    Run in new terminal
+                </label>
             </div>
             <div className="form-actions">
                 <button type="button" onClick={onCancel}>Cancel</button>

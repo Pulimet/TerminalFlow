@@ -1,7 +1,7 @@
 import { Store } from '../utils/Store';
 
 export interface Flow {
-    id: string; title: string; description: string; category: string; sequence: string[];
+    id: string; title: string; description: string; category: string; sequence: string[]; runInNewTerminal?: boolean;
 }
 
 export class FlowService {
