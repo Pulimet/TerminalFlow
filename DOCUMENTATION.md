@@ -33,6 +33,9 @@ In **TerminalFlow**, the extension activates on startup (`onStartupFinished`), i
 | `src/webview/components/Command/CommandForm.tsx` | A form component for creating and editing Commands. | Frontend |
 | `src/webview/components/Command/CommandItem.tsx` | Displays a single Command with options to run, edit, or delete it. | Frontend |
 | `src/webview/components/Command/CommandList.tsx` | Renders the list of all commands, grouped by category. | Frontend |
+| `src/webview/components/Command/CommandList.tsx` | Renders the list of all commands, grouped by category. Includes search and filter logic. | Frontend |
+| `src/webview/components/ListActions.tsx` | Reusable toolbar component containing the Search Bar and Expand/Collapse All buttons. | Frontend |
+| `src/webview/components/SearchBar.tsx` | A controlled input component for searching through lists. | Frontend |
 | `src/webview/components/Flow/FlowCategory.tsx` | Renders a collapsible category section containing a list of `FlowItem`s. | Frontend |
 | `src/webview/components/Flow/FlowForm.tsx` | A form component for creating and editing Flows (sequences of commands). | Frontend |
 | `src/webview/components/Flow/FlowFormHelpers.tsx` | Helper components for `FlowForm` (e.g., inputs for adding Sleep or Echo steps). | Frontend |
@@ -110,13 +113,13 @@ A hook to bridge React state with the VS Code Extension backend.
 - Listens for `message` events from the extension to update local state.
 
 #### `src/webview/components/Command/*`
-- **`CommandList.tsx`**: Iterates over commands, grouping them by category using `CommandCategory`.
-- **`CommandCategory.tsx`**: A collapsible section implementation.
-- **`CommandItem.tsx`**: The visualization of a single command row.
+- **`CommandList.tsx`**: Iterates over commands, grouping them by category using `CommandCategory`. Implementation of `useListLogic` happens here to handle search and reordering.
+- **`CommandCategory.tsx`**: A collapsible section implementation. Supports reordering of the category itself via up/down buttons.
+- **`CommandItem.tsx`**: The visualization of a single command row. Supports reordering logic.
 - **`CommandForm.tsx`**: A form for adding/editing commands. Handles local form state before calling `onSave`.
 
 #### `src/webview/components/Flow/*`
-- **`FlowList.tsx`**, **`FlowCategory.tsx`**, **`FlowItem.tsx`**: Analogous to the Command components but for Flows.
+- **`FlowList.tsx`**, **`FlowCategory.tsx`**, **`FlowItem.tsx`**: Analogous to the Command components but for Flows. Supports search and reordering.
 - **`FlowForm.tsx`**: Complex form for creating flows.
     - Allows adding existing commands, sleep, or echo steps.
     - Uses `SequenceBuilder` to manage the order of steps.

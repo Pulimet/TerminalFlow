@@ -23,6 +23,12 @@ Insert **sleep** (with configurable delay) and **echo** (with custom messages) s
 ### 🎨 Modern UI
 Clean, React-based sidebar interface that blends seamlessly with your VS Code theme. Categories are collapsible and remember their state.
 
+### 🔍 Smart Search
+Instantly filter your commands and flows. Search works across titles, descriptions, and even the command code itself.
+
+### ↕️ Easy Organization
+Keep your workspace tidy by reordering both categories and individual commands using the up/down controls.
+
 ### 🔄 Live Sync
 Edit the JSON files directly or use the UI — both stay in sync instantly via file watchers.
 
@@ -51,6 +57,8 @@ Or manually:
 - Enter a **Title**, **Description**, **Category**, and the **Command**.
 - Click ▶ to run it in the integrated terminal.
 - Commands are grouped by category with collapsible sections.
+- Use the **Search Bar** at the top to filter commands.
+- Use the **▲ ▼** buttons to reorder commands and categories.
 
 ### Flows Tab
 - Click **+ Add Flow** to create a workflow sequence.

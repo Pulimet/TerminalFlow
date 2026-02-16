@@ -39,7 +39,28 @@ Follow these steps to validate that the **Terminal Flow** extension is working c
 - [ ] Click **Run (▶️)** on the flow.
 - [ ] **Verify**: The terminal runs the sequence (e.g., `echo "..." && echo "..."`).
 
-## 5. Persistence & Sync
+## 5. Search Validation
+- [ ] Create multiple commands with distinct titles (e.g., "Deploy", "Build", "Test").
+- [ ] Type "Deploy" in the Search bar at the top.
+- [ ] **Verify**: Only the "Deploy" command is visible.
+- [ ] Clear the search bar.
+- [ ] **Verify**: All commands are visible again.
+- [ ] Switch to the **Flows** tab and repeat the test.
+
+## 6. Reordering Validation
+- [ ] **Categories**:
+  - Create two categories: "Alpha" and "Beta".
+  - Use the **▲ / ▼** buttons on the category headers to swap their order.
+  - **Verify**: The order changes immediately.
+  - Reload the extension (or restart VS Code).
+  - **Verify**: The new order persists.
+- **Commands**:
+  - Add two commands to "Alpha": "Command 1" and "Command 2".
+  - Use the **▲ / ▼** buttons on "Command 2" to move it up.
+  - **Verify**: "Command 2" is now above "Command 1".
+  - **Verify**: The order persists after reload.
+
+## 7. Persistence & Sync
 - [ ] Close the Extension Development Host window.
 - [ ] Relaunch formatting `F5`.
 - [ ] **Verify**: Your `Test Echo` and `Test Flow` are still there (Persistence works).
@@ -49,7 +70,7 @@ Follow these steps to validate that the **Terminal Flow** extension is working c
   - Save the file.
 - [ ] **Verify**: The Sidebar UI immediately updates to show "Renamed Echo" (Live Sync works).
 
-## 6. Install Locally as a VSIX Package
+## 8. Install Locally as a VSIX Package
 
 Use this method to install and test the extension in your regular VS Code (not just the Extension Development Host).
 
@@ -73,7 +94,7 @@ Use this method to install and test the extension in your regular VS Code (not j
 ### Uninstall (if needed)
 - [ ] Go to **Extensions** → find "Terminal Flow" → click **Uninstall**.
 
-## 7. Publish to the VS Code Marketplace
+## 9. Publish to the VS Code Marketplace
 
 ### One-Time Setup
 - [ ] Create an **Azure DevOps** account at [dev.azure.com](https://dev.azure.com).
