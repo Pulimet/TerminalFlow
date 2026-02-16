@@ -40,11 +40,13 @@ export class DataManager {
         if (index !== -1) commands[index] = command;
         else commands.push(command);
         await this.commandStore.write(commands);
+        this._onDidChangeData.fire();
     }
 
     public async deleteCommand(id: string) {
         const commands = await this.getCommands();
         await this.commandStore.write(commands.filter(c => c.id !== id));
+        this._onDidChangeData.fire();
     }
 
     public async saveFlow(flow: Flow) {
@@ -53,11 +55,13 @@ export class DataManager {
         if (index !== -1) flows[index] = flow;
         else flows.push(flow);
         await this.flowStore.write(flows);
+        this._onDidChangeData.fire();
     }
 
     public async deleteFlow(id: string) {
         const flows = await this.getFlows();
         await this.flowStore.write(flows.filter(f => f.id !== id));
+        this._onDidChangeData.fire();
     }
 
     public async getCommand(id: string): Promise<Command | undefined> {

@@ -19,9 +19,17 @@ export class TerminalFlowProvider implements vscode.WebviewViewProvider {
                 case 'runCommand': vscode.commands.executeCommand('terminal-flow.runCommand', data.id); break;
                 case 'runFlow': vscode.commands.executeCommand('terminal-flow.runFlow', data.id); break;
                 case 'saveCommand': await this._dataManager.saveCommand(data.data); break;
-                case 'deleteCommand': await this._dataManager.deleteCommand(data.id); break;
+                case 'deleteCommand': {
+                    const answer = await vscode.window.showWarningMessage('Are you sure you want to delete this command?', { modal: true }, 'Delete');
+                    if (answer === 'Delete') await this._dataManager.deleteCommand(data.id);
+                    break;
+                }
                 case 'saveFlow': await this._dataManager.saveFlow(data.data); break;
-                case 'deleteFlow': await this._dataManager.deleteFlow(data.id); break;
+                case 'deleteFlow': {
+                    const answer = await vscode.window.showWarningMessage('Are you sure you want to delete this flow?', { modal: true }, 'Delete');
+                    if (answer === 'Delete') await this._dataManager.deleteFlow(data.id);
+                    break;
+                }
                 case 'refresh': this.refreshData(); break;
             }
         });

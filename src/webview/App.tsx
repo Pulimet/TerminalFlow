@@ -19,9 +19,7 @@ const App = () => {
     };
 
     const handleDelete = (type: 'Command' | 'Flow', id: string) => {
-        if (confirm(`Are you sure you want to delete this ${type.toLowerCase()}?`)) {
-            sendMessage(`delete${type}`, { id });
-        }
+        sendMessage(`delete${type}`, { id });
     };
 
     const renderForm = () => {
