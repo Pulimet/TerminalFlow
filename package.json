@@ -7,7 +7,7 @@
         "url": "https://github.com/Pulimet/TerminalFlow"
     },
     "description": "Manage and execute shell commands and flows from a local .terminal folder",
-    "version": "0.0.7",
+    "version": "0.0.8",
     "icon": "icon.png",
     "license": "MIT",
     "engines": {

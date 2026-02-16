@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.8] - 2026-02-16
+
+### Fixed
+- **UI & Packaging**: Fixed an issue where the webview stylesheet was not loading in the packaged extension because it was referencing an excluded source file. Now correctly points to the bundled CSS.
+
 ## [0.0.7] - 2026-02-16
 
 ### Security
