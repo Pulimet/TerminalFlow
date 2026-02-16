@@ -10,6 +10,8 @@ interface FlowFormProps {
     onCancel: () => void;
 }
 
+import { useCategoryState } from '../../hooks/useCategoryState';
+
 export const FlowForm: React.FC<FlowFormProps> = ({ initialFlow, availableCommands, onSave, onCancel }) => {
     const [title, setTitle] = useState(initialFlow?.title || '');
     const [description, setDescription] = useState(initialFlow?.description || '');
@@ -17,6 +19,20 @@ export const FlowForm: React.FC<FlowFormProps> = ({ initialFlow, availableComman
     const [sequence, setSequence] = useState<string[]>(initialFlow?.sequence || []);
     const [sleepMs, setSleepMs] = useState('1000');
     const [echoText, setEchoText] = useState('');
+
+    // Group commands by category
+    const commandsByCategory = React.useMemo(() => {
+        const grouped: Record<string, Command[]> = {};
+        availableCommands.forEach(cmd => {
+            const cat = cmd.category || 'Uncategorized';
+            if (!grouped[cat]) grouped[cat] = [];
+            grouped[cat].push(cmd);
+        });
+        return grouped;
+    }, [availableCommands]);
+
+    const categories = Object.keys(commandsByCategory).sort();
+    const { expandedCategories, toggleCategory } = useCategoryState(categories, 'flowForm_expandedCategories');
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -47,9 +63,22 @@ export const FlowForm: React.FC<FlowFormProps> = ({ initialFlow, availableComman
                 <div className="available-commands">
                     <h4>Available Commands</h4>
                     <div className="command-picker-list">
-                        {availableCommands.map(cmd => (
-                            <div key={cmd.id} className="picker-item" onClick={() => setSequence([...sequence, cmd.id])}>
-                                <span className="picker-title">{cmd.title}</span><span className="picker-add">+</span>
+                        {categories.map(cat => (
+                            <div key={cat} className="picker-category-group">
+                                <div className="picker-category-header" onClick={() => toggleCategory(cat)}>
+                                    <span className={`chevron ${expandedCategories[cat] ? 'expanded' : ''}`}>▶</span>
+                                    <span>{cat}</span>
+                                    <span className="category-count">{commandsByCategory[cat].length}</span>
+                                </div>
+                                {expandedCategories[cat] && (
+                                    <div className="picker-category-items">
+                                        {commandsByCategory[cat].map(cmd => (
+                                            <div key={cmd.id} className="picker-item" onClick={() => setSequence([...sequence, cmd.id])}>
+                                                <span className="picker-title">{cmd.title}</span><span className="picker-add">+</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         ))}
                     </div>

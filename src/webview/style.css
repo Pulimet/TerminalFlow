@@ -509,14 +509,43 @@ button.primary:hover {
     overflow-y: auto;
 }
 
-.picker-item,
-.sequence-item {
+.picker-category-group {
+    border-bottom: 1px solid var(--vscode-widget-border);
+}
+
+.picker-category-header {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 6px 8px;
+    font-weight: bold;
+    font-size: 11px;
+    background-color: var(--vscode-sideBarSectionHeader-background, rgba(255, 255, 255, 0.05));
+    user-select: none;
+    gap: 4px;
+}
+
+.picker-category-header:hover {
+    background-color: var(--vscode-list-hoverBackground);
+}
+
+.picker-category-items {
+    border-top: 1px solid var(--vscode-widget-border);
+}
+
+.picker-item {
     padding: 4px 8px;
     cursor: pointer;
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid var(--vscode-widget-border);
+    padding-left: 16px;
+    /* Indent items under category */
+}
+
+.picker-item:last-child {
+    border-bottom: none;
 }
 
 .picker-item:hover {
@@ -529,6 +558,11 @@ button.primary:hover {
 }
 
 .sequence-item {
+    padding: 4px 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--vscode-widget-border);
     cursor: default;
 }
 
