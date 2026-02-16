@@ -1,8 +1,7 @@
 # What is Terminal Flow?
 Terminal Flow is a VS Code extension that lets you save, organize, and execute shell commands and multi-step workflows without ever leaving your editor. Commands are stored as simple JSON files inside your project, so you can commit them to Git and share them with your entire team.
 
-[![VS Code Marketplace](https://img.shields.io/visual-studio-marketplace/v/AlexeyKorolev.terminal-flow?label=VS%20Code%20Marketplace&logo=visual-studio-code)](https://marketplace.visualstudio.com/items?itemName=AlexeyKorolev.terminal-flow)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.txt)
+
 
 ---
 
@@ -121,4 +120,4 @@ Press `F5` in VS Code to launch the Extension Development Host.
 
 ## 📄 License
 
-[MIT](LICENSE) © Alexey Korolev
+MIT © Alexey Korolev

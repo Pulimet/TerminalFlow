@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.6] - 2026-02-16
+
+### Fixed
+- **Validation Errors**: Removed badges and relative links from `README.md` to pass marketplace validation.
+
 ## [0.0.5] - 2026-02-16
 
 ### Fixed
