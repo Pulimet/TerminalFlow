@@ -29,8 +29,10 @@ export const CommandCategory: React.FC<CommandCategoryProps> = ({
                 <span className="category-title">{category}</span>
                 <span className="category-count">{commands.length}</span>
                 <div className="category-actions" onClick={(e) => e.stopPropagation()}>
-                    <button disabled={isFirst} onClick={() => onMoveCategoryUp(category)}>▲</button>
-                    <button disabled={isLast} onClick={() => onMoveCategoryDown(category)}>▼</button>
+                    <div className="move-buttons" style={{ flexDirection: 'row', gap: '4px' }}>
+                        <button disabled={isFirst} onClick={() => onMoveCategoryUp(category)} style={{ fontSize: '10px', height: 'auto', padding: '2px 4px' }}>▲</button>
+                        <button disabled={isLast} onClick={() => onMoveCategoryDown(category)} style={{ fontSize: '10px', height: 'auto', padding: '2px 4px' }}>▼</button>
+                    </div>
                 </div>
             </div>
             {isExpanded && (

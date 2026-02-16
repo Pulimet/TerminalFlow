@@ -23,6 +23,12 @@ export const FlowItem: React.FC<FlowItemProps> = ({
     return (
         <div className="flow-item-wrapper">
             <div className="flow-item">
+                <div className="move-left">
+                    <div className="move-buttons">
+                        <button disabled={isFirst} onClick={() => onMoveUp(flow.id)}>▲</button>
+                        <button disabled={isLast} onClick={() => onMoveDown(flow.id)}>▼</button>
+                    </div>
+                </div>
                 <div className="flow-info">
                     <div className="flow-header">
                         <span className="flow-title">{flow.title}</span>
@@ -32,10 +38,6 @@ export const FlowItem: React.FC<FlowItemProps> = ({
                 <div className="flow-right">
                     <div className="flow-actions">
                         <button title="Run" onClick={() => onRun(flow.id)}>▶</button>
-                        <div className="move-buttons">
-                            <button disabled={isFirst} onClick={() => onMoveUp(flow.id)}>▲</button>
-                            <button disabled={isLast} onClick={() => onMoveDown(flow.id)}>▼</button>
-                        </div>
                         <button title="Edit" onClick={() => onEdit(flow)}>✎</button>
                         <button title="Delete" onClick={() => onDelete(flow.id)}>🗑</button>
                     </div>

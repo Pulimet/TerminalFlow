@@ -399,7 +399,8 @@ body {
 }
 
 .command-actions button,
-.flow-actions button {
+.flow-actions button,
+.move-buttons button {
     background: transparent;
     border: none;
     cursor: pointer;
@@ -409,7 +410,41 @@ body {
 }
 
 .command-actions button:hover,
-.flow-actions button:hover {
+.flow-actions button:hover,
+.move-buttons button:hover {
+    opacity: 1;
+    background-color: var(--vscode-toolbar-hoverBackground);
+}
+
+.move-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-right: 8px;
+}
+
+.move-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.move-buttons button {
+    font-size: 8px;
+    padding: 0 4px;
+    /* Reduced padding */
+    line-height: 1;
+    /* Tighter line height */
+    height: 12px;
+    /* Fixed height for consistency */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.5;
+    /* Slightly more transparent */
+}
+
+.move-buttons button:hover {
     opacity: 1;
     background-color: var(--vscode-toolbar-hoverBackground);
 }

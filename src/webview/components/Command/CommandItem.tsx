@@ -17,6 +17,12 @@ export const CommandItem: React.FC<CommandItemProps> = ({
 }) => {
     return (
         <div className="command-item">
+            <div className="move-left">
+                <div className="move-buttons">
+                    <button disabled={isFirst} onClick={() => onMoveUp(command.id)}>▲</button>
+                    <button disabled={isLast} onClick={() => onMoveDown(command.id)}>▼</button>
+                </div>
+            </div>
             <div className="command-info">
                 <div className="command-header">
                     <span className="command-title">{command.title}</span>
@@ -26,10 +32,6 @@ export const CommandItem: React.FC<CommandItemProps> = ({
             </div>
             <div className="command-actions">
                 <button title="Run" onClick={() => onRun(command.id)}>▶</button>
-                <div className="move-buttons">
-                    <button disabled={isFirst} onClick={() => onMoveUp(command.id)}>▲</button>
-                    <button disabled={isLast} onClick={() => onMoveDown(command.id)}>▼</button>
-                </div>
                 <button title="Edit" onClick={() => onEdit(command)}>✎</button>
                 <button title="Delete" onClick={() => onDelete(command.id)}>🗑</button>
             </div>
