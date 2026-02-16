@@ -16,7 +16,43 @@ interface FlowListProps {
 const STORAGE_KEY = 'tf-flow-categories';
 
 export const FlowList: React.FC<FlowListProps> = ({ flows, commands, onRun, onEdit, onDelete, onRunCommand }) => {
-    const groupedFlows = flows.reduce((acc, flow) => {
+    const [searchQuery, setSearchQuery] = React.useState('');
+
+    const filteredFlows = React.useMemo(() => {
+        if (!searchQuery.trim()) return flows;
+
+        const query = searchQuery.toLowerCase();
+
+        // Helper to get command content by ID
+        const getCommandContent = (cmdId: string) => {
+            const cmd = commands.find(c => c.id === cmdId);
+            return cmd ? `${cmd.title} ${cmd.command} ${cmd.description}`.toLowerCase() : '';
+        };
+
+        return flows.filter(flow => {
+            // Check basic flow info
+            if (
+                flow.title.toLowerCase().includes(query) ||
+                flow.description.toLowerCase().includes(query)
+            ) {
+                return true;
+            }
+
+            // Check sequence items
+            return flow.sequence.some(item => {
+                if (item.startsWith('__echo:')) {
+                    return item.substring(7).toLowerCase().includes(query);
+                }
+                if (item.startsWith('__sleep:')) {
+                    return false; // Don't search in sleep duration
+                }
+                // It's a command ID
+                return getCommandContent(item).includes(query);
+            });
+        });
+    }, [flows, commands, searchQuery]);
+
+    const groupedFlows = filteredFlows.reduce((acc, flow) => {
         const category = flow.category || 'Uncategorized';
         if (!acc[category]) acc[category] = [];
         acc[category].push(flow);
@@ -28,7 +64,12 @@ export const FlowList: React.FC<FlowListProps> = ({ flows, commands, onRun, onEd
 
     return (
         <div className="flow-list">
-            <ListActions onExpandAll={expandAll} onCollapseAll={collapseAll} />
+            <ListActions
+                onExpandAll={expandAll}
+                onCollapseAll={collapseAll}
+                searchQuery={searchQuery}
+                onSearch={setSearchQuery}
+            />
             {Object.entries(groupedFlows).map(([category, items]) => (
                 <FlowCategory
                     key={category}
@@ -43,7 +84,11 @@ export const FlowList: React.FC<FlowListProps> = ({ flows, commands, onRun, onEd
                     onRunCommand={onRunCommand}
                 />
             ))}
-            {flows.length === 0 && <div className="empty-state">No flows found. Create one to get started.</div>}
+            {filteredFlows.length === 0 && (
+                <div className="empty-state">
+                    {searchQuery ? 'No flows match your search.' : 'No flows found. Create one to get started.'}
+                </div>
+            )}
         </div>
     );
 };

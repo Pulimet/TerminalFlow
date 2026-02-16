@@ -592,8 +592,70 @@ button.primary:hover {
 /* List Actions */
 .list-actions {
     display: flex;
-    justify-content: flex-end;
-    padding: 0 8px 4px 8px;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 8px 6px 8px;
+    gap: 8px;
+}
+
+.search-container {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-input {
+    width: 100%;
+    padding: 4px 24px 4px 8px;
+    /* Extra right padding for clear button */
+    font-size: 11px;
+    border-radius: 12px;
+    background-color: var(--vscode-input-background);
+    color: var(--vscode-input-foreground);
+    border: 1px solid var(--vscode-widget-border);
+    transition: border-color 0.2s;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--vscode-focusBorder);
+}
+
+.search-clear-btn {
+    position: absolute;
+    right: 6px;
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--vscode-foreground);
+    opacity: 0.6;
+    width: 14px;
+    height: 14px;
+}
+
+.search-clear-btn:hover {
+    opacity: 1;
+    background-color: var(--vscode-toolbar-hoverBackground);
+    border-radius: 50%;
+}
+
+.search-clear-btn svg {
+    width: 10px;
+    height: 10px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.action-buttons {
+    display: flex;
     gap: 4px;
 }
 
