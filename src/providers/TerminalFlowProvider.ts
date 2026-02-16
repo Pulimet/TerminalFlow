@@ -30,6 +30,10 @@ export class TerminalFlowProvider implements vscode.WebviewViewProvider {
                     if (answer === 'Delete') await this._dataManager.deleteFlow(data.id);
                     break;
                 }
+                case 'reorderCommands': await this._dataManager.setCommands(data.data); break;
+                case 'reorderFlows': await this._dataManager.setFlows(data.data); break;
+                case 'saveCommandCategoryOrder': await this._dataManager.saveCommandCategoryOrder(data.data); break;
+                case 'saveFlowCategoryOrder': await this._dataManager.saveFlowCategoryOrder(data.data); break;
                 case 'refresh': this.refreshData(); break;
             }
         });
@@ -41,7 +45,9 @@ export class TerminalFlowProvider implements vscode.WebviewViewProvider {
             this._view.webview.postMessage({
                 type: 'updateData',
                 commands: await this._dataManager.getCommands(),
-                flows: await this._dataManager.getFlows()
+                flows: await this._dataManager.getFlows(),
+                commandCategoryOrder: await this._dataManager.getCommandCategoryOrder(),
+                flowCategoryOrder: await this._dataManager.getFlowCategoryOrder()
             });
         }
     }

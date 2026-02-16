@@ -7,29 +7,47 @@ import { ListActions } from '../ListActions';
 interface FlowListProps {
     flows: Flow[];
     commands: Command[];
+    categoryOrder?: string[];
     onRun: (id: string) => void;
     onEdit: (flow: Flow) => void;
     onDelete: (id: string) => void;
     onRunCommand: (id: string) => void;
+    onReorderFlows: (flows: Flow[]) => void;
+    onReorderCategories: (order: string[]) => void;
 }
+
+import { useListLogic } from '../../hooks/useListLogic';
 
 const STORAGE_KEY = 'tf-flow-categories';
 
-export const FlowList: React.FC<FlowListProps> = ({ flows, commands, onRun, onEdit, onDelete, onRunCommand }) => {
-    const [searchQuery, setSearchQuery] = React.useState('');
+export const FlowList: React.FC<FlowListProps> = ({
+    flows, commands, categoryOrder = [], onRun, onEdit, onDelete, onRunCommand, onReorderFlows, onReorderCategories
+}) => {
+    const {
+        searchQuery,
+        setSearchQuery,
+        groupedItems: groupedFlows,
+        sortedCategories: categories,
+        expandedCategories,
+        toggleCategory,
+        expandAll,
+        collapseAll,
+        moveCategoryUp,
+        moveCategoryDown,
+        moveItemUp,
+        moveItemDown,
+        filteredItems: filteredFlows
+    } = useListLogic({
+        items: flows,
+        categoryOrder,
+        storageKey: STORAGE_KEY,
+        filterCallback: (flow, query) => {
+            // Helper to get command content by ID
+            const getCommandContent = (cmdId: string) => {
+                const cmd = commands.find(c => c.id === cmdId);
+                return cmd ? `${cmd.title} ${cmd.command} ${cmd.description}`.toLowerCase() : '';
+            };
 
-    const filteredFlows = React.useMemo(() => {
-        if (!searchQuery.trim()) return flows;
-
-        const query = searchQuery.toLowerCase();
-
-        // Helper to get command content by ID
-        const getCommandContent = (cmdId: string) => {
-            const cmd = commands.find(c => c.id === cmdId);
-            return cmd ? `${cmd.title} ${cmd.command} ${cmd.description}`.toLowerCase() : '';
-        };
-
-        return flows.filter(flow => {
             // Check basic flow info
             if (
                 flow.title.toLowerCase().includes(query) ||
@@ -49,18 +67,10 @@ export const FlowList: React.FC<FlowListProps> = ({ flows, commands, onRun, onEd
                 // It's a command ID
                 return getCommandContent(item).includes(query);
             });
-        });
-    }, [flows, commands, searchQuery]);
-
-    const groupedFlows = filteredFlows.reduce((acc, flow) => {
-        const category = flow.category || 'Uncategorized';
-        if (!acc[category]) acc[category] = [];
-        acc[category].push(flow);
-        return acc;
-    }, {} as Record<string, Flow[]>);
-
-    const categories = Object.keys(groupedFlows);
-    const { expandedCategories, toggleCategory, expandAll, collapseAll } = useCategoryState(categories, STORAGE_KEY);
+        },
+        onReorderItems: onReorderFlows,
+        onReorderCategories: onReorderCategories
+    });
 
     return (
         <div className="flow-list">
@@ -70,18 +80,24 @@ export const FlowList: React.FC<FlowListProps> = ({ flows, commands, onRun, onEd
                 searchQuery={searchQuery}
                 onSearch={setSearchQuery}
             />
-            {Object.entries(groupedFlows).map(([category, items]) => (
+            {categories.map((category, index) => (
                 <FlowCategory
                     key={category}
                     category={category}
-                    flows={items}
+                    flows={groupedFlows[category]}
                     commands={commands}
                     isExpanded={expandedCategories[category] !== false}
+                    isFirst={index === 0}
+                    isLast={index === categories.length - 1}
                     onToggle={toggleCategory}
                     onRun={onRun}
                     onEdit={onEdit}
                     onDelete={onDelete}
                     onRunCommand={onRunCommand}
+                    onMoveCategoryUp={moveCategoryUp}
+                    onMoveCategoryDown={moveCategoryDown}
+                    onMoveFlowUp={moveItemUp}
+                    onMoveFlowDown={moveItemDown}
                 />
             ))}
             {filteredFlows.length === 0 && (

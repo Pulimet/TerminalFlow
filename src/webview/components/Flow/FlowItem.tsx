@@ -5,13 +5,19 @@ import { FlowStep } from './FlowStep';
 interface FlowItemProps {
     flow: Flow;
     commands: Command[];
+    isFirst: boolean;
+    isLast: boolean;
     onRun: (id: string) => void;
     onEdit: (flow: Flow) => void;
     onDelete: (id: string) => void;
     onRunCommand: (id: string) => void;
+    onMoveUp: (id: string) => void;
+    onMoveDown: (id: string) => void;
 }
 
-export const FlowItem: React.FC<FlowItemProps> = ({ flow, commands, onRun, onEdit, onDelete, onRunCommand }) => {
+export const FlowItem: React.FC<FlowItemProps> = ({
+    flow, commands, isFirst, isLast, onRun, onEdit, onDelete, onRunCommand, onMoveUp, onMoveDown
+}) => {
     const [isExpanded, setIsExpanded] = useState(false);
 
     return (
@@ -26,6 +32,10 @@ export const FlowItem: React.FC<FlowItemProps> = ({ flow, commands, onRun, onEdi
                 <div className="flow-right">
                     <div className="flow-actions">
                         <button title="Run" onClick={() => onRun(flow.id)}>▶</button>
+                        <div className="move-buttons">
+                            <button disabled={isFirst} onClick={() => onMoveUp(flow.id)}>▲</button>
+                            <button disabled={isLast} onClick={() => onMoveDown(flow.id)}>▼</button>
+                        </div>
                         <button title="Edit" onClick={() => onEdit(flow)}>✎</button>
                         <button title="Delete" onClick={() => onDelete(flow.id)}>🗑</button>
                     </div>

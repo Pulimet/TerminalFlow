@@ -13,6 +13,8 @@ export interface Flow {
 export class DataManager {
     private commandStore: Store<Command[]>;
     private flowStore: Store<Flow[]>;
+    private commandCategoryStore: Store<string[]>;
+    private flowCategoryStore: Store<string[]>;
     private _onDidChangeData = new vscode.EventEmitter<void>();
     public readonly onDidChangeData = this._onDidChangeData.event;
     private watcher: vscode.FileSystemWatcher | undefined;
@@ -21,6 +23,8 @@ export class DataManager {
         const terminalDir = path.join(rootPath, '.terminal');
         this.commandStore = new Store<Command[]>(terminalDir, 'commands.json', []);
         this.flowStore = new Store<Flow[]>(terminalDir, 'flows.json', []);
+        this.commandCategoryStore = new Store<string[]>(terminalDir, 'commandCategories.json', []);
+        this.flowCategoryStore = new Store<string[]>(terminalDir, 'flowCategories.json', []);
         this.setupWatcher(terminalDir);
     }
 
@@ -61,6 +65,34 @@ export class DataManager {
     public async deleteFlow(id: string) {
         const flows = await this.getFlows();
         await this.flowStore.write(flows.filter(f => f.id !== id));
+        this._onDidChangeData.fire();
+    }
+
+    public async setCommands(commands: Command[]) {
+        await this.commandStore.write(commands);
+        this._onDidChangeData.fire();
+    }
+
+    public async setFlows(flows: Flow[]) {
+        await this.flowStore.write(flows);
+        this._onDidChangeData.fire();
+    }
+
+    public async getCommandCategoryOrder(): Promise<string[]> {
+        return await this.commandCategoryStore.read();
+    }
+
+    public async saveCommandCategoryOrder(order: string[]) {
+        await this.commandCategoryStore.write(order);
+        this._onDidChangeData.fire();
+    }
+
+    public async getFlowCategoryOrder(): Promise<string[]> {
+        return await this.flowCategoryStore.read();
+    }
+
+    public async saveFlowCategoryOrder(order: string[]) {
+        await this.flowCategoryStore.write(order);
         this._onDidChangeData.fire();
     }
 

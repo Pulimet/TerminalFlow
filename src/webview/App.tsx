@@ -7,7 +7,7 @@ import { FlowForm } from './components/Flow/FlowForm';
 import { Command, Flow } from './types';
 
 const App = () => {
-    const { commands, flows, sendMessage } = useExtensionData();
+    const { commands, flows, commandCategoryOrder, flowCategoryOrder, sendMessage } = useExtensionData();
     const [activeTab, setActiveTab] = useState<'commands' | 'flows'>('commands');
     const [view, setView] = useState<'list' | 'form'>('list');
     const [editingItem, setEditingItem] = useState<Command | Flow | undefined>(undefined);
@@ -31,9 +31,31 @@ const App = () => {
 
     const renderList = () => {
         if (activeTab === 'commands') {
-            return <CommandList commands={commands} onRun={(id) => sendMessage('runCommand', { id })} onEdit={(c) => { setEditingItem(c); setView('form'); }} onDelete={(id) => handleDelete('Command', id)} />;
+            return (
+                <CommandList
+                    commands={commands}
+                    categoryOrder={commandCategoryOrder}
+                    onRun={(id) => sendMessage('runCommand', { id })}
+                    onEdit={(c) => { setEditingItem(c); setView('form'); }}
+                    onDelete={(id) => handleDelete('Command', id)}
+                    onReorderCommands={(cmds) => sendMessage('reorderCommands', { data: cmds })}
+                    onReorderCategories={(order) => sendMessage('saveCommandCategoryOrder', { data: order })}
+                />
+            );
         }
-        return <FlowList flows={flows} commands={commands} onRun={(id) => sendMessage('runFlow', { id })} onRunCommand={(id) => sendMessage('runCommand', { id })} onEdit={(f) => { setEditingItem(f); setView('form'); }} onDelete={(id) => handleDelete('Flow', id)} />;
+        return (
+            <FlowList
+                flows={flows}
+                commands={commands}
+                categoryOrder={flowCategoryOrder}
+                onRun={(id) => sendMessage('runFlow', { id })}
+                onRunCommand={(id) => sendMessage('runCommand', { id })}
+                onEdit={(f) => { setEditingItem(f); setView('form'); }}
+                onDelete={(id) => handleDelete('Flow', id)}
+                onReorderFlows={(fls) => sendMessage('reorderFlows', { data: fls })}
+                onReorderCategories={(order) => sendMessage('saveFlowCategoryOrder', { data: order })}
+            />
+        );
     };
 
     return (

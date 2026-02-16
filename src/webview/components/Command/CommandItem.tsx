@@ -3,12 +3,18 @@ import { Command } from '../../types';
 
 interface CommandItemProps {
     command: Command;
+    isFirst: boolean;
+    isLast: boolean;
     onRun: (id: string) => void;
     onEdit: (command: Command) => void;
     onDelete: (id: string) => void;
+    onMoveUp: (id: string) => void;
+    onMoveDown: (id: string) => void;
 }
 
-export const CommandItem: React.FC<CommandItemProps> = ({ command, onRun, onEdit, onDelete }) => {
+export const CommandItem: React.FC<CommandItemProps> = ({
+    command, isFirst, isLast, onRun, onEdit, onDelete, onMoveUp, onMoveDown
+}) => {
     return (
         <div className="command-item">
             <div className="command-info">
@@ -20,6 +26,10 @@ export const CommandItem: React.FC<CommandItemProps> = ({ command, onRun, onEdit
             </div>
             <div className="command-actions">
                 <button title="Run" onClick={() => onRun(command.id)}>▶</button>
+                <div className="move-buttons">
+                    <button disabled={isFirst} onClick={() => onMoveUp(command.id)}>▲</button>
+                    <button disabled={isLast} onClick={() => onMoveDown(command.id)}>▼</button>
+                </div>
                 <button title="Edit" onClick={() => onEdit(command)}>✎</button>
                 <button title="Delete" onClick={() => onDelete(command.id)}>🗑</button>
             </div>

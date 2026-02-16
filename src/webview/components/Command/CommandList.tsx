@@ -1,33 +1,49 @@
 import React from 'react';
-import { Command, Props } from '../../types';
+import { Command } from '../../types';
 import { CommandCategory } from './CommandCategory';
-import { useCategoryState } from '../../hooks/useCategoryState';
+import { useListLogic } from '../../hooks/useListLogic';
 import { ListActions } from '../ListActions';
+
+interface Props {
+    commands: Command[];
+    categoryOrder?: string[];
+    onRun: (id: string) => void;
+    onEdit: (command: Command) => void;
+    onDelete: (id: string) => void;
+    onReorderCommands: (commands: Command[]) => void;
+    onReorderCategories: (order: string[]) => void;
+}
 
 const STORAGE_KEY = 'tf-cmd-categories';
 
-export const CommandList: React.FC<Props> = ({ commands, onRun, onEdit, onDelete }) => {
-    const [searchQuery, setSearchQuery] = React.useState('');
-
-    const filteredCommands = React.useMemo(() => {
-        if (!searchQuery.trim()) return commands;
-        const query = searchQuery.toLowerCase();
-        return commands.filter(cmd =>
+export const CommandList: React.FC<Props> = ({
+    commands, categoryOrder = [], onRun, onEdit, onDelete, onReorderCommands, onReorderCategories
+}) => {
+    const {
+        searchQuery,
+        setSearchQuery,
+        groupedItems: groupedCommands,
+        sortedCategories: categories,
+        expandedCategories,
+        toggleCategory,
+        expandAll,
+        collapseAll,
+        moveCategoryUp,
+        moveCategoryDown,
+        moveItemUp,
+        moveItemDown,
+        filteredItems: filteredCommands
+    } = useListLogic({
+        items: commands,
+        categoryOrder,
+        storageKey: STORAGE_KEY,
+        filterCallback: (cmd, query) =>
             cmd.title.toLowerCase().includes(query) ||
             cmd.description.toLowerCase().includes(query) ||
-            cmd.command.toLowerCase().includes(query)
-        );
-    }, [commands, searchQuery]);
-
-    const groupedCommands = filteredCommands.reduce((acc, command) => {
-        const category = command.category || 'Uncategorized';
-        if (!acc[category]) acc[category] = [];
-        acc[category].push(command);
-        return acc;
-    }, {} as Record<string, Command[]>);
-
-    const categories = Object.keys(groupedCommands);
-    const { expandedCategories, toggleCategory, expandAll, collapseAll } = useCategoryState(categories, STORAGE_KEY);
+            cmd.command.toLowerCase().includes(query),
+        onReorderItems: onReorderCommands,
+        onReorderCategories: onReorderCategories
+    });
 
     return (
         <div className="command-list">
@@ -37,16 +53,22 @@ export const CommandList: React.FC<Props> = ({ commands, onRun, onEdit, onDelete
                 searchQuery={searchQuery}
                 onSearch={setSearchQuery}
             />
-            {Object.entries(groupedCommands).map(([category, cmds]) => (
+            {categories.map((category, index) => (
                 <CommandCategory
                     key={category}
                     category={category}
-                    commands={cmds}
+                    commands={groupedCommands[category]}
                     isExpanded={expandedCategories[category] !== false}
+                    isFirst={index === 0}
+                    isLast={index === categories.length - 1}
                     onToggle={toggleCategory}
                     onRun={onRun}
                     onEdit={onEdit}
                     onDelete={onDelete}
+                    onMoveCategoryUp={moveCategoryUp}
+                    onMoveCategoryDown={moveCategoryDown}
+                    onMoveCommandUp={moveItemUp}
+                    onMoveCommandDown={moveItemDown}
                 />
             ))}
             {filteredCommands.length === 0 && (
