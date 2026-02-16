@@ -553,3 +553,43 @@ button.primary:hover {
 .sequence-actions button:hover {
     background-color: var(--vscode-toolbar-hoverBackground);
 }
+
+
+/* List Actions */
+.list-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 8px 4px 8px;
+    gap: 4px;
+}
+
+.icon-button {
+    background: transparent;
+    color: var(--vscode-foreground);
+    border: none;
+    padding: 2px;
+    cursor: pointer;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    opacity: 0.7;
+}
+
+.icon-button:hover {
+    background-color: var(--vscode-toolbar-hoverBackground);
+    opacity: 1;
+}
+
+.icon-button svg {
+    width: 14px;
+    height: 14px;
+    display: block;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}

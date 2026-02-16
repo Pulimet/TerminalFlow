@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Flow, Command } from '../../types';
 import { FlowCategory } from './FlowCategory';
+import { useCategoryState } from '../../hooks/useCategoryState';
+import { ListActions } from '../ListActions';
 
 interface FlowListProps {
     flows: Flow[];
@@ -14,29 +16,6 @@ interface FlowListProps {
 const STORAGE_KEY = 'tf-flow-categories';
 
 export const FlowList: React.FC<FlowListProps> = ({ flows, commands, onRun, onEdit, onDelete, onRunCommand }) => {
-    const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>(() => {
-        try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch { return {}; }
-    });
-
-    useEffect(() => {
-        setExpandedCategories(prev => {
-            const updated = { ...prev };
-            flows.forEach(flow => {
-                const cat = flow.category || 'Uncategorized';
-                if (updated[cat] === undefined) updated[cat] = true;
-            });
-            return updated;
-        });
-    }, [flows]);
-
-    const toggleCategory = (category: string) => {
-        setExpandedCategories(prev => {
-            const next = { ...prev, [category]: !prev[category] };
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-            return next;
-        });
-    };
-
     const groupedFlows = flows.reduce((acc, flow) => {
         const category = flow.category || 'Uncategorized';
         if (!acc[category]) acc[category] = [];
@@ -44,8 +23,12 @@ export const FlowList: React.FC<FlowListProps> = ({ flows, commands, onRun, onEd
         return acc;
     }, {} as Record<string, Flow[]>);
 
+    const categories = Object.keys(groupedFlows);
+    const { expandedCategories, toggleCategory, expandAll, collapseAll } = useCategoryState(categories, STORAGE_KEY);
+
     return (
         <div className="flow-list">
+            <ListActions onExpandAll={expandAll} onCollapseAll={collapseAll} />
             {Object.entries(groupedFlows).map(([category, items]) => (
                 <FlowCategory
                     key={category}
