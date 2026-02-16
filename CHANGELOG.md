@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.4] - 2026-02-16
+
+### Fixed
+- **Publishing**: Fix "extension violation" errors by implementing proper `.vscodeignore` to exclude `node_modules` and other build artifacts.
+
+## [0.0.3] - 2026-02-16
+
+### Fixed
+- **Extension Activation**: Resolved issues preventing the extension from activating correctly in some scenarios.
+- **Chart Sync Loop**: Fixed "Maximum update depth exceeded" error in chart synchronization.
+
 ## [0.0.2] - 2026-02-16
 
 ### Added
