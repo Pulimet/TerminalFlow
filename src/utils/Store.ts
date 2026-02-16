@@ -5,9 +5,11 @@ import * as path from 'path';
 
 export class Store<T> {
     private filePath: string;
+    private defaultValue: T;
 
     constructor(private dirPath: string, private fileName: string, initialData: T) {
         this.filePath = path.join(dirPath, fileName);
+        this.defaultValue = initialData;
         this.ensureFile(initialData);
     }
 
@@ -24,14 +26,14 @@ export class Store<T> {
         try {
             if (existsSync(this.filePath)) {
                 const content = await fs.readFile(this.filePath, 'utf8');
-                if (!content.trim()) return [] as any;
-                return JSON.parse(content);
+                if (!content.trim()) return this.defaultValue;
+                return JSON.parse(content) as T;
             }
         } catch (error) {
             console.error(`Error reading ${this.fileName}:`, error);
             vscode.window.showErrorMessage(`Failed to read ${this.fileName} configuration.`);
         }
-        return [] as any;
+        return this.defaultValue;
     }
 
     public async write(data: T): Promise<void> {

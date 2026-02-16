@@ -29,7 +29,7 @@ export const useExtensionData = () => {
         return () => window.removeEventListener('message', handleMessage);
     }, []);
 
-    const sendMessage = (type: string, payload?: any) => {
+    const sendMessage = (type: string, payload?: Record<string, unknown>) => {
         // @ts-ignore
         vscode.postMessage({ type, ...(payload || {}) });
     };

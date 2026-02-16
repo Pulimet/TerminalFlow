@@ -18,22 +18,22 @@ export class TerminalFlowProvider implements vscode.WebviewViewProvider {
             switch (data.type) {
                 case 'runCommand': vscode.commands.executeCommand('terminal-flow.runCommand', data.id); break;
                 case 'runFlow': vscode.commands.executeCommand('terminal-flow.runFlow', data.id); break;
-                case 'saveCommand': await this._dataManager.saveCommand(data.data); break;
+                case 'saveCommand': await this._dataManager.commandService.saveCommand(data.data); break;
                 case 'deleteCommand': {
                     const answer = await vscode.window.showWarningMessage('Are you sure you want to delete this command?', { modal: true }, 'Delete');
-                    if (answer === 'Delete') await this._dataManager.deleteCommand(data.id);
+                    if (answer === 'Delete') await this._dataManager.commandService.deleteCommand(data.id);
                     break;
                 }
-                case 'saveFlow': await this._dataManager.saveFlow(data.data); break;
+                case 'saveFlow': await this._dataManager.flowService.saveFlow(data.data); break;
                 case 'deleteFlow': {
                     const answer = await vscode.window.showWarningMessage('Are you sure you want to delete this flow?', { modal: true }, 'Delete');
-                    if (answer === 'Delete') await this._dataManager.deleteFlow(data.id);
+                    if (answer === 'Delete') await this._dataManager.flowService.deleteFlow(data.id);
                     break;
                 }
-                case 'reorderCommands': await this._dataManager.setCommands(data.data); break;
-                case 'reorderFlows': await this._dataManager.setFlows(data.data); break;
-                case 'saveCommandCategoryOrder': await this._dataManager.saveCommandCategoryOrder(data.data); break;
-                case 'saveFlowCategoryOrder': await this._dataManager.saveFlowCategoryOrder(data.data); break;
+                case 'reorderCommands': await this._dataManager.commandService.setCommands(data.data); break;
+                case 'reorderFlows': await this._dataManager.flowService.setFlows(data.data); break;
+                case 'saveCommandCategoryOrder': await this._dataManager.commandService.saveCategoryOrder(data.data); break;
+                case 'saveFlowCategoryOrder': await this._dataManager.flowService.saveCategoryOrder(data.data); break;
                 case 'refresh': this.refreshData(); break;
             }
         });
@@ -44,10 +44,10 @@ export class TerminalFlowProvider implements vscode.WebviewViewProvider {
         if (this._view) {
             this._view.webview.postMessage({
                 type: 'updateData',
-                commands: await this._dataManager.getCommands(),
-                flows: await this._dataManager.getFlows(),
-                commandCategoryOrder: await this._dataManager.getCommandCategoryOrder(),
-                flowCategoryOrder: await this._dataManager.getFlowCategoryOrder()
+                commands: await this._dataManager.commandService.getCommands(),
+                flows: await this._dataManager.flowService.getFlows(),
+                commandCategoryOrder: await this._dataManager.commandService.getCategoryOrder(),
+                flowCategoryOrder: await this._dataManager.flowService.getCategoryOrder()
             });
         }
     }
