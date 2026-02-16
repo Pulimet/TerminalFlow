@@ -79,8 +79,10 @@ Terminal Flow stores everything in a `.terminal` folder at your workspace root:
 
 ```
 .terminal/
-├── commands.json   # Your saved commands
-└── flows.json      # Your saved workflows
+├── commands.json          # Your saved commands
+├── flows.json             # Your saved workflows
+├── commandCategories.json # Order of command categories
+└── flowCategories.json    # Order of flow categories
 ```
 
 > **Tip**: Commit this folder to Git so your team shares the same commands and workflows.
@@ -112,15 +114,6 @@ npm run watch
 
 ### Debug
 Press `F5` in VS Code to launch the Extension Development Host.
-
-### Project Structure
-| Path | Description |
-|------|-------------|
-| `src/extension.ts` | Extension entry point & activation |
-| `src/providers/TerminalFlowProvider.ts` | Webview provider for the sidebar |
-| `src/services/DataManager.ts` | Central data management & file watchers |
-| `src/services/CommandRunner.ts` | Terminal creation & command execution |
-| `src/webview/` | React app (UI components, styles) |
 
 ---
 
