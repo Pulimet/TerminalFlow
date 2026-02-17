@@ -35,6 +35,9 @@ export class TerminalFlowProvider implements vscode.WebviewViewProvider {
                 case 'saveCommandCategoryOrder': await this._dataManager.commandService.saveCategoryOrder(data.data); break;
                 case 'saveFlowCategoryOrder': await this._dataManager.flowService.saveCategoryOrder(data.data); break;
 
+                case 'moveCommand': await this._dataManager.commandService.moveCommand(data.id, data.targetSource); break;
+                case 'moveFlow': await this._dataManager.flowService.moveFlow(data.id, data.targetSource); break;
+
                 case 'refresh': this.refreshData(); break;
             }
         });

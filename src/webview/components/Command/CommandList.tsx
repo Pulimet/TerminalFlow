@@ -10,6 +10,7 @@ interface Props {
     onRun: (id: string) => void;
     onEdit: (command: Command) => void;
     onDelete: (id: string) => void;
+    onMove: (id: string) => void;
     onReorderCommands: (commands: Command[]) => void;
     onReorderCategories: (order: string[]) => void;
 }
@@ -17,7 +18,7 @@ interface Props {
 const STORAGE_KEY = 'tf-cmd-categories';
 
 export const CommandList: React.FC<Props> = ({
-    commands, categoryOrder = [], onRun, onEdit, onDelete, onReorderCommands, onReorderCategories
+    commands, categoryOrder = [], onRun, onEdit, onDelete, onMove, onReorderCommands, onReorderCategories
 }) => {
     const {
         searchQuery,
@@ -65,6 +66,7 @@ export const CommandList: React.FC<Props> = ({
                     onRun={onRun}
                     onEdit={onEdit}
                     onDelete={onDelete}
+                    onMove={onMove}
                     onMoveCategoryUp={moveCategoryUp}
                     onMoveCategoryDown={moveCategoryDown}
                     onMoveCommandUp={moveItemUp}

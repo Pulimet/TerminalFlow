@@ -43,7 +43,8 @@ export const FlowForm: React.FC<FlowFormProps> = ({ initialFlow, availableComman
             description: description.trim(),
             category: category.trim() || 'General',
             sequence,
-            runInNewTerminal
+            runInNewTerminal,
+            source: initialFlow?.source
         });
     };
 

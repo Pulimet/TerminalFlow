@@ -13,6 +13,7 @@ interface FlowCategoryProps {
     onRun: (id: string, fromIndex?: number) => void;
     onEdit: (flow: Flow) => void;
     onDelete: (id: string) => void;
+    onMove: (id: string) => void;
     onRunCommand: (id: string) => void;
     onMoveCategoryUp: (category: string) => void;
     onMoveCategoryDown: (category: string) => void;
@@ -21,7 +22,7 @@ interface FlowCategoryProps {
 }
 
 export const FlowCategory: React.FC<FlowCategoryProps> = ({
-    category, flows, commands, isExpanded, isFirst, isLast, onToggle, onRun, onEdit, onDelete, onRunCommand,
+    category, flows, commands, isExpanded, isFirst, isLast, onToggle, onRun, onEdit, onDelete, onMove, onRunCommand,
     onMoveCategoryUp, onMoveCategoryDown, onMoveFlowUp, onMoveFlowDown
 }) => {
     return (
@@ -49,6 +50,7 @@ export const FlowCategory: React.FC<FlowCategoryProps> = ({
                             onRun={onRun}
                             onEdit={onEdit}
                             onDelete={onDelete}
+                            onMove={onMove}
                             onRunCommand={onRunCommand}
                             onMoveUp={onMoveFlowUp}
                             onMoveDown={onMoveFlowDown}

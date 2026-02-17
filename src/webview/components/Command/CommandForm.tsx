@@ -22,7 +22,8 @@ export const CommandForm: React.FC<CommandFormProps> = ({ initialCommand, onSave
             description: description.trim(),
             category: category.trim() || 'General',
             command: commandString,
-            runInNewTerminal
+            runInNewTerminal,
+            source: initialCommand?.source
         });
     };
 

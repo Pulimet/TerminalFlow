@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
+import * as os from 'os';
 import { CommandService, Command } from './CommandService';
 import { FlowService, Flow } from './FlowService';
 
@@ -10,23 +11,28 @@ export class DataManager {
     public readonly flowService: FlowService;
     private _onDidChangeData = new vscode.EventEmitter<void>();
     public readonly onDidChangeData = this._onDidChangeData.event;
-    private watcher: vscode.FileSystemWatcher | undefined;
+    private watchers: vscode.FileSystemWatcher[] = [];
 
     constructor(rootPath: string) {
         const terminalDir = path.join(rootPath, '.terminal');
-        this.commandService = new CommandService(terminalDir);
-        this.flowService = new FlowService(terminalDir);
+        const userTerminalDir = path.join(os.homedir(), '.terminal');
+
+        this.commandService = new CommandService(terminalDir, userTerminalDir);
+        this.flowService = new FlowService(terminalDir, userTerminalDir);
 
         this.commandService.onDidChange(() => this._onDidChangeData.fire());
         this.flowService.onDidChange(() => this._onDidChangeData.fire());
+
         this.setupWatcher(terminalDir);
+        this.setupWatcher(userTerminalDir);
     }
 
     private setupWatcher(dir: string) {
-        this.watcher = vscode.workspace.createFileSystemWatcher(new vscode.RelativePattern(dir, '*.json'));
-        this.watcher.onDidChange(() => this.fireAll());
-        this.watcher.onDidCreate(() => this.fireAll());
-        this.watcher.onDidDelete(() => this.fireAll());
+        const watcher = vscode.workspace.createFileSystemWatcher(new vscode.RelativePattern(dir, '*.json'));
+        watcher.onDidChange(() => this.fireAll());
+        watcher.onDidCreate(() => this.fireAll());
+        watcher.onDidDelete(() => this.fireAll());
+        this.watchers.push(watcher);
     }
 
     private fireAll() {
@@ -43,5 +49,7 @@ export class DataManager {
         return (await this.flowService.getFlows()).find(f => f.id === id);
     }
 
-    public dispose() { this.watcher?.dispose(); }
+    public dispose() {
+        this.watchers.forEach(w => w.dispose());
+    }
 }

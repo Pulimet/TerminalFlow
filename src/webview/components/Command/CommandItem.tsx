@@ -8,12 +8,13 @@ interface CommandItemProps {
     onRun: (id: string) => void;
     onEdit: (command: Command) => void;
     onDelete: (id: string) => void;
+    onMove: (id: string) => void;
     onMoveUp: (id: string) => void;
     onMoveDown: (id: string) => void;
 }
 
 export const CommandItem: React.FC<CommandItemProps> = ({
-    command, isFirst, isLast, onRun, onEdit, onDelete, onMoveUp, onMoveDown
+    command, isFirst, isLast, onRun, onEdit, onDelete, onMove, onMoveUp, onMoveDown
 }) => {
     return (
         <div className="command-item">
@@ -33,6 +34,7 @@ export const CommandItem: React.FC<CommandItemProps> = ({
             <div className="command-actions">
                 <button title="Run" onClick={() => onRun(command.id)}>▶</button>
                 <button title="Edit" onClick={() => onEdit(command)}>✎</button>
+                <button title="Transfer" onClick={() => onMove(command.id)}>⇄</button>
                 <button title="Delete" onClick={() => onDelete(command.id)}>🗑</button>
             </div>
         </div>

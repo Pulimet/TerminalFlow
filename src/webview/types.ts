@@ -5,6 +5,7 @@ export interface Command {
     category: string;
     command: string;
     runInNewTerminal?: boolean;
+    source?: 'workspace' | 'user';
 }
 
 export interface Flow {
@@ -14,6 +15,7 @@ export interface Flow {
     category: string;
     sequence: string[];
     runInNewTerminal?: boolean;
+    source?: 'workspace' | 'user';
 }
 
 export interface Props {

@@ -12,6 +12,7 @@ interface CommandCategoryProps {
     onRun: (id: string) => void;
     onEdit: (command: Command) => void;
     onDelete: (id: string) => void;
+    onMove: (id: string) => void;
     onMoveCategoryUp: (category: string) => void;
     onMoveCategoryDown: (category: string) => void;
     onMoveCommandUp: (id: string) => void;
@@ -19,7 +20,7 @@ interface CommandCategoryProps {
 }
 
 export const CommandCategory: React.FC<CommandCategoryProps> = ({
-    category, commands, isExpanded, isFirst, isLast, onToggle, onRun, onEdit, onDelete,
+    category, commands, isExpanded, isFirst, isLast, onToggle, onRun, onEdit, onDelete, onMove,
     onMoveCategoryUp, onMoveCategoryDown, onMoveCommandUp, onMoveCommandDown
 }) => {
     return (
@@ -46,6 +47,7 @@ export const CommandCategory: React.FC<CommandCategoryProps> = ({
                             onRun={onRun}
                             onEdit={onEdit}
                             onDelete={onDelete}
+                            onMove={onMove}
                             onMoveUp={onMoveCommandUp}
                             onMoveDown={onMoveCommandDown}
                         />

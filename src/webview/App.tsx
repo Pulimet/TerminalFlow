@@ -11,8 +11,14 @@ const App = () => {
     const [activeTab, setActiveTab] = useState<'commands' | 'flows'>('commands');
     const [view, setView] = useState<'list' | 'form'>('list');
     const [editingItem, setEditingItem] = useState<Command | Flow | undefined>(undefined);
+    const [storageScope, setStorageScope] = useState<'workspace' | 'user'>('workspace');
+
+    const filteredCommands = commands.filter(c => (c.source || 'workspace') === storageScope);
+    const filteredFlows = flows.filter(f => (f.source || 'workspace') === storageScope);
 
     const handleSave = (type: 'Command' | 'Flow', data: any) => {
+        // Ensure source is set to current scope if not present
+        if (!data.source) data.source = storageScope;
         sendMessage(`save${type}`, { data });
         setView('list');
         setEditingItem(undefined);
@@ -20,6 +26,11 @@ const App = () => {
 
     const handleDelete = (type: 'Command' | 'Flow', id: string) => {
         sendMessage(`delete${type}`, { id });
+    };
+
+    const handleMove = (type: 'Command' | 'Flow', id: string) => {
+        const targetSource = storageScope === 'workspace' ? 'user' : 'workspace';
+        sendMessage(`move${type}`, { id, targetSource });
     };
 
     const renderForm = () => {
@@ -33,11 +44,12 @@ const App = () => {
         if (activeTab === 'commands') {
             return (
                 <CommandList
-                    commands={commands}
+                    commands={filteredCommands}
                     categoryOrder={commandCategoryOrder}
                     onRun={(id) => sendMessage('runCommand', { id })}
                     onEdit={(c) => { setEditingItem(c); setView('form'); }}
                     onDelete={(id) => handleDelete('Command', id)}
+                    onMove={(id) => handleMove('Command', id)}
                     onReorderCommands={(cmds) => sendMessage('reorderCommands', { data: cmds })}
                     onReorderCategories={(order) => sendMessage('saveCommandCategoryOrder', { data: order })}
                 />
@@ -45,13 +57,14 @@ const App = () => {
         }
         return (
             <FlowList
-                flows={flows}
-                commands={commands}
+                flows={filteredFlows}
+                commands={commands} // Pass all commands for lookup in flows
                 categoryOrder={flowCategoryOrder}
                 onRun={(id, fromIndex) => sendMessage('runFlow', { id, fromIndex })}
                 onRunCommand={(id) => sendMessage('runCommand', { id })}
                 onEdit={(f) => { setEditingItem(f); setView('form'); }}
                 onDelete={(id) => handleDelete('Flow', id)}
+                onMove={(id) => handleMove('Flow', id)}
                 onReorderFlows={(fls) => sendMessage('reorderFlows', { data: fls })}
                 onReorderCategories={(order) => sendMessage('saveFlowCategoryOrder', { data: order })}
             />
@@ -64,6 +77,10 @@ const App = () => {
                 <div className="tabs">
                     <button className={activeTab === 'commands' ? 'active' : ''} onClick={() => { setActiveTab('commands'); setView('list'); }}>Commands</button>
                     <button className={activeTab === 'flows' ? 'active' : ''} onClick={() => { setActiveTab('flows'); setView('list'); }}>Flows</button>
+                </div>
+                <div className="scope-toggle">
+                    <button className={storageScope === 'workspace' ? 'active' : ''} onClick={() => setStorageScope('workspace')}>Workspace</button>
+                    <button className={storageScope === 'user' ? 'active' : ''} onClick={() => setStorageScope('user')}>Personal</button>
                 </div>
                 {view === 'list' && (
                     <button className="add-button" onClick={() => { setEditingItem(undefined); setView('form'); }}>

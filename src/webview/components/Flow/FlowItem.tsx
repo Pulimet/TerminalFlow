@@ -10,13 +10,14 @@ interface FlowItemProps {
     onRun: (id: string, fromIndex?: number) => void;
     onEdit: (flow: Flow) => void;
     onDelete: (id: string) => void;
+    onMove: (id: string) => void;
     onRunCommand: (id: string) => void;
     onMoveUp: (id: string) => void;
     onMoveDown: (id: string) => void;
 }
 
 export const FlowItem: React.FC<FlowItemProps> = ({
-    flow, commands, isFirst, isLast, onRun, onEdit, onDelete, onRunCommand, onMoveUp, onMoveDown
+    flow, commands, isFirst, isLast, onRun, onEdit, onDelete, onMove, onRunCommand, onMoveUp, onMoveDown
 }) => {
     const [isExpanded, setIsExpanded] = useState(false);
 
@@ -39,6 +40,7 @@ export const FlowItem: React.FC<FlowItemProps> = ({
                     <div className="flow-actions">
                         <button title="Run" onClick={() => onRun(flow.id)}>▶</button>
                         <button title="Edit" onClick={() => onEdit(flow)}>✎</button>
+                        <button title="Transfer" onClick={() => onMove(flow.id)}>⇄</button>
                         <button title="Delete" onClick={() => onDelete(flow.id)}>🗑</button>
                     </div>
                     <span className="flow-badge">{flow.sequence.length} steps</span>

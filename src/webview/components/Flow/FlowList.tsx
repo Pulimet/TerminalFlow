@@ -11,6 +11,7 @@ interface FlowListProps {
     onRun: (id: string, fromIndex?: number) => void;
     onEdit: (flow: Flow) => void;
     onDelete: (id: string) => void;
+    onMove: (id: string) => void;
     onRunCommand: (id: string) => void;
     onReorderFlows: (flows: Flow[]) => void;
     onReorderCategories: (order: string[]) => void;
@@ -21,7 +22,7 @@ import { useListLogic } from '../../hooks/useListLogic';
 const STORAGE_KEY = 'tf-flow-categories';
 
 export const FlowList: React.FC<FlowListProps> = ({
-    flows, commands, categoryOrder = [], onRun, onEdit, onDelete, onRunCommand, onReorderFlows, onReorderCategories
+    flows, commands, categoryOrder = [], onRun, onEdit, onDelete, onMove, onRunCommand, onReorderFlows, onReorderCategories
 }) => {
     const {
         searchQuery,
@@ -93,6 +94,7 @@ export const FlowList: React.FC<FlowListProps> = ({
                     onRun={onRun}
                     onEdit={onEdit}
                     onDelete={onDelete}
+                    onMove={onMove}
                     onRunCommand={onRunCommand}
                     onMoveCategoryUp={moveCategoryUp}
                     onMoveCategoryDown={moveCategoryDown}
