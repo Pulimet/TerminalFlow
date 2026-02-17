@@ -22,7 +22,7 @@ export class CommandRunner {
         terminal.show();
 
         if (shouldPrintTitle) {
-            terminal.sendText(`echo "Running: ${command.title}" && ${command.command}`);
+            terminal.sendText(`echo -e "\\033[36mRunning: ${command.title}\\033[0m" && ${command.command}`);
         } else {
             terminal.sendText(command.command);
         }
@@ -39,7 +39,7 @@ export class CommandRunner {
         }
         const cmd = await this.dataManager.getCommand(cmdId);
         if (cmd) {
-            if (shouldPrintTitle) return `echo "Running: ${cmd.title}" && ${cmd.command}`;
+            if (shouldPrintTitle) return `echo -e "\\033[36mRunning: ${cmd.title}\\033[0m" && ${cmd.command}`;
             return cmd.command;
         }
         return null;
