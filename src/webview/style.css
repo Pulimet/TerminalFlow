@@ -360,6 +360,17 @@ body {
     color: var(--vscode-terminal-ansiGreen, #89d185);
 }
 
+.flow-step-run-from-here {
+    cursor: pointer;
+    opacity: 0.6;
+    margin-left: auto;
+    font-size: 12px;
+}
+
+.flow-step-run-from-here:hover {
+    opacity: 1;
+}
+
 .command-item {
     display: flex;
     justify-content: space-between;
