@@ -10,6 +10,10 @@ Terminal Flow is a VS Code extension that lets you save, organize, and execute s
 ### 📂 Project-Based Storage
 Commands and flows are stored in `.terminal/commands.json` and `.terminal/flows.json` in your workspace root. Commit them to Git and share with your team.
 
+### 👤 Personal Storage
+Manage your private commands and flows in a global `~/.terminal` folder. Toggle between Workspace and Personal views to keep your environment organized.
+
+
 ### ⚡️ One-Click Execution
 Run complex shell commands instantly from the sidebar — no need to remember or retype them.
 
@@ -83,6 +87,14 @@ Terminal Flow stores everything in a `.terminal` folder at your workspace root:
 ├── flows.json             # Your saved workflows
 ├── commandCategories.json # Order of command categories
 └── flowCategories.json    # Order of flow categories
+```
+
+Personal commands are stored in your home directory:
+```
+~/.terminal/
+├── commands.json
+├── flows.json
+...
 ```
 
 > **Tip**: Commit this folder to Git so your team shares the same commands and workflows.

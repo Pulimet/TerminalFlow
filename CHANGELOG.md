@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.11] - 2026-02-17
+
+### Added
+- **Personal Storage**: Added support for personal commands and flows stored in `~/.terminal`.
+- **Storage Toggle**: Added a toggle button in the sidebar to switch between Workspace and Personal storage views.
+- **Transfer Capability**: Added "Transfer" button to move commands and flows between Workspace and Personal storage.
+- **UI Enhancements**:
+    - **Icon Layout**: Improved command/flow item layout by splitting action icons into two rows (Edit/Launch top, Transfer/Delete bottom).
+    - **Vertical Centering**: Vertically centered icons for better alignment.
+    - **Add Icons**: Updated "Add Command" and "Add Flow" buttons with a proper "+" icon.
+
 ## [0.0.10] - 2026-02-17
 
 ### Fixed
@@ -24,36 +35,14 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - **Settings UI**: Refined settings search to filter specifically for extension settings (`@ext:AlexeyKorolev.terminal-flow`).
 
-## [0.0.8] - 2026-02-16
+
+## [0.0.3] - [0.0.8] - 2026-02-16
 
 ### Fixed
-- **UI & Packaging**: Fixed an issue where the webview stylesheet was not loading in the packaged extension because it was referencing an excluded source file. Now correctly points to the bundled CSS.
+- **Packaging & Validation**: Fixed marketplace validation issues (README badges, LICENSE link, icon) and excluded build/sensitive files from the package.
+- **Stability**: Resolved extension activation issues and a chart synchronization loop error.
+- **UI Assets**: Fixed webview stylesheet loading in the packaged extension.
 
-## [0.0.7] - 2026-02-16
-
-### Security
-- **Validation Errors**: Removed sensitive `.local` file from being included in the package by updating `.vscodeignore`.
-
-## [0.0.6] - 2026-02-16
-
-### Fixed
-- **Validation Errors**: Removed badges and relative links from `README.md` to pass marketplace validation.
-
-## [0.0.5] - 2026-02-16
-
-### Fixed
-- **Validation Errors**: Renamed `LICENSE` to `LICENSE.txt` to fix broken link in README and added extension icon to resolve package warning.
-
-## [0.0.4] - 2026-02-16
-
-### Fixed
-- **Publishing**: Fix "extension violation" errors by implementing proper `.vscodeignore` to exclude `node_modules` and other build artifacts.
-
-## [0.0.3] - 2026-02-16
-
-### Fixed
-- **Extension Activation**: Resolved issues preventing the extension from activating correctly in some scenarios.
-- **Chart Sync Loop**: Fixed "Maximum update depth exceeded" error in chart synchronization.
 
 ## [0.0.2] - 2026-02-16
 
