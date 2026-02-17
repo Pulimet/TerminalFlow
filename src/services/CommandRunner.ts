@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { DataManager } from './DataManager';
 import { TerminalService } from './TerminalService';
 import { getEchoCommand, resolveSpecialCommand } from '../utils/commandUtils';
-import { delay } from '../utils/common';
+import { delay, NEW_TERMINAL_DELAY } from '../utils/common';
 
 export class CommandRunner {
     constructor(
@@ -17,15 +17,23 @@ export class CommandRunner {
         const config = vscode.workspace.getConfiguration('terminalFlow');
         const shouldPrintTitle = config.get<boolean>('printCommandTitle', true);
 
-        const terminal = command.runInNewTerminal
-            ? this.terminalService.createNewTerminal(`Terminal Flow: ${command.title}`)
-            : this.terminalService.getTerminal();
+        let terminal: vscode.Terminal;
+        let isNew = false;
 
         if (command.runInNewTerminal) {
-            await delay(500);
+            terminal = this.terminalService.createNewTerminal(`Terminal Flow: ${command.title}`);
+            isNew = true;
+        } else {
+            const result = this.terminalService.getTerminal();
+            terminal = result.terminal;
+            isNew = result.isNew;
         }
 
         terminal.show();
+
+        if (isNew) {
+            await delay(NEW_TERMINAL_DELAY);
+        }
 
         if (shouldPrintTitle) {
             terminal.sendText(`${getEchoCommand(command.title)} && ${command.command}`);

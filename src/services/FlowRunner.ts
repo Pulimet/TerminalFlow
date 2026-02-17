@@ -3,7 +3,7 @@ import { DataManager } from './DataManager';
 import { CommandRunner } from './CommandRunner';
 import { TerminalService } from './TerminalService';
 import { getEchoCommand, resolveSpecialCommand } from '../utils/commandUtils';
-import { delay } from '../utils/common';
+import { delay, NEW_TERMINAL_DELAY } from '../utils/common';
 
 export class FlowRunner {
     constructor(
@@ -30,8 +30,8 @@ export class FlowRunner {
 
     private async runFlowInNewTerminal(title: string, sequence: string[], shouldPrintTitle: boolean) {
         const terminal = this.terminalService.createNewTerminal(`Terminal Flow: ${title}`);
-        await delay(500);
         terminal.show();
+        await delay(NEW_TERMINAL_DELAY);
         const commands: string[] = [];
 
         for (const cmdId of sequence) {
@@ -43,8 +43,9 @@ export class FlowRunner {
     }
 
     private async runMixedFlow(sequence: string[], shouldPrintTitle: boolean) {
-        const sharedTerminal = this.terminalService.getTerminal();
+        const { terminal: sharedTerminal, isNew } = this.terminalService.getTerminal();
         sharedTerminal.show();
+        if (isNew) await delay(NEW_TERMINAL_DELAY);
 
         let sharedBuffer: string[] = [];
 
@@ -69,8 +70,8 @@ export class FlowRunner {
                 }
 
                 const terminal = this.terminalService.createNewTerminal(`Terminal Flow: ${command.title}`);
-                await delay(500);
                 terminal.show();
+                await delay(NEW_TERMINAL_DELAY);
                 if (shouldPrintTitle) {
                     terminal.sendText(`${getEchoCommand(command.title)} && ${command.command}`);
                 } else {
