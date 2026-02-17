@@ -83,8 +83,12 @@ const App = () => {
                     <button className={storageScope === 'user' ? 'active' : ''} onClick={() => setStorageScope('user')}>Personal</button>
                 </div>
                 {view === 'list' && (
-                    <button className="add-button" onClick={() => { setEditingItem(undefined); setView('form'); }}>
-                        + Add {activeTab === 'commands' ? 'Command' : 'Flow'}
+                    <button
+                        className="add-button"
+                        onClick={() => { setEditingItem(undefined); setView('form'); }}
+                        title={`Add ${activeTab === 'commands' ? 'Command' : 'Flow'}`}
+                    >
+                        +
                     </button>
                 )}
             </div>
