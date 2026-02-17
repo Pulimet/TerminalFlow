@@ -105,7 +105,7 @@ Use this method to install and test the extension in your regular VS Code (not j
 ### Package the Extension
 - [ ] Run `npm run compile` to ensure a clean build.
 - [ ] Run `vsce package` from the project root.
-- [ ] **Verify**: A file named `terminal-flow-0.0.1.vsix` is created in the project root.
+- [ ] **Verify**: A file named `terminal-flow-0.0.10.vsix` is created in the project root.
 
 ### Install in VS Code
 - [ ] Open VS Code.
@@ -150,7 +150,7 @@ Use this method to install and test the extension in your regular VS Code (not j
 - Hub URL: https://marketplace.visualstudio.com/manage/publishers/<publisher>/extensions/terminal-flow/hub
 
 ### Update an Existing Published Extension
-- [ ] Bump the version in `package.json` (e.g., `"version": "0.0.2"`).
+- [ ] Bump the version in `package.json` (e.g., `"version": "0.0.10"`).
 - [ ] Run `npm run compile`.
 - [ ] Login `vsce login <your-publisher-name>`.
 - [ ] Run `vsce publish`.

@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.10] - 2026-02-17
+
+### Fixed
+- **JSON Category Order**: Fixed an issue where deleting a category would corrupt the order of remaining categories.
+- **Terminal Execution**: Fixed a bug where all commands in a flow were opening in new terminals, even when not configured to do so.
+
+### Changed
+- **Code Improvement**: Refactored `runFlow` and removed duplicate code.
+
 ## [0.0.9] - 2026-02-16
 
 ### Added
