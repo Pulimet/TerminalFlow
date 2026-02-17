@@ -1,6 +1,8 @@
 import * as vscode from 'vscode';
 import { DataManager } from './DataManager';
 import { TerminalService } from './TerminalService';
+import { getEchoCommand, resolveSpecialCommand } from '../utils/commandUtils';
+import { delay } from '../utils/common';
 
 export class CommandRunner {
     constructor(
@@ -19,27 +21,26 @@ export class CommandRunner {
             ? this.terminalService.createNewTerminal(`Terminal Flow: ${command.title}`)
             : this.terminalService.getTerminal();
 
+        if (command.runInNewTerminal) {
+            await delay(500);
+        }
+
         terminal.show();
 
         if (shouldPrintTitle) {
-            terminal.sendText(`echo -e "\\033[1A\\033[2K\\033[36mRunning: ${command.title}\\033[0m" && ${command.command}`);
+            terminal.sendText(`${getEchoCommand(command.title)} && ${command.command}`);
         } else {
             terminal.sendText(command.command);
         }
     }
 
     public async resolveCommand(cmdId: string, shouldPrintTitle: boolean): Promise<string | null> {
-        if (cmdId.startsWith('__sleep:')) {
-            const ms = parseInt(cmdId.replace('__sleep:', ''), 10);
-            if (!isNaN(ms) && ms > 0) return `echo "Sleeping ${ms}ms..." && sleep ${ms / 1000}`;
-            return null;
-        }
-        if (cmdId.startsWith('__echo:')) {
-            return `echo "${cmdId.replace('__echo:', '')}"`;
-        }
+        const specialCmd = resolveSpecialCommand(cmdId);
+        if (specialCmd) return specialCmd;
+
         const cmd = await this.dataManager.getCommand(cmdId);
         if (cmd) {
-            if (shouldPrintTitle) return `echo -e "\\033[1A\\033[2K\\033[36mRunning: ${cmd.title}\\033[0m" && ${cmd.command}`;
+            if (shouldPrintTitle) return `${getEchoCommand(cmd.title)} && ${cmd.command}`;
             return cmd.command;
         }
         return null;

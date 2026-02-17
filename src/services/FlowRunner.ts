@@ -2,6 +2,8 @@ import * as vscode from 'vscode';
 import { DataManager } from './DataManager';
 import { CommandRunner } from './CommandRunner';
 import { TerminalService } from './TerminalService';
+import { getEchoCommand, resolveSpecialCommand } from '../utils/commandUtils';
+import { delay } from '../utils/common';
 
 export class FlowRunner {
     constructor(
@@ -28,6 +30,7 @@ export class FlowRunner {
 
     private async runFlowInNewTerminal(title: string, sequence: string[], shouldPrintTitle: boolean) {
         const terminal = this.terminalService.createNewTerminal(`Terminal Flow: ${title}`);
+        await delay(500);
         terminal.show();
         const commands: string[] = [];
 
@@ -46,7 +49,8 @@ export class FlowRunner {
         let sharedBuffer: string[] = [];
 
         for (const cmdId of sequence) {
-            if (cmdId.startsWith('__sleep:') || cmdId.startsWith('__echo:')) {
+            const specialCmd = resolveSpecialCommand(cmdId);
+            if (specialCmd) {
                 const cmdStr = await this.commandRunner.resolveCommand(cmdId, shouldPrintTitle);
                 if (cmdStr) sharedBuffer.push(cmdStr);
                 continue;
@@ -65,15 +69,16 @@ export class FlowRunner {
                 }
 
                 const terminal = this.terminalService.createNewTerminal(`Terminal Flow: ${command.title}`);
+                await delay(500);
                 terminal.show();
                 if (shouldPrintTitle) {
-                    terminal.sendText(`echo -e "\\033[1A\\033[2K\\033[36mRunning: ${command.title}\\033[0m" && ${command.command}`);
+                    terminal.sendText(`${getEchoCommand(command.title)} && ${command.command}`);
                 } else {
                     terminal.sendText(command.command);
                 }
             } else {
                 let cmdStr = command.command;
-                if (shouldPrintTitle) cmdStr = `echo -e "\\033[1A\\033[2K\\033[36mRunning: ${command.title}\\033[0m" && ${command.command}`;
+                if (shouldPrintTitle) cmdStr = `${getEchoCommand(command.title)} && ${command.command}`;
                 sharedBuffer.push(cmdStr);
             }
         }
