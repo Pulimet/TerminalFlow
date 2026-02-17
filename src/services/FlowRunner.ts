@@ -67,13 +67,13 @@ export class FlowRunner {
                 const terminal = this.terminalService.createNewTerminal(`Terminal Flow: ${command.title}`);
                 terminal.show();
                 if (shouldPrintTitle) {
-                    terminal.sendText(`echo -e "\\033[36mRunning: ${command.title}\\033[0m" && ${command.command}`);
+                    terminal.sendText(`echo -e "\\033[1A\\033[2K\\033[36mRunning: ${command.title}\\033[0m" && ${command.command}`);
                 } else {
                     terminal.sendText(command.command);
                 }
             } else {
                 let cmdStr = command.command;
-                if (shouldPrintTitle) cmdStr = `echo -e "\\033[36mRunning: ${command.title}\\033[0m" && ${command.command}`;
+                if (shouldPrintTitle) cmdStr = `echo -e "\\033[1A\\033[2K\\033[36mRunning: ${command.title}\\033[0m" && ${command.command}`;
                 sharedBuffer.push(cmdStr);
             }
         }
