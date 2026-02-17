@@ -36,19 +36,19 @@ export class CommandRunner {
         }
 
         if (shouldPrintTitle) {
-            terminal.sendText(`${getEchoCommand(command.title, true)} && ${command.command}`);
+            terminal.sendText(`${getEchoCommand(command.title)} && ${command.command}`);
         } else {
             terminal.sendText(command.command);
         }
     }
 
-    public async resolveCommand(cmdId: string, shouldPrintTitle: boolean, silent: boolean = true): Promise<string | null> {
+    public async resolveCommand(cmdId: string, shouldPrintTitle: boolean): Promise<string | null> {
         const specialCmd = resolveSpecialCommand(cmdId);
         if (specialCmd) return specialCmd;
 
         const cmd = await this.dataManager.getCommand(cmdId);
         if (cmd) {
-            if (shouldPrintTitle) return `${getEchoCommand(cmd.title, silent)} && ${cmd.command}`;
+            if (shouldPrintTitle) return `${getEchoCommand(cmd.title)} && ${cmd.command}`;
             return cmd.command;
         }
         return null;

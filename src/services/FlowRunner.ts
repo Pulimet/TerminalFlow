@@ -34,10 +34,8 @@ export class FlowRunner {
         await delay(NEW_TERMINAL_DELAY);
         const commands: string[] = [];
 
-        for (let i = 0; i < sequence.length; i++) {
-            const cmdId = sequence[i];
-            const isFirst = i === 0;
-            const cmdStr = await this.commandRunner.resolveCommand(cmdId, shouldPrintTitle, isFirst);
+        for (const cmdId of sequence) {
+            const cmdStr = await this.commandRunner.resolveCommand(cmdId, shouldPrintTitle);
             if (cmdStr) commands.push(cmdStr);
         }
 
@@ -54,8 +52,7 @@ export class FlowRunner {
         for (const cmdId of sequence) {
             const specialCmd = resolveSpecialCommand(cmdId);
             if (specialCmd) {
-                const isFirst = sharedBuffer.length === 0; // If buffer empty, this is first in chain
-                const cmdStr = await this.commandRunner.resolveCommand(cmdId, shouldPrintTitle, isFirst);
+                const cmdStr = await this.commandRunner.resolveCommand(cmdId, shouldPrintTitle);
                 if (cmdStr) sharedBuffer.push(cmdStr);
                 continue;
             }
@@ -76,14 +73,13 @@ export class FlowRunner {
                 terminal.show();
                 await delay(NEW_TERMINAL_DELAY);
                 if (shouldPrintTitle) {
-                    terminal.sendText(`${getEchoCommand(command.title, true)} && ${command.command}`);
+                    terminal.sendText(`${getEchoCommand(command.title)} && ${command.command}`);
                 } else {
                     terminal.sendText(command.command);
                 }
             } else {
                 let cmdStr = command.command;
-                const isFirst = sharedBuffer.length === 0;
-                if (shouldPrintTitle) cmdStr = `${getEchoCommand(command.title, isFirst)} && ${command.command}`;
+                if (shouldPrintTitle) cmdStr = `${getEchoCommand(command.title)} && ${command.command}`;
                 sharedBuffer.push(cmdStr);
             }
         }

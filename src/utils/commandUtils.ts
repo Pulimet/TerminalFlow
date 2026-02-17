@@ -1,7 +1,4 @@
-export function getEchoCommand(title: string, silent: boolean = true): string {
-    if (silent) {
-        return `echo -e "\\033[1A\\033[2K\\033[36mRunning: ${title}\\033[0m"`;
-    }
+export function getEchoCommand(title: string): string {
     return `echo -e "\\033[36mRunning: ${title}\\033[0m"`;
 }
 
