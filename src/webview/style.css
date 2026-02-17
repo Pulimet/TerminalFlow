@@ -374,7 +374,7 @@ body {
 .command-item {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
     padding: 8px;
     border-bottom: 1px solid var(--vscode-widget-border);
     margin-bottom: 4px;
@@ -383,7 +383,7 @@ body {
 .flow-item {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
     padding: 8px;
 }
 
@@ -495,7 +495,7 @@ body {
 .move-buttons {
     display: flex;
     flex-direction: column;
-    gap: 1px;
+    gap: 5px;
 }
 
 .move-buttons button {
