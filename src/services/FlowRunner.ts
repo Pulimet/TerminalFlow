@@ -21,32 +21,25 @@ export class FlowRunner {
         const shouldPrintTitle = config.get<boolean>('printCommandTitle', true);
         const sequenceToRun = fromIndex !== undefined ? flow.sequence.slice(fromIndex) : flow.sequence;
 
+        let baseTerminal: vscode.Terminal;
+        let isNew = false;
+
         if (flow.runInNewTerminal) {
-            await this.runFlowInNewTerminal(flow.title, sequenceToRun, shouldPrintTitle);
+            baseTerminal = this.terminalService.createNewTerminal(`Terminal Flow: ${flow.title}`);
+            isNew = true;
         } else {
-            await this.runMixedFlow(sequenceToRun, shouldPrintTitle);
-        }
-    }
-
-    private async runFlowInNewTerminal(title: string, sequence: string[], shouldPrintTitle: boolean) {
-        const terminal = this.terminalService.createNewTerminal(`Terminal Flow: ${title}`);
-        terminal.show();
-        await delay(NEW_TERMINAL_DELAY);
-        const commands: string[] = [];
-
-        for (const cmdId of sequence) {
-            const cmdStr = await this.commandRunner.resolveCommand(cmdId, shouldPrintTitle);
-            if (cmdStr) commands.push(cmdStr);
+            const result = this.terminalService.getTerminal();
+            baseTerminal = result.terminal;
+            isNew = result.isNew;
         }
 
-        if (commands.length > 0) terminal.sendText(commands.join(' && '));
-    }
-
-    private async runMixedFlow(sequence: string[], shouldPrintTitle: boolean) {
-        const { terminal: sharedTerminal, isNew } = this.terminalService.getTerminal();
-        sharedTerminal.show();
+        baseTerminal.show();
         if (isNew) await delay(NEW_TERMINAL_DELAY);
 
+        await this.runSequence(sequenceToRun, shouldPrintTitle, baseTerminal);
+    }
+
+    private async runSequence(sequence: string[], shouldPrintTitle: boolean, baseTerminal: vscode.Terminal) {
         let sharedBuffer: string[] = [];
 
         for (const cmdId of sequence) {
@@ -65,7 +58,7 @@ export class FlowRunner {
 
             if (command.runInNewTerminal) {
                 if (sharedBuffer.length > 0) {
-                    sharedTerminal.sendText(sharedBuffer.join(' && '));
+                    baseTerminal.sendText(sharedBuffer.join(' && '));
                     sharedBuffer = [];
                 }
 
@@ -85,7 +78,7 @@ export class FlowRunner {
         }
 
         if (sharedBuffer.length > 0) {
-            sharedTerminal.sendText(sharedBuffer.join(' && '));
+            baseTerminal.sendText(sharedBuffer.join(' && '));
         }
     }
 }
