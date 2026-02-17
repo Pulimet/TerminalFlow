@@ -7,18 +7,17 @@ import { FlowForm } from './components/Flow/FlowForm';
 import { Command, Flow } from './types';
 
 const App = () => {
-    const { commands, flows, commandCategoryOrder, flowCategoryOrder, sendMessage } = useExtensionData();
+    const { commands, flows, commandCategoryOrder, flowCategoryOrder, scope, setScope, sendMessage } = useExtensionData();
     const [activeTab, setActiveTab] = useState<'commands' | 'flows'>('commands');
     const [view, setView] = useState<'list' | 'form'>('list');
     const [editingItem, setEditingItem] = useState<Command | Flow | undefined>(undefined);
-    const [storageScope, setStorageScope] = useState<'workspace' | 'user'>('workspace');
 
-    const filteredCommands = commands.filter(c => (c.source || 'workspace') === storageScope);
-    const filteredFlows = flows.filter(f => (f.source || 'workspace') === storageScope);
+    const filteredCommands = commands.filter(c => (c.source || 'workspace') === scope);
+    const filteredFlows = flows.filter(f => (f.source || 'workspace') === scope);
 
     const handleSave = (type: 'Command' | 'Flow', data: any) => {
         // Ensure source is set to current scope if not present
-        if (!data.source) data.source = storageScope;
+        if (!data.source) data.source = scope;
         sendMessage(`save${type}`, { data });
         setView('list');
         setEditingItem(undefined);
@@ -29,7 +28,7 @@ const App = () => {
     };
 
     const handleMove = (type: 'Command' | 'Flow', id: string) => {
-        const targetSource = storageScope === 'workspace' ? 'user' : 'workspace';
+        const targetSource = scope === 'workspace' ? 'user' : 'workspace';
         sendMessage(`move${type}`, { id, targetSource });
     };
 
@@ -79,8 +78,8 @@ const App = () => {
                     <button className={activeTab === 'flows' ? 'active' : ''} onClick={() => { setActiveTab('flows'); setView('list'); }}>Flows</button>
                 </div>
                 <div className="scope-toggle">
-                    <button className={storageScope === 'workspace' ? 'active' : ''} onClick={() => setStorageScope('workspace')}>Workspace</button>
-                    <button className={storageScope === 'user' ? 'active' : ''} onClick={() => setStorageScope('user')}>Personal</button>
+                    <button className={scope === 'workspace' ? 'active' : ''} onClick={() => setScope('workspace')}>Workspace</button>
+                    <button className={scope === 'user' ? 'active' : ''} onClick={() => setScope('user')}>Personal</button>
                 </div>
                 {view === 'list' && (
                     <button

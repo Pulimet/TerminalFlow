@@ -4,14 +4,16 @@ import { DataManager } from '../services/DataManager';
 export class TerminalFlowProvider implements vscode.WebviewViewProvider {
     public static readonly viewType = 'terminal-flow-view';
     private _view?: vscode.WebviewView;
+    private _scope: 'workspace' | 'user';
 
-    constructor(private readonly _extensionUri: vscode.Uri, private readonly _dataManager: DataManager) {
+    constructor(private readonly _context: vscode.ExtensionContext, private readonly _dataManager: DataManager) {
+        this._scope = this._context.workspaceState.get<'workspace' | 'user'>('terminal-flow.scope', 'workspace');
         this._dataManager.onDidChangeData(() => this.refreshData());
     }
 
     public resolveWebviewView(webviewView: vscode.WebviewView) {
         this._view = webviewView;
-        webviewView.webview.options = { enableScripts: true, localResourceRoots: [this._extensionUri] };
+        webviewView.webview.options = { enableScripts: true, localResourceRoots: [this._context.extensionUri] };
         webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
 
         webviewView.webview.onDidReceiveMessage(async (data) => {
@@ -38,6 +40,11 @@ export class TerminalFlowProvider implements vscode.WebviewViewProvider {
                 case 'moveCommand': await this._dataManager.commandService.moveCommand(data.id, data.targetSource); break;
                 case 'moveFlow': await this._dataManager.flowService.moveFlow(data.id, data.targetSource); break;
 
+                case 'saveScope':
+                    this._scope = data.scope;
+                    await this._context.workspaceState.update('terminal-flow.scope', this._scope);
+                    break;
+
                 case 'refresh': this.refreshData(); break;
             }
         });
@@ -51,14 +58,15 @@ export class TerminalFlowProvider implements vscode.WebviewViewProvider {
                 commands: await this._dataManager.commandService.getCommands(),
                 flows: await this._dataManager.flowService.getFlows(),
                 commandCategoryOrder: await this._dataManager.commandService.getCategoryOrder(),
-                flowCategoryOrder: await this._dataManager.flowService.getCategoryOrder()
+                flowCategoryOrder: await this._dataManager.flowService.getCategoryOrder(),
+                scope: this._scope
             });
         }
     }
 
     private _getHtmlForWebview(webview: vscode.Webview) {
-        const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'dist', 'webview.js'));
-        const styleMainUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'dist', 'webview.css'));
+        const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._context.extensionUri, 'dist', 'webview.js'));
+        const styleMainUri = webview.asWebviewUri(vscode.Uri.joinPath(this._context.extensionUri, 'dist', 'webview.css'));
         const nonce = getNonce();
 
         return `<!DOCTYPE html>

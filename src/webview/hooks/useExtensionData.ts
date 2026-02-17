@@ -10,6 +10,7 @@ export const useExtensionData = () => {
     const [flows, setFlows] = useState<Flow[]>([]);
     const [commandCategoryOrder, setCommandCategoryOrder] = useState<string[]>([]);
     const [flowCategoryOrder, setFlowCategoryOrder] = useState<string[]>([]);
+    const [scope, setScopeState] = useState<'workspace' | 'user'>('workspace');
 
     useEffect(() => {
         const handleMessage = (event: MessageEvent) => {
@@ -19,6 +20,7 @@ export const useExtensionData = () => {
                 setFlows(message.flows);
                 setCommandCategoryOrder(message.commandCategoryOrder || []);
                 setFlowCategoryOrder(message.flowCategoryOrder || []);
+                if (message.scope) setScopeState(message.scope);
             }
         };
 
@@ -34,11 +36,18 @@ export const useExtensionData = () => {
         vscode.postMessage({ type, ...(payload || {}) });
     };
 
+    const setScope = (newScope: 'workspace' | 'user') => {
+        setScopeState(newScope);
+        sendMessage('saveScope', { scope: newScope });
+    };
+
     return {
         commands,
         flows,
         commandCategoryOrder,
         flowCategoryOrder,
+        scope,
+        setScope,
         sendMessage
     };
 };

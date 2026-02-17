@@ -16,7 +16,7 @@ export function activate(context: vscode.ExtensionContext) {
     const commandRunner = new CommandRunner(dataManager, terminalService);
     const flowRunner = new FlowRunner(dataManager, terminalService, commandRunner);
 
-    const provider = new TerminalFlowProvider(context.extensionUri, dataManager);
+    const provider = new TerminalFlowProvider(context, dataManager);
     context.subscriptions.push(vscode.window.registerWebviewViewProvider(TerminalFlowProvider.viewType, provider));
 
     context.subscriptions.push(
