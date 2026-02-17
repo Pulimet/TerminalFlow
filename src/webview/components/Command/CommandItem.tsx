@@ -32,10 +32,14 @@ export const CommandItem: React.FC<CommandItemProps> = ({
                 <div className="command-code">{command.command}</div>
             </div>
             <div className="command-actions">
-                <button title="Run" onClick={() => onRun(command.id)}>▶</button>
-                <button title="Edit" onClick={() => onEdit(command)}>✎</button>
-                <button title="Transfer" onClick={() => onMove(command.id)}>⇄</button>
-                <button title="Delete" onClick={() => onDelete(command.id)}>🗑</button>
+                <div className="action-row">
+                    <button title="Edit" onClick={() => onEdit(command)}>✎</button>
+                    <button title="Run" onClick={() => onRun(command.id)}>▶</button>
+                </div>
+                <div className="action-row">
+                    <button title="Transfer" onClick={() => onMove(command.id)}>⇄</button>
+                    <button title="Delete" onClick={() => onDelete(command.id)}>🗑</button>
+                </div>
             </div>
         </div>
     );

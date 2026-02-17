@@ -38,10 +38,14 @@ export const FlowItem: React.FC<FlowItemProps> = ({
                 </div>
                 <div className="flow-right">
                     <div className="flow-actions">
-                        <button title="Run" onClick={() => onRun(flow.id)}>▶</button>
-                        <button title="Edit" onClick={() => onEdit(flow)}>✎</button>
-                        <button title="Transfer" onClick={() => onMove(flow.id)}>⇄</button>
-                        <button title="Delete" onClick={() => onDelete(flow.id)}>🗑</button>
+                        <div className="action-row">
+                            <button title="Edit" onClick={() => onEdit(flow)}>✎</button>
+                            <button title="Run" onClick={() => onRun(flow.id)}>▶</button>
+                        </div>
+                        <div className="action-row">
+                            <button title="Transfer" onClick={() => onMove(flow.id)}>⇄</button>
+                            <button title="Delete" onClick={() => onDelete(flow.id)}>🗑</button>
+                        </div>
                     </div>
                     <span className="flow-badge">{flow.sequence.length} steps</span>
                 </div>

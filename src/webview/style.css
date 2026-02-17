@@ -433,6 +433,12 @@ body {
 .command-actions,
 .flow-actions {
     display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.action-row {
+    display: flex;
     gap: 4px;
 }
 
