@@ -1,4 +1,5 @@
 import { Store } from '../utils/Store';
+import { cleanupCategories } from '../utils/categoryUtils';
 
 export interface Flow {
     id: string; title: string; description: string; category: string; sequence: string[]; runInNewTerminal?: boolean;
@@ -25,13 +26,24 @@ export class FlowService {
         if (index !== -1) flows[index] = flow;
         else flows.push(flow);
         await this.store.write(flows);
+        await this.performCategoryCleanup(flows);
         this.fireChange();
     }
 
     public async deleteFlow(id: string) {
         const flows = await this.getFlows();
-        await this.store.write(flows.filter(f => f.id !== id));
+        const newFlows = flows.filter(f => f.id !== id);
+        await this.store.write(newFlows);
+        await this.performCategoryCleanup(newFlows);
         this.fireChange();
+    }
+
+    private async performCategoryCleanup(flows: Flow[]) {
+        const currentOrder = await this.getCategoryOrder();
+        const newOrder = cleanupCategories(currentOrder, flows);
+        if (newOrder) {
+            await this.saveCategoryOrder(newOrder);
+        }
     }
 
     public async setFlows(flows: Flow[]) {

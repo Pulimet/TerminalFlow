@@ -1,4 +1,5 @@
 import { Store } from '../utils/Store';
+import { cleanupCategories } from '../utils/categoryUtils';
 
 export interface Command {
     id: string; title: string; description: string; category: string; command: string; runInNewTerminal?: boolean;
@@ -25,13 +26,24 @@ export class CommandService {
         if (index !== -1) commands[index] = command;
         else commands.push(command);
         await this.store.write(commands);
+        await this.performCategoryCleanup(commands);
         this.fireChange();
     }
 
     public async deleteCommand(id: string) {
         const commands = await this.getCommands();
-        await this.store.write(commands.filter(c => c.id !== id));
+        const newCommands = commands.filter(c => c.id !== id);
+        await this.store.write(newCommands);
+        await this.performCategoryCleanup(newCommands);
         this.fireChange();
+    }
+
+    private async performCategoryCleanup(commands: Command[]) {
+        const currentOrder = await this.getCategoryOrder();
+        const newOrder = cleanupCategories(currentOrder, commands);
+        if (newOrder) {
+            await this.saveCategoryOrder(newOrder);
+        }
     }
 
     public async setCommands(commands: Command[]) {
