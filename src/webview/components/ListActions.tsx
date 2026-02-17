@@ -22,8 +22,8 @@ export const ListActions: React.FC<ListActionsProps> = ({ onExpandAll, onCollaps
                 </button>
                 <button onClick={onCollapseAll} className="icon-button" title="Collapse All">
                     <svg viewBox="0 0 16 16">
-                        <path d="M4 3 L8 7 L12 3" />
-                        <path d="M4 13 L8 9 L12 13" />
+                        <path d="M4 1 L8 5 L12 1" />
+                        <path d="M4 15 L8 11 L12 15" />
                     </svg>
                 </button>
             </div>
