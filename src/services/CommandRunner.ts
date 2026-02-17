@@ -22,9 +22,10 @@ export class CommandRunner {
         terminal.show();
 
         if (shouldPrintTitle) {
-            terminal.sendText(`echo "Running: ${command.title}"`);
+            terminal.sendText(`echo "Running: ${command.title}" && ${command.command}`);
+        } else {
+            terminal.sendText(command.command);
         }
-        terminal.sendText(command.command);
     }
 
     public async resolveCommand(cmdId: string, shouldPrintTitle: boolean): Promise<string | null> {
