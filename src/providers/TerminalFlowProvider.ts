@@ -5,9 +5,11 @@ export class TerminalFlowProvider implements vscode.WebviewViewProvider {
     public static readonly viewType = 'terminal-flow-view';
     private _view?: vscode.WebviewView;
     private _scope: 'workspace' | 'user';
+    private _tab: 'commands' | 'flows';
 
     constructor(private readonly _context: vscode.ExtensionContext, private readonly _dataManager: DataManager) {
         this._scope = this._context.workspaceState.get<'workspace' | 'user'>('terminal-flow.scope', 'workspace');
+        this._tab = this._context.workspaceState.get<'commands' | 'flows'>('terminal-flow.tab', 'commands');
         this._dataManager.onDidChangeData(() => this.refreshData());
     }
 
@@ -45,6 +47,11 @@ export class TerminalFlowProvider implements vscode.WebviewViewProvider {
                     await this._context.workspaceState.update('terminal-flow.scope', this._scope);
                     break;
 
+                case 'saveTab':
+                    this._tab = data.tab;
+                    await this._context.workspaceState.update('terminal-flow.tab', this._tab);
+                    break;
+
                 case 'refresh': this.refreshData(); break;
             }
         });
@@ -59,7 +66,8 @@ export class TerminalFlowProvider implements vscode.WebviewViewProvider {
                 flows: await this._dataManager.flowService.getFlows(),
                 commandCategoryOrder: await this._dataManager.commandService.getCategoryOrder(),
                 flowCategoryOrder: await this._dataManager.flowService.getCategoryOrder(),
-                scope: this._scope
+                scope: this._scope,
+                tab: this._tab
             });
         }
     }

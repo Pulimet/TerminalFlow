@@ -7,8 +7,7 @@ import { FlowForm } from './components/Flow/FlowForm';
 import { Command, Flow } from './types';
 
 const App = () => {
-    const { commands, flows, commandCategoryOrder, flowCategoryOrder, scope, setScope, sendMessage } = useExtensionData();
-    const [activeTab, setActiveTab] = useState<'commands' | 'flows'>('commands');
+    const { commands, flows, commandCategoryOrder, flowCategoryOrder, scope, setScope, tab, setTab, sendMessage } = useExtensionData();
     const [view, setView] = useState<'list' | 'form'>('list');
     const [editingItem, setEditingItem] = useState<Command | Flow | undefined>(undefined);
 
@@ -33,14 +32,14 @@ const App = () => {
     };
 
     const renderForm = () => {
-        if (activeTab === 'commands') {
+        if (tab === 'commands') {
             return <CommandForm initialCommand={editingItem as Command} onSave={(c) => handleSave('Command', c)} onCancel={() => setView('list')} />;
         }
         return <FlowForm initialFlow={editingItem as Flow} availableCommands={commands} onSave={(f) => handleSave('Flow', f)} onCancel={() => setView('list')} />;
     };
 
     const renderList = () => {
-        if (activeTab === 'commands') {
+        if (tab === 'commands') {
             return (
                 <CommandList
                     commands={filteredCommands}
@@ -74,8 +73,8 @@ const App = () => {
         <div className="app-container">
             <div className="header">
                 <div className="tabs">
-                    <button className={activeTab === 'commands' ? 'active' : ''} onClick={() => { setActiveTab('commands'); setView('list'); }}>Commands</button>
-                    <button className={activeTab === 'flows' ? 'active' : ''} onClick={() => { setActiveTab('flows'); setView('list'); }}>Flows</button>
+                    <button className={tab === 'commands' ? 'active' : ''} onClick={() => { setTab('commands'); setView('list'); }}>Commands</button>
+                    <button className={tab === 'flows' ? 'active' : ''} onClick={() => { setTab('flows'); setView('list'); }}>Flows</button>
                 </div>
                 <div className="scope-toggle">
                     <button className={scope === 'workspace' ? 'active' : ''} onClick={() => setScope('workspace')}>Workspace</button>
@@ -85,7 +84,7 @@ const App = () => {
                     <button
                         className="add-button"
                         onClick={() => { setEditingItem(undefined); setView('form'); }}
-                        title={`Add ${activeTab === 'commands' ? 'Command' : 'Flow'}`}
+                        title={`Add ${tab === 'commands' ? 'Command' : 'Flow'}`}
                     >
                         +
                     </button>

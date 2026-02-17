@@ -11,6 +11,7 @@ export const useExtensionData = () => {
     const [commandCategoryOrder, setCommandCategoryOrder] = useState<string[]>([]);
     const [flowCategoryOrder, setFlowCategoryOrder] = useState<string[]>([]);
     const [scope, setScopeState] = useState<'workspace' | 'user'>('workspace');
+    const [tab, setTabState] = useState<'commands' | 'flows'>('commands');
 
     useEffect(() => {
         const handleMessage = (event: MessageEvent) => {
@@ -21,6 +22,7 @@ export const useExtensionData = () => {
                 setCommandCategoryOrder(message.commandCategoryOrder || []);
                 setFlowCategoryOrder(message.flowCategoryOrder || []);
                 if (message.scope) setScopeState(message.scope);
+                if (message.tab) setTabState(message.tab);
             }
         };
 
@@ -41,6 +43,11 @@ export const useExtensionData = () => {
         sendMessage('saveScope', { scope: newScope });
     };
 
+    const setTab = (newTab: 'commands' | 'flows') => {
+        setTabState(newTab);
+        sendMessage('saveTab', { tab: newTab });
+    };
+
     return {
         commands,
         flows,
@@ -48,6 +55,8 @@ export const useExtensionData = () => {
         flowCategoryOrder,
         scope,
         setScope,
+        tab,
+        setTab,
         sendMessage
     };
 };
