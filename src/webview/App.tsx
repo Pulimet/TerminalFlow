@@ -37,7 +37,15 @@ const App = () => {
 
     const renderForm = () => {
         if (tab === 'commands') {
-            return <CommandForm initialCommand={editingItem as Command} onSave={(c) => handleSave('Command', c)} onCancel={() => setView('list')} />;
+            const existingCategories = Array.from(new Set(commands.map(c => c.category || 'General'))).sort();
+            return (
+                <CommandForm
+                    initialCommand={editingItem as Command}
+                    existingCategories={existingCategories}
+                    onSave={(c) => handleSave('Command', c)}
+                    onCancel={() => setView('list')}
+                />
+            );
         }
         return <FlowForm initialFlow={editingItem as Flow} availableCommands={commands} onSave={(f) => handleSave('Flow', f)} onCancel={() => setView('list')} />;
     };

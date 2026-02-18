@@ -6,6 +6,7 @@ import { Command } from '../../types';
  */
 interface CommandFormProps {
     initialCommand?: Command;
+    existingCategories: string[];
     onSave: (command: Command) => void;
     onCancel: () => void;
 }
@@ -15,7 +16,7 @@ interface CommandFormProps {
  * @param props The component props.
  * @returns The rendered CommandForm component.
  */
-export const CommandForm: React.FC<CommandFormProps> = ({ initialCommand, onSave, onCancel }) => {
+export const CommandForm: React.FC<CommandFormProps> = ({ initialCommand, existingCategories, onSave, onCancel }) => {
     const [title, setTitle] = useState(initialCommand?.title || '');
     const [description, setDescription] = useState(initialCommand?.description || '');
     const [category, setCategory] = useState(initialCommand?.category || '');
@@ -47,7 +48,18 @@ export const CommandForm: React.FC<CommandFormProps> = ({ initialCommand, onSave
             </div>
             <div className="form-group">
                 <label>Category</label>
-                <input type="text" value={category} onChange={e => setCategory(e.target.value)} placeholder="e.g. Build, Test, Deploy" />
+                <input
+                    type="text"
+                    value={category}
+                    onChange={e => setCategory(e.target.value)}
+                    placeholder="e.g. Build, Test, Deploy"
+                    list="category-suggestions"
+                />
+                <datalist id="category-suggestions">
+                    {existingCategories.map(cat => (
+                        <option key={cat} value={cat} />
+                    ))}
+                </datalist>
             </div>
             <div className="form-group">
                 <label>Command</label>
