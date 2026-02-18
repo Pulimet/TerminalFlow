@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.12] - 2026-02-18
+
+### Added
+- **Export/Import**: Added ability to export and import Commands and Flows as JSON files.
+    - Support for bulk export/import.
+    - Support for exporting individual items.
+    - Automatic dependency resolution when exporting Flows (dependent commands are included).
+- **Category Autocomplete**: Added autocomplete for category names in the Add Command/Flow forms.    
+
 ## [0.0.11] - 2026-02-17
 
 ### Added

@@ -41,6 +41,9 @@ Keep your workspace tidy by reordering both categories and individual commands u
 ### 🔄 Live Sync
 Edit the JSON files directly or use the UI — both stay in sync instantly via file watchers.
 
+### 📤 Export & Import
+Easily backup or share your commands and flows. Supports exporting individual items or your entire collection, with automatic dependency handling for flows.
+
 ---
 
 ## 📦 Installation
