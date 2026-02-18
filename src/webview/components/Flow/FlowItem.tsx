@@ -49,7 +49,13 @@ export const FlowItem: React.FC<FlowItemProps> = ({
                     <div className="flow-actions">
                         <div className="action-row">
                             <button title="Edit" onClick={() => onEdit(flow)}>✎</button>
-                            {onExport && <button title="Export" onClick={() => onExport(flow.id)}>⭳</button>}
+                            {onExport && (
+                                <button title="Export" onClick={() => onExport(flow.id)}>
+                                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor">
+                                        <path d="M9 1h4v4M13 1L7 7M11 13H3V5h6" />
+                                    </svg>
+                                </button>
+                            )}
                             <button title="Run" onClick={() => onRun(flow.id)}>▶</button>
                         </div>
                         <div className="action-row">

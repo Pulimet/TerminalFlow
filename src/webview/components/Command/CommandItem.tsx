@@ -43,7 +43,13 @@ export const CommandItem: React.FC<CommandItemProps> = ({
             <div className="command-actions">
                 <div className="action-row">
                     <button title="Edit" onClick={() => onEdit(command)}>✎</button>
-                    {onExport && <button title="Export" onClick={() => onExport(command.id)}>⭳</button>}
+                    {onExport && (
+                        <button title="Export" onClick={() => onExport(command.id)}>
+                            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor">
+                                <path d="M9 1h4v4M13 1L7 7M11 13H3V5h6" />
+                            </svg>
+                        </button>
+                    )}
                     <button title="Run" onClick={() => onRun(command.id)}>▶</button>
                 </div>
                 <div className="action-row">
