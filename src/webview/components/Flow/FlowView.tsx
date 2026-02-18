@@ -63,10 +63,12 @@ export const FlowView: React.FC<FlowViewProps> = ({
     };
 
     if (view === 'form') {
+        const existingCategories = Array.from(new Set(flows.map(f => f.category || 'General'))).sort();
         return (
             <FlowForm
                 initialFlow={editingItem}
                 availableCommands={commands}
+                existingCategories={existingCategories}
                 onSave={handleSave}
                 onCancel={() => setView('list')}
             />

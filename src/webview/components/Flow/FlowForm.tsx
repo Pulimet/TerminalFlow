@@ -9,6 +9,7 @@ import { SleepAdder, EchoAdder } from './FlowFormHelpers';
 interface FlowFormProps {
     initialFlow?: Flow;
     availableCommands: Command[];
+    existingCategories: string[];
     onSave: (flow: Flow) => void;
     onCancel: () => void;
 }
@@ -20,7 +21,7 @@ import { useCategoryState } from '../../hooks/useCategoryState';
  * @param props The component props.
  * @returns The rendered FlowForm component.
  */
-export const FlowForm: React.FC<FlowFormProps> = ({ initialFlow, availableCommands, onSave, onCancel }) => {
+export const FlowForm: React.FC<FlowFormProps> = ({ initialFlow, availableCommands, existingCategories, onSave, onCancel }) => {
     const [title, setTitle] = useState(initialFlow?.title || '');
     const [description, setDescription] = useState(initialFlow?.description || '');
     const [category, setCategory] = useState(initialFlow?.category || '');
@@ -67,8 +68,25 @@ export const FlowForm: React.FC<FlowFormProps> = ({ initialFlow, availableComman
     return (
         <form className="flow-form" onSubmit={handleSubmit}>
             <div className="form-group"><label>Title</label><input type="text" value={title} onChange={e => setTitle(e.target.value)} required placeholder="e.g. Full Deployment" /></div>
-            <div className="form-group"><label>Description</label><input type="text" value={description} onChange={e => setDescription(e.target.value)} placeholder="Short description..." /></div>
-            <div className="form-group"><label>Category</label><input type="text" value={category} onChange={e => setCategory(e.target.value)} placeholder="e.g. Workflows" /></div>
+            <div className="form-group">
+                <label>Description</label>
+                <input type="text" value={description} onChange={e => setDescription(e.target.value)} placeholder="Short description..." />
+            </div>
+            <div className="form-group">
+                <label>Category</label>
+                <input
+                    type="text"
+                    value={category}
+                    onChange={e => setCategory(e.target.value)}
+                    placeholder="e.g. Workflows"
+                    list="flow-category-suggestions"
+                />
+                <datalist id="flow-category-suggestions">
+                    {existingCategories.map(cat => (
+                        <option key={cat} value={cat} />
+                    ))}
+                </datalist>
+            </div>
             <div className="form-group checkbox-group">
                 <label className="checkbox-label">
                     <input
