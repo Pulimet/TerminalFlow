@@ -155,4 +155,64 @@ export class FlowService {
         }
         this.fireChange();
     }
+
+    /**
+     * Retrieves specific flows by their IDs.
+     * @param ids The list of flow IDs to retrieve.
+     * @returns A promise resolving to the found flows.
+     */
+    public async getFlowsByIds(ids: string[]): Promise<Flow[]> {
+        const allFlows = await this.getFlows();
+        return allFlows.filter(f => ids.includes(f.id));
+    }
+
+    /**
+     * Extracts all unique command IDs referenced by the given flows.
+     * @param flows The list of flows to analyze.
+     * @returns A list of unique command IDs.
+     */
+    public getDependentCommandIds(flows: Flow[]): string[] {
+        const commandIds = new Set<string>();
+        for (const flow of flows) {
+            for (const step of flow.sequence) {
+                if (!step.startsWith('__')) { // Ignore special commands like __echo, __sleep
+                    commandIds.add(step);
+                }
+            }
+        }
+        return Array.from(commandIds);
+    }
+
+    /**
+     * Imports a list of flows, overwriting existing ones with the same ID.
+     * @param flows The flows to import.
+     */
+    public async importFlows(flows: Flow[]) {
+        const workspaceFlowsToImport = flows.filter(f => f.source !== 'user');
+        const userFlowsToImport = flows.filter(f => f.source === 'user');
+
+        if (workspaceFlowsToImport.length > 0) {
+            const currentWorkspaceFlows = await this.workspaceStore.read();
+            for (const flow of workspaceFlowsToImport) {
+                const index = currentWorkspaceFlows.findIndex(f => f.id === flow.id);
+                if (index !== -1) currentWorkspaceFlows[index] = flow;
+                else currentWorkspaceFlows.push(flow);
+            }
+            await this.workspaceStore.write(currentWorkspaceFlows);
+            await this.performCategoryCleanup(currentWorkspaceFlows, false);
+        }
+
+        if (userFlowsToImport.length > 0 && this.userStore) {
+            const currentUserFlows = await this.userStore.read();
+            for (const flow of userFlowsToImport) {
+                const index = currentUserFlows.findIndex(f => f.id === flow.id);
+                if (index !== -1) currentUserFlows[index] = flow;
+                else currentUserFlows.push(flow);
+            }
+            await this.userStore.write(currentUserFlows);
+            await this.performCategoryCleanup(currentUserFlows, true);
+        }
+
+        this.fireChange();
+    }
 }

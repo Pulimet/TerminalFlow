@@ -17,6 +17,7 @@ interface FlowItemProps {
     onRunCommand: (id: string) => void;
     onMoveUp: (id: string) => void;
     onMoveDown: (id: string) => void;
+    onExport?: (id: string) => void;
 }
 
 /**
@@ -25,7 +26,7 @@ interface FlowItemProps {
  * @returns The rendered FlowItem component.
  */
 export const FlowItem: React.FC<FlowItemProps> = ({
-    flow, commands, isFirst, isLast, onRun, onEdit, onDelete, onMove, onRunCommand, onMoveUp, onMoveDown
+    flow, commands, isFirst, isLast, onRun, onEdit, onDelete, onMove, onRunCommand, onMoveUp, onMoveDown, onExport
 }) => {
     const [isExpanded, setIsExpanded] = useState(false);
 
@@ -48,6 +49,7 @@ export const FlowItem: React.FC<FlowItemProps> = ({
                     <div className="flow-actions">
                         <div className="action-row">
                             <button title="Edit" onClick={() => onEdit(flow)}>✎</button>
+                            {onExport && <button title="Export" onClick={() => onExport(flow.id)}>⭳</button>}
                             <button title="Run" onClick={() => onRun(flow.id)}>▶</button>
                         </div>
                         <div className="action-row">

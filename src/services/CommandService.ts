@@ -159,4 +159,47 @@ export class CommandService {
         }
         this.fireChange();
     }
+
+    /**
+     * Retrieves specific commands by their IDs.
+     * @param ids The list of command IDs to retrieve.
+     * @returns A promise resolving to the found commands.
+     */
+    public async getCommandsByIds(ids: string[]): Promise<Command[]> {
+        const allCommands = await this.getCommands();
+        return allCommands.filter(c => ids.includes(c.id));
+    }
+
+    /**
+     * Imports a list of commands, overwriting existing ones with the same ID.
+     * @param commands The commands to import.
+     */
+    public async importCommands(commands: Command[]) {
+        const workspaceCmdsToImport = commands.filter(c => c.source !== 'user');
+        const userCmdsToImport = commands.filter(c => c.source === 'user');
+
+        if (workspaceCmdsToImport.length > 0) {
+            const currentWorkspaceCmds = await this.workspaceStore.read();
+            for (const cmd of workspaceCmdsToImport) {
+                const index = currentWorkspaceCmds.findIndex(c => c.id === cmd.id);
+                if (index !== -1) currentWorkspaceCmds[index] = cmd;
+                else currentWorkspaceCmds.push(cmd);
+            }
+            await this.workspaceStore.write(currentWorkspaceCmds);
+            await this.performCategoryCleanup(currentWorkspaceCmds, false);
+        }
+
+        if (userCmdsToImport.length > 0 && this.userStore) {
+            const currentUserCmds = await this.userStore.read();
+            for (const cmd of userCmdsToImport) {
+                const index = currentUserCmds.findIndex(c => c.id === cmd.id);
+                if (index !== -1) currentUserCmds[index] = cmd;
+                else currentUserCmds.push(cmd);
+            }
+            await this.userStore.write(currentUserCmds);
+            await this.performCategoryCleanup(currentUserCmds, true);
+        }
+
+        this.fireChange();
+    }
 }

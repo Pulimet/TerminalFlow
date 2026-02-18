@@ -8,6 +8,8 @@ interface ListActionsProps {
     onCollapseAll: () => void;
     searchQuery: string;
     onSearch: (query: string) => void;
+    onExport?: () => void;
+    onImport?: () => void;
 }
 
 import { SearchBar } from './SearchBar';
@@ -17,11 +19,25 @@ import { SearchBar } from './SearchBar';
  * @param props The component props.
  * @returns The rendered ListActions component.
  */
-export const ListActions: React.FC<ListActionsProps> = ({ onExpandAll, onCollapseAll, searchQuery, onSearch }) => {
+export const ListActions: React.FC<ListActionsProps> = ({ onExpandAll, onCollapseAll, searchQuery, onSearch, onExport, onImport }) => {
     return (
         <div className="list-actions">
             <SearchBar value={searchQuery} onChange={onSearch} />
             <div className="action-buttons">
+                {onExport && (
+                    <button onClick={onExport} className="icon-button" title="Export All">
+                        <svg viewBox="0 0 16 16">
+                            <path d="M8 11V1M8 1L4 5M8 1L12 5M15 15H1" stroke="currentColor" fill="none" />
+                        </svg>
+                    </button>
+                )}
+                {onImport && (
+                    <button onClick={onImport} className="icon-button" title="Import">
+                        <svg viewBox="0 0 16 16">
+                            <path d="M8 5V15M8 15L4 11M8 15L12 11M1 1H15" stroke="currentColor" fill="none" />
+                        </svg>
+                    </button>
+                )}
                 <button onClick={onExpandAll} className="icon-button" title="Expand All">
                     <svg viewBox="0 0 16 16">
                         <path d="M4 5 L8 1 L12 5" />

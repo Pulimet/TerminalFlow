@@ -59,6 +59,14 @@ export const CommandView: React.FC<CommandViewProps> = ({
         sendMessage('moveCommand', { id, targetSource });
     };
 
+    const handleExport = (id?: string) => {
+        sendMessage('exportCommands', { ids: id ? [id] : undefined });
+    };
+
+    const handleImport = () => {
+        sendMessage('importCommands');
+    };
+
     if (view === 'form') {
         const existingCategories = Array.from(new Set(commands.map(c => c.category || 'General'))).sort();
         return (
@@ -81,6 +89,9 @@ export const CommandView: React.FC<CommandViewProps> = ({
             onMove={handleMove}
             onReorderCommands={(cmds) => sendMessage('reorderCommands', { data: cmds })}
             onReorderCategories={(order) => sendMessage('saveCommandCategoryOrder', { data: order })}
+            onExport={handleExport}
+            onExportAll={() => handleExport()}
+            onImport={handleImport}
         />
     );
 };

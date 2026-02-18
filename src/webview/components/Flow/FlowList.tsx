@@ -18,6 +18,9 @@ interface FlowListProps {
     onRunCommand: (id: string) => void;
     onReorderFlows: (flows: Flow[]) => void;
     onReorderCategories: (order: string[]) => void;
+    onExport?: (id: string) => void;
+    onExportAll?: () => void;
+    onImport?: () => void;
 }
 
 import { useListLogic } from '../../hooks/useListLogic';
@@ -30,7 +33,7 @@ const STORAGE_KEY = 'tf-flow-categories';
  * @returns The rendered FlowList component.
  */
 export const FlowList: React.FC<FlowListProps> = ({
-    flows, commands, categoryOrder = [], onRun, onEdit, onDelete, onMove, onRunCommand, onReorderFlows, onReorderCategories
+    flows, commands, categoryOrder = [], onRun, onEdit, onDelete, onMove, onRunCommand, onReorderFlows, onReorderCategories, onExport, onExportAll, onImport
 }) => {
     const {
         searchQuery,
@@ -88,6 +91,8 @@ export const FlowList: React.FC<FlowListProps> = ({
                 onCollapseAll={collapseAll}
                 searchQuery={searchQuery}
                 onSearch={setSearchQuery}
+                onExport={onExportAll}
+                onImport={onImport}
             />
             {categories.map((category, index) => (
                 <FlowCategory
@@ -108,6 +113,7 @@ export const FlowList: React.FC<FlowListProps> = ({
                     onMoveCategoryDown={moveCategoryDown}
                     onMoveFlowUp={moveItemUp}
                     onMoveFlowDown={moveItemDown}
+                    onExport={onExport}
                 />
             ))}
             {filteredFlows.length === 0 && (

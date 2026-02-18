@@ -65,6 +65,64 @@ export class TerminalFlowProvider implements vscode.WebviewViewProvider {
                     break;
 
                 case 'refresh': this.refreshData(); break;
+
+                case 'exportCommands': {
+                    const commands = await this._dataManager.commandService.getCommands();
+                    const exportData = data.ids ? commands.filter(c => data.ids.includes(c.id)) : commands.filter(c => (c.source || 'workspace') === this._scope);
+
+                    const uri = await vscode.window.showSaveDialog({ filters: { 'JSON': ['json'] }, saveLabel: 'Export Commands' });
+                    if (uri) {
+                        await vscode.workspace.fs.writeFile(uri, Buffer.from(JSON.stringify(exportData, null, 2)));
+                        vscode.window.showInformationMessage('Commands exported successfully.');
+                    }
+                    break;
+                }
+                case 'importCommands': {
+                    const uri = await vscode.window.showOpenDialog({ filters: { 'JSON': ['json'] }, canSelectMany: false });
+                    if (uri && uri[0]) {
+                        const content = await vscode.workspace.fs.readFile(uri[0]);
+                        const importedData = JSON.parse(content.toString());
+                        const commandsToImport = Array.isArray(importedData) ? importedData : importedData.commands;
+
+                        if (commandsToImport) {
+                            await this._dataManager.commandService.importCommands(commandsToImport);
+                            vscode.window.showInformationMessage('Commands imported successfully.');
+                        }
+                    }
+                    break;
+                }
+                case 'exportFlows': {
+                    const flows = await this._dataManager.flowService.getFlows();
+                    const flowsToExport = data.ids ? flows.filter(f => data.ids.includes(f.id)) : flows.filter(f => (f.source || 'workspace') === this._scope);
+
+                    const commandIds = this._dataManager.flowService.getDependentCommandIds(flowsToExport);
+                    const commandsToExport = await this._dataManager.commandService.getCommandsByIds(commandIds);
+
+                    const exportData = { flows: flowsToExport, commands: commandsToExport };
+
+                    const uri = await vscode.window.showSaveDialog({ filters: { 'JSON': ['json'] }, saveLabel: 'Export Flows' });
+                    if (uri) {
+                        await vscode.workspace.fs.writeFile(uri, Buffer.from(JSON.stringify(exportData, null, 2)));
+                        vscode.window.showInformationMessage('Flows exported successfully.');
+                    }
+                    break;
+                }
+                case 'importFlows': {
+                    const uri = await vscode.window.showOpenDialog({ filters: { 'JSON': ['json'] }, canSelectMany: false });
+                    if (uri && uri[0]) {
+                        const content = await vscode.workspace.fs.readFile(uri[0]);
+                        const importedData = JSON.parse(content.toString());
+
+                        if (importedData.flows) {
+                            await this._dataManager.flowService.importFlows(importedData.flows);
+                        }
+                        if (importedData.commands) {
+                            await this._dataManager.commandService.importCommands(importedData.commands);
+                        }
+                        vscode.window.showInformationMessage('Flows imported successfully.');
+                    }
+                    break;
+                }
             }
         });
         this.refreshData();

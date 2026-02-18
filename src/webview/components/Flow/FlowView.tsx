@@ -62,6 +62,14 @@ export const FlowView: React.FC<FlowViewProps> = ({
         sendMessage('moveFlow', { id, targetSource });
     };
 
+    const handleExport = (id?: string) => {
+        sendMessage('exportFlows', { ids: id ? [id] : undefined });
+    };
+
+    const handleImport = () => {
+        sendMessage('importFlows');
+    };
+
     if (view === 'form') {
         const existingCategories = Array.from(new Set(flows.map(f => f.category || 'General'))).sort();
         return (
@@ -87,6 +95,9 @@ export const FlowView: React.FC<FlowViewProps> = ({
             onMove={handleMove}
             onReorderFlows={(fls) => sendMessage('reorderFlows', { data: fls })}
             onReorderCategories={(order) => sendMessage('saveFlowCategoryOrder', { data: order })}
+            onExport={handleExport}
+            onExportAll={() => handleExport()}
+            onImport={handleImport}
         />
     );
 };
