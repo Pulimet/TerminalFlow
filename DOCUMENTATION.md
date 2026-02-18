@@ -135,3 +135,19 @@ A hook to bridge React state with the VS Code Extension backend.
     - Uses `SequenceBuilder` to manage the order of steps.
 - **`SequenceBuilder.tsx`**: A list allowing reordering (move up/down) and deletion of steps in a flow.
 - **`FlowStep.tsx`**: Renders individual steps inside `FlowItem`'s expanded view or `SequenceBuilder`. Handles the visual distinction between regular commands, sleep, and echo.
+
+---
+
+## Export & Import
+
+TerminalFlow allows you to export and import your Commands and Flows to share them with others or backup your configuration.
+
+### Exporting
+- **Export All**: Click the Export icon in the header of the Command or Flow list to export all items in the current scope.
+- **Export Single Item**: Click the Export icon on an individual command or flow item to export just that item.
+- **Flow Dependencies**: When exporting Flows, any Commands used by those Flow steps are automatically included in the export file to ensure the Flow works when imported elsewhere.
+
+### Importing
+- Click the Import icon in the header of the Command or Flow list.
+- Select a valid JSON file previously exported from TerminalFlow.
+- Imported items will overwrite existing items with the same ID, effectively updating them. New items will be added.
