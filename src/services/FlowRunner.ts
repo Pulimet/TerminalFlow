@@ -5,6 +5,9 @@ import { TerminalService } from './TerminalService';
 import { getEchoCommand, resolveSpecialCommand } from '../utils/commandUtils';
 import { delay, NEW_TERMINAL_DELAY } from '../utils/common';
 
+/**
+ * Service for running flows.
+ */
 export class FlowRunner {
     constructor(
         private dataManager: DataManager,
@@ -12,6 +15,11 @@ export class FlowRunner {
         private commandRunner: CommandRunner
     ) { }
 
+    /**
+     * Runs a flow by its ID.
+     * @param flowId The ID of the flow to run.
+     * @param fromIndex The index of the sequence to start from.
+     */
     public async runFlow(flowId: string, fromIndex?: number) {
         const flow = await this.dataManager.getFlow(flowId);
         if (!flow) { vscode.window.showErrorMessage(`Flow not found: ${flowId}`); return; }
@@ -39,6 +47,12 @@ export class FlowRunner {
         await this.runSequence(sequenceToRun, shouldPrintTitle, baseTerminal);
     }
 
+    /**
+     * Runs a sequence of commands.
+     * @param sequence The sequence of command IDs to run.
+     * @param shouldPrintTitle Whether to print command titles.
+     * @param baseTerminal The terminal to run the commands in.
+     */
     private async runSequence(sequence: string[], shouldPrintTitle: boolean, baseTerminal: vscode.Terminal) {
         let sharedBuffer: string[] = [];
 

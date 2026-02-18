@@ -1,3 +1,6 @@
+/**
+ * Represents a command that can be executed.
+ */
 export interface Command {
     id: string;
     title: string;
@@ -8,6 +11,9 @@ export interface Command {
     source?: 'workspace' | 'user';
 }
 
+/**
+ * Represents a flow (sequence of commands).
+ */
 export interface Flow {
     id: string;
     title: string;
@@ -18,6 +24,9 @@ export interface Flow {
     source?: 'workspace' | 'user';
 }
 
+/**
+ * Props for command components.
+ */
 export interface Props {
     commands: Command[];
     onRun: (id: string) => void;

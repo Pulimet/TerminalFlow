@@ -1,6 +1,9 @@
 import React from 'react';
 import { Command } from '../../types';
 
+/**
+ * Props for the SequenceBuilder component.
+ */
 interface SequenceBuilderProps {
     sequence: string[];
     availableCommands: Command[];
@@ -9,6 +12,11 @@ interface SequenceBuilderProps {
     onRemove: (index: number) => void;
 }
 
+/**
+ * Component for building detailed flow sequences.
+ * @param props The component props.
+ * @returns The rendered SequenceBuilder component.
+ */
 export const SequenceBuilder: React.FC<SequenceBuilderProps> = ({ sequence, availableCommands, onMoveUp, onMoveDown, onRemove }) => {
     const getEntryLabel = (id: string): string => {
         if (id.startsWith('__sleep:')) return `⏱ Sleep ${id.replace('__sleep:', '')}ms`;

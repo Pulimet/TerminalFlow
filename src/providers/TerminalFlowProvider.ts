@@ -1,18 +1,30 @@
 import * as vscode from 'vscode';
 import { DataManager } from '../services/DataManager';
 
+/**
+ * Provider for the Terminal Flow webview view.
+ */
 export class TerminalFlowProvider implements vscode.WebviewViewProvider {
     public static readonly viewType = 'terminal-flow-view';
     private _view?: vscode.WebviewView;
     private _scope: 'workspace' | 'user';
     private _tab: 'commands' | 'flows';
 
+    /**
+     * Creates an instance of TerminalFlowProvider.
+     * @param _context The extension context.
+     * @param _dataManager The data manager instance.
+     */
     constructor(private readonly _context: vscode.ExtensionContext, private readonly _dataManager: DataManager) {
         this._scope = this._context.workspaceState.get<'workspace' | 'user'>('terminal-flow.scope', 'workspace');
         this._tab = this._context.workspaceState.get<'commands' | 'flows'>('terminal-flow.tab', 'commands');
         this._dataManager.onDidChangeData(() => this.refreshData());
     }
 
+    /**
+     * Resolves the webview view.
+     * @param webviewView The webview view to resolve.
+     */
     public resolveWebviewView(webviewView: vscode.WebviewView) {
         this._view = webviewView;
         webviewView.webview.options = { enableScripts: true, localResourceRoots: [this._context.extensionUri] };
@@ -58,6 +70,9 @@ export class TerminalFlowProvider implements vscode.WebviewViewProvider {
         this.refreshData();
     }
 
+    /**
+     * Refreshes the data in the webview.
+     */
     private async refreshData() {
         if (this._view) {
             this._view.webview.postMessage({
@@ -72,6 +87,11 @@ export class TerminalFlowProvider implements vscode.WebviewViewProvider {
         }
     }
 
+    /**
+     * Generates the HTML content for the webview.
+     * @param webview The webview instance.
+     * @returns The HTML string.
+     */
     private _getHtmlForWebview(webview: vscode.Webview) {
         const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._context.extensionUri, 'dist', 'webview.js'));
         const styleMainUri = webview.asWebviewUri(vscode.Uri.joinPath(this._context.extensionUri, 'dist', 'webview.css'));
@@ -90,6 +110,10 @@ export class TerminalFlowProvider implements vscode.WebviewViewProvider {
     }
 }
 
+/**
+ * Generates a random nonce string.
+ * @returns A random 32-character string.
+ */
 function getNonce() {
     let text = '';
     const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

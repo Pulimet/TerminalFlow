@@ -1,5 +1,8 @@
 import React from 'react';
 
+/**
+ * Props for the SearchBar component.
+ */
 interface SearchBarProps {
     value: string;
     onChange: (value: string) => void;
@@ -7,6 +10,11 @@ interface SearchBarProps {
     className?: string;
 }
 
+/**
+ * A reusable search bar component.
+ * @param props The component props.
+ * @returns The rendered SearchBar component.
+ */
 export const SearchBar: React.FC<SearchBarProps> = ({
     value,
     onChange,

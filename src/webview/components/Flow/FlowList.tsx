@@ -4,6 +4,9 @@ import { FlowCategory } from './FlowCategory';
 import { useCategoryState } from '../../hooks/useCategoryState';
 import { ListActions } from '../ListActions';
 
+/**
+ * Props for the FlowList component.
+ */
 interface FlowListProps {
     flows: Flow[];
     commands: Command[];
@@ -21,6 +24,11 @@ import { useListLogic } from '../../hooks/useListLogic';
 
 const STORAGE_KEY = 'tf-flow-categories';
 
+/**
+ * Renders a list of flows grouped by category.
+ * @param props The component props.
+ * @returns The rendered FlowList component.
+ */
 export const FlowList: React.FC<FlowListProps> = ({
     flows, commands, categoryOrder = [], onRun, onEdit, onDelete, onMove, onRunCommand, onReorderFlows, onReorderCategories
 }) => {

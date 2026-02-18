@@ -1,11 +1,19 @@
 import React from 'react';
 
+/**
+ * Props for the SleepAdder component.
+ */
 interface SleepAdderProps {
     sleepMs: string;
     setSleepMs: (ms: string) => void;
     onAdd: () => void;
 }
 
+/**
+ * Component for adding a sleep step to a flow.
+ * @param props The component props.
+ * @returns The rendered SleepAdder component.
+ */
 export const SleepAdder: React.FC<SleepAdderProps> = ({ sleepMs, setSleepMs, onAdd }) => (
     <div className="sleep-adder">
         <h4>Built-in: Sleep</h4>
@@ -17,12 +25,20 @@ export const SleepAdder: React.FC<SleepAdderProps> = ({ sleepMs, setSleepMs, onA
     </div>
 );
 
+/**
+ * Props for the EchoAdder component.
+ */
 interface EchoAdderProps {
     echoText: string;
     setEchoText: (text: string) => void;
     onAdd: () => void;
 }
 
+/**
+ * Component for adding an echo step to a flow.
+ * @param props The component props.
+ * @returns The rendered EchoAdder component.
+ */
 export const EchoAdder: React.FC<EchoAdderProps> = ({ echoText, setEchoText, onAdd }) => (
     <div className="echo-adder">
         <h4>Built-in: Echo</h4>

@@ -1,12 +1,20 @@
 import React, { useState } from 'react';
 import { Command } from '../../types';
 
+/**
+ * Props for the CommandForm component.
+ */
 interface CommandFormProps {
     initialCommand?: Command;
     onSave: (command: Command) => void;
     onCancel: () => void;
 }
 
+/**
+ * Form for creating or editing a command.
+ * @param props The component props.
+ * @returns The rendered CommandForm component.
+ */
 export const CommandForm: React.FC<CommandFormProps> = ({ initialCommand, onSave, onCancel }) => {
     const [title, setTitle] = useState(initialCommand?.title || '');
     const [description, setDescription] = useState(initialCommand?.description || '');

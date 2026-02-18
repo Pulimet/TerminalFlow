@@ -1,8 +1,16 @@
 import * as vscode from 'vscode';
 
+/**
+ * Service for managing VS Code terminals.
+ */
 export class TerminalService {
     private _terminals: Map<string, vscode.Terminal> = new Map();
 
+    /**
+     * Gets an existing terminal or creates a new one if it doesn't exist.
+     * @param name The name of the terminal.
+     * @returns An object containing the terminal and a flag indicating if it's new.
+     */
     public getTerminal(name: string = 'Terminal Flow'): { terminal: vscode.Terminal, isNew: boolean } {
         // Clean up closed terminals
         for (const [key, term] of this._terminals) {
@@ -26,11 +34,19 @@ export class TerminalService {
         return { terminal, isNew };
     }
 
+    /**
+     * Creates a new terminal with the specified name.
+     * @param name The name of the new terminal.
+     * @returns The created terminal.
+     */
     public createNewTerminal(name: string): vscode.Terminal {
         const terminal = vscode.window.createTerminal(name);
         return terminal;
     }
 
+    /**
+     * Disposes of all managed terminals.
+     */
     public dispose() {
         this._terminals.forEach(t => t.dispose());
         this._terminals.clear();

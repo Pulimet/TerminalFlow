@@ -1,6 +1,9 @@
 import React from 'react';
 import { Command } from '../../types';
 
+/**
+ * Props for the CommandItem component.
+ */
 interface CommandItemProps {
     command: Command;
     isFirst: boolean;
@@ -13,6 +16,11 @@ interface CommandItemProps {
     onMoveDown: (id: string) => void;
 }
 
+/**
+ * Renders a single command item in the list.
+ * @param props The component props.
+ * @returns The rendered CommandItem component.
+ */
 export const CommandItem: React.FC<CommandItemProps> = ({
     command, isFirst, isLast, onRun, onEdit, onDelete, onMove, onMoveUp, onMoveDown
 }) => {

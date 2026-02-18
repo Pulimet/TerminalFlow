@@ -2,6 +2,9 @@ import React from 'react';
 import { Command } from '../../types';
 import { CommandItem } from './CommandItem';
 
+/**
+ * Props for the CommandCategory component.
+ */
 interface CommandCategoryProps {
     category: string;
     commands: Command[];
@@ -19,6 +22,11 @@ interface CommandCategoryProps {
     onMoveCommandDown: (id: string) => void;
 }
 
+/**
+ * Renders a category of commands with collapsible behavior.
+ * @param props The component props.
+ * @returns The rendered CommandCategory component.
+ */
 export const CommandCategory: React.FC<CommandCategoryProps> = ({
     category, commands, isExpanded, isFirst, isLast, onToggle, onRun, onEdit, onDelete, onMove,
     onMoveCategoryUp, onMoveCategoryDown, onMoveCommandUp, onMoveCommandDown

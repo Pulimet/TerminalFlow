@@ -1,6 +1,9 @@
 import React from 'react';
 import { Command } from '../../types';
 
+/**
+ * Props for the FlowStep component.
+ */
 interface FlowStepProps {
     cmdId: string;
     index: number;
@@ -9,6 +12,11 @@ interface FlowStepProps {
     onRunFlowFromHere: (index: number) => void;
 }
 
+/**
+ * Renders a single step within a flow (command, sleep, or echo).
+ * @param props The component props.
+ * @returns The rendered FlowStep component.
+ */
 export const FlowStep: React.FC<FlowStepProps> = ({ cmdId, index, command, onRunCommand, onRunFlowFromHere }) => {
     if (cmdId.startsWith('__sleep:')) {
         const ms = cmdId.replace('__sleep:', '');

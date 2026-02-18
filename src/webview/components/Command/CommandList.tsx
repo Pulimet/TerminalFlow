@@ -4,6 +4,9 @@ import { CommandCategory } from './CommandCategory';
 import { useListLogic } from '../../hooks/useListLogic';
 import { ListActions } from '../ListActions';
 
+/**
+ * Props for the CommandList component.
+ */
 interface Props {
     commands: Command[];
     categoryOrder?: string[];
@@ -17,6 +20,11 @@ interface Props {
 
 const STORAGE_KEY = 'tf-cmd-categories';
 
+/**
+ * Renders a list of commands grouped by category.
+ * @param props The component props.
+ * @returns The rendered CommandList component.
+ */
 export const CommandList: React.FC<Props> = ({
     commands, categoryOrder = [], onRun, onEdit, onDelete, onMove, onReorderCommands, onReorderCategories
 }) => {

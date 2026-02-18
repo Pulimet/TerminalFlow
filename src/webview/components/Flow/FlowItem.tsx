@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { Flow, Command } from '../../types';
 import { FlowStep } from './FlowStep';
 
+/**
+ * Props for the FlowItem component.
+ */
 interface FlowItemProps {
     flow: Flow;
     commands: Command[];
@@ -16,6 +19,11 @@ interface FlowItemProps {
     onMoveDown: (id: string) => void;
 }
 
+/**
+ * Renders a single flow item in the list.
+ * @param props The component props.
+ * @returns The rendered FlowItem component.
+ */
 export const FlowItem: React.FC<FlowItemProps> = ({
     flow, commands, isFirst, isLast, onRun, onEdit, onDelete, onMove, onRunCommand, onMoveUp, onMoveDown
 }) => {

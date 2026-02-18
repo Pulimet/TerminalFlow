@@ -3,6 +3,9 @@ import { Flow, Command } from '../../types';
 import { SequenceBuilder } from './SequenceBuilder';
 import { SleepAdder, EchoAdder } from './FlowFormHelpers';
 
+/**
+ * Props for the FlowForm component.
+ */
 interface FlowFormProps {
     initialFlow?: Flow;
     availableCommands: Command[];
@@ -12,6 +15,11 @@ interface FlowFormProps {
 
 import { useCategoryState } from '../../hooks/useCategoryState';
 
+/**
+ * Form for creating or editing a flow.
+ * @param props The component props.
+ * @returns The rendered FlowForm component.
+ */
 export const FlowForm: React.FC<FlowFormProps> = ({ initialFlow, availableCommands, onSave, onCancel }) => {
     const [title, setTitle] = useState(initialFlow?.title || '');
     const [description, setDescription] = useState(initialFlow?.description || '');

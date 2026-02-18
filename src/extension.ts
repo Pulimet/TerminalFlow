@@ -5,6 +5,10 @@ import { CommandRunner } from './services/CommandRunner';
 import { TerminalService } from './services/TerminalService';
 import { FlowRunner } from './services/FlowRunner';
 
+/**
+ * Activates the extension.
+ * @param context The extension context.
+ */
 export function activate(context: vscode.ExtensionContext) {
     console.log('Terminal Flow starting...');
     const rootPath = vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders[0].uri.fsPath : '';
@@ -30,4 +34,7 @@ export function activate(context: vscode.ExtensionContext) {
     console.log('Terminal Flow is now active!');
 }
 
+/**
+ * Deactivates the extension.
+ */
 export function deactivate() { }

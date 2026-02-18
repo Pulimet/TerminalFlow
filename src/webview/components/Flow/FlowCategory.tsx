@@ -2,6 +2,9 @@ import React from 'react';
 import { Flow, Command } from '../../types';
 import { FlowItem } from './FlowItem';
 
+/**
+ * Props for the FlowCategory component.
+ */
 interface FlowCategoryProps {
     category: string;
     flows: Flow[];
@@ -21,6 +24,11 @@ interface FlowCategoryProps {
     onMoveFlowDown: (id: string) => void;
 }
 
+/**
+ * Renders a category of flows with collapsible behavior.
+ * @param props The component props.
+ * @returns The rendered FlowCategory component.
+ */
 export const FlowCategory: React.FC<FlowCategoryProps> = ({
     category, flows, commands, isExpanded, isFirst, isLast, onToggle, onRun, onEdit, onDelete, onMove, onRunCommand,
     onMoveCategoryUp, onMoveCategoryDown, onMoveFlowUp, onMoveFlowDown

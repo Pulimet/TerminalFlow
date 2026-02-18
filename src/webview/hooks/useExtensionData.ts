@@ -5,6 +5,10 @@ import { Command, Flow } from '../types';
 // @ts-ignore
 const vscode = acquireVsCodeApi();
 
+/**
+ * Custom hook for interacting with the VS Code extension data.
+ * @returns An object containing the data and functions to interact with the extension.
+ */
 export const useExtensionData = () => {
     const [commands, setCommands] = useState<Command[]>([]);
     const [flows, setFlows] = useState<Flow[]>([]);

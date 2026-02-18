@@ -1,5 +1,11 @@
 import { useState, useEffect } from 'react';
 
+/**
+ * Custom hook for managing the expanded/collapsed state of categories.
+ * @param categories The list of category names.
+ * @param storageKey The key used for local storage persistence.
+ * @returns An object containing the state and toggle functions.
+ */
 export const useCategoryState = (categories: string[], storageKey: string) => {
     const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>(() => {
         try {

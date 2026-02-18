@@ -10,6 +10,10 @@ export class CommandRunner {
         private terminalService: TerminalService
     ) { }
 
+    /**
+     * Executes a command by its ID.
+     * @param commandId The ID of the command to execute.
+     */
     public async runCommand(commandId: string) {
         const command = await this.dataManager.getCommand(commandId);
         if (!command) { vscode.window.showErrorMessage(`Command not found: ${commandId}`); return; }
@@ -42,6 +46,12 @@ export class CommandRunner {
         }
     }
 
+    /**
+     * Resolves a command string by its ID, optionally adding a title echo.
+     * @param cmdId The command ID.
+     * @param shouldPrintTitle Whether to include the title echo command.
+     * @returns The resolved command string or null if not found.
+     */
     public async resolveCommand(cmdId: string, shouldPrintTitle: boolean): Promise<string | null> {
         const specialCmd = resolveSpecialCommand(cmdId);
         if (specialCmd) return specialCmd;

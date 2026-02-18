@@ -1,11 +1,17 @@
 import { useState, useMemo } from 'react';
 import { useCategoryState } from './useCategoryState';
 
+/**
+ * Base interface for items in the list.
+ */
 interface BaseItem {
     id: string;
     category?: string;
 }
 
+/**
+ * Props for the useListLogic hook.
+ */
 interface UseListLogicProps<T extends BaseItem> {
     items: T[];
     categoryOrder: string[];
@@ -15,6 +21,12 @@ interface UseListLogicProps<T extends BaseItem> {
     onReorderCategories: (order: string[]) => void;
 }
 
+/**
+ * Custom hook containing shared logic for lists (filtering, grouping, reordering).
+ * @template T The type of item in the list.
+ * @param props The hook props.
+ * @returns An object containing the logic and state for the list.
+ */
 export const useListLogic = <T extends BaseItem>({
     items,
     categoryOrder,

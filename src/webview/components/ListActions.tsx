@@ -1,5 +1,8 @@
 import React from 'react';
 
+/**
+ * Props for the ListActions component.
+ */
 interface ListActionsProps {
     onExpandAll: () => void;
     onCollapseAll: () => void;
@@ -9,6 +12,11 @@ interface ListActionsProps {
 
 import { SearchBar } from './SearchBar';
 
+/**
+ * Component for list-wide actions like search, expand all, and collapse all.
+ * @param props The component props.
+ * @returns The rendered ListActions component.
+ */
 export const ListActions: React.FC<ListActionsProps> = ({ onExpandAll, onCollapseAll, searchQuery, onSearch }) => {
     return (
         <div className="list-actions">

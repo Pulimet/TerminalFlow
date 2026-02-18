@@ -6,6 +6,10 @@ import { CommandForm } from './components/Command/CommandForm';
 import { FlowForm } from './components/Flow/FlowForm';
 import { Command, Flow } from './types';
 
+/**
+ * The main application component for the Terminal Flow webview.
+ * @returns The rendered App component.
+ */
 const App = () => {
     const { commands, flows, commandCategoryOrder, flowCategoryOrder, scope, setScope, tab, setTab, sendMessage } = useExtensionData();
     const [view, setView] = useState<'list' | 'form'>('list');

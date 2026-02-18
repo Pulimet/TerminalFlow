@@ -6,6 +6,9 @@ export interface Command {
     source?: 'workspace' | 'user';
 }
 
+/**
+ * Service for managing commands commands.
+ */
 export class CommandService {
     private workspaceStore: Store<Command[]>;
     private userStore: Store<Command[]> | undefined;
@@ -13,6 +16,11 @@ export class CommandService {
     private userCategoryStore: Store<string[]> | undefined;
     private _onDidChange = new Set<() => void>();
 
+    /**
+     * Creates an instance of CommandService.
+     * @param workspaceDir The directory for workspace-specific storage.
+     * @param userTerminalDir Optional directory for user-specific storage.
+     */
     constructor(workspaceDir: string, userTerminalDir?: string) {
         this.workspaceStore = new Store<Command[]>(workspaceDir, 'commands.json', []);
         this.workspaceCategoryStore = new Store<string[]>(workspaceDir, 'commandCategories.json', []);
@@ -23,15 +31,31 @@ export class CommandService {
         }
     }
 
+    /**
+     * Registers a callback to be invoked when commands change.
+     * @param callback The callback function.
+     */
     public onDidChange(callback: () => void) { this._onDidChange.add(callback); }
+
+    /**
+     * Triggers the change event listeners.
+     */
     public fireChange() { this._onDidChange.forEach(cb => cb()); }
 
+    /**
+     * Retrieves all commands from both workspace and user stores.
+     * @returns A promise resolving to an array of commands.
+     */
     public async getCommands(): Promise<Command[]> {
         const workspaceCommands = (await this.workspaceStore.read()).map(c => ({ ...c, source: 'workspace' as const }));
         const userCommands = this.userStore ? (await this.userStore.read()).map(c => ({ ...c, source: 'user' as const })) : [];
         return [...workspaceCommands, ...userCommands];
     }
 
+    /**
+     * Saves a command to the appropriate store based on its source.
+     * @param command The command to save.
+     */
     public async saveCommand(command: Command) {
         const targetStore = command.source === 'user' && this.userStore ? this.userStore : this.workspaceStore;
 
@@ -45,6 +69,10 @@ export class CommandService {
         this.fireChange();
     }
 
+    /**
+     * Deletes a command by its ID.
+     * @param id The ID of the command to delete.
+     */
     public async deleteCommand(id: string) {
         // We need to find where it is first
         const allCommands = await this.getCommands();
@@ -60,6 +88,11 @@ export class CommandService {
         this.fireChange();
     }
 
+    /**
+     * Moves a command from one source (workspace/user) to another.
+     * @param id The ID of the command to move.
+     * @param targetSource The target source ('workspace' or 'user').
+     */
     public async moveCommand(id: string, targetSource: 'workspace' | 'user') {
         const allCommands = await this.getCommands();
         const command = allCommands.find(c => c.id === id);
@@ -73,6 +106,11 @@ export class CommandService {
         await this.saveCommand(newCommand);
     }
 
+    /**
+     * Cleans up unused categories from the store.
+     * @param commands The list of current commands.
+     * @param isUser Whether to check the user store or workspace store.
+     */
     private async performCategoryCleanup(commands: Command[], isUser: boolean) {
         const store = isUser && this.userCategoryStore ? this.userCategoryStore : this.workspaceCategoryStore;
         const currentOrder = await store.read();
@@ -82,13 +120,11 @@ export class CommandService {
         }
     }
 
-    // This logic might need refinement if we want to support setting raw commands to a specific store
-    // But for now, this matches the existing signature used by DataManager/Webview
+    /**
+     * Overwrites the commands logic.
+     * @param commands The new list of commands.
+     */
     public async setCommands(commands: Command[]) {
-        // This is tricky with dual storage. 
-        // Typically setCommands is used for reordering or bulk updates. 
-        // If we receive a mixed list, we should save them to their respective stores.
-
         const workspaceCmds = commands.filter(c => c.source !== 'user');
         const userCmds = commands.filter(c => c.source === 'user');
 
@@ -99,6 +135,10 @@ export class CommandService {
         this.fireChange();
     }
 
+    /**
+     * Retrieves the merged category order from both stores.
+     * @returns A promise resolving to an array of category names.
+     */
     public async getCategoryOrder(): Promise<string[]> {
         const workspaceOrder = await this.workspaceCategoryStore.read();
         const userOrder = this.userCategoryStore ? await this.userCategoryStore.read() : [];
@@ -106,18 +146,15 @@ export class CommandService {
         return Array.from(new Set([...workspaceOrder, ...userOrder]));
     }
 
+    /**
+     * Saves the category order.
+     * @param order The new order of categories.
+     */
     public async saveCategoryOrder(order: string[]) {
-        // This is ambiguous. If we reorder categories in UI, where do we save the order?
-        // Current simple approach: Save the full order to Workspace, 
-        // and for User, only save categories that exist in User commands? 
-        // OR: Save the full order to both to keep them in sync as much as possible?
-        // Let's safe full order to workspace, and valid categories to user.
 
         await this.workspaceCategoryStore.write(order);
 
         if (this.userCategoryStore) {
-            // For user store, maybe just save the same order?
-            // It stores strings, so it doesn't hurt to have extra categories in the order list.
             await this.userCategoryStore.write(order);
         }
         this.fireChange();
