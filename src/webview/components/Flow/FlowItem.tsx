@@ -2,53 +2,33 @@ import React, { useState } from 'react';
 import { Flow, Command } from '../../types';
 import { FlowStep } from './FlowStep';
 
-/**
- * Props for the FlowItem component.
- */
 interface FlowItemProps {
-    flow: Flow;
-    commands: Command[];
-    isFirst: boolean;
-    isLast: boolean;
+    flow: Flow; commands: Command[]; isFirst: boolean; isLast: boolean;
     onRun: (id: string, fromIndex?: number) => void;
-    onEdit: (flow: Flow) => void;
-    onDelete: (id: string) => void;
-    onMove: (id: string) => void;
-    onRunCommand: (id: string) => void;
-    onMoveUp: (id: string) => void;
-    onMoveDown: (id: string) => void;
-    onExport?: (id: string) => void;
-    onDuplicate: (item: Flow) => void;
+    onEdit: (flow: Flow) => void; onDelete: (id: string) => void;
+    onMove: (id: string) => void; onRunCommand: (id: string) => void;
+    onMoveUp: (id: string) => void; onMoveDown: (id: string) => void;
+    onExport?: (id: string) => void; onDuplicate: (item: Flow) => void;
     onCopy: (text: string) => void;
 }
 
-/**
- * Renders a single flow item in the list.
- * @param props The component props.
- * @returns The rendered FlowItem component.
- */
-export const FlowItem: React.FC<FlowItemProps> = ({
-    flow, commands, isFirst, isLast, onRun, onEdit, onDelete, onMove, onRunCommand, onMoveUp, onMoveDown, onExport, onDuplicate, onCopy
-}) => {
+const getFlowScript = (flow: Flow, commands: Command[]) => flow.sequence.map(cmdId => {
+    if (cmdId.startsWith('__sleep:')) {
+        const ms = parseInt(cmdId.replace('__sleep:', ''), 10);
+        return !isNaN(ms) && ms > 0 ? `echo "Sleeping ${ms}ms..." && sleep ${ms / 1000}` : '';
+    }
+    if (cmdId.startsWith('__echo:')) return `echo "${cmdId.replace('__echo:', '')}"`;
+    return commands.find(c => c.id === cmdId)?.command || '';
+}).filter(Boolean).join(' && ');
+
+export const FlowItem: React.FC<FlowItemProps> = (props) => {
+    const { flow, commands, isFirst, isLast, onRun, onEdit, onDelete, onMove, onRunCommand, onMoveUp, onMoveDown, onExport, onDuplicate, onCopy } = props;
     const [isExpanded, setIsExpanded] = useState(false);
 
     const handleCopyFlow = (e: React.MouseEvent) => {
         e.stopPropagation();
-        const cmdStrings: string[] = [];
-        flow.sequence.forEach(cmdId => {
-            if (cmdId.startsWith('__sleep:')) {
-                const ms = parseInt(cmdId.replace('__sleep:', ''), 10);
-                if (!isNaN(ms) && ms > 0) cmdStrings.push(`echo "Sleeping ${ms}ms..." && sleep ${ms / 1000}`);
-            } else if (cmdId.startsWith('__echo:')) {
-                cmdStrings.push(`echo "${cmdId.replace('__echo:', '')}"`);
-            } else {
-                const cmd = commands.find(c => c.id === cmdId);
-                if (cmd) cmdStrings.push(cmd.command);
-            }
-        });
-        if (cmdStrings.length > 0) {
-            onCopy(cmdStrings.join(' && '));
-        }
+        const script = getFlowScript(flow, commands);
+        if (script) onCopy(script);
     };
 
     return (
@@ -61,9 +41,7 @@ export const FlowItem: React.FC<FlowItemProps> = ({
                     </div>
                 </div>
                 <div className="flow-info">
-                    <div className="flow-header">
-                        <span className="flow-title">{flow.title}</span>
-                    </div>
+                    <div className="flow-header"><span className="flow-title">{flow.title}</span></div>
                     <div className="flow-description">{flow.description}</div>
                 </div>
                 <div className="flow-right">
@@ -71,13 +49,7 @@ export const FlowItem: React.FC<FlowItemProps> = ({
                         <div className="action-row">
                             <button title="Duplicate" onClick={() => onDuplicate(flow)}>⧉</button>
                             <button title="Edit" onClick={() => onEdit(flow)}>✎</button>
-                            {onExport && (
-                                <button title="Export" onClick={() => onExport(flow.id)}>
-                                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor">
-                                        <path d="M9 1h4v4M13 1L7 7M11 13H3V5h6" />
-                                    </svg>
-                                </button>
-                            )}
+                            {onExport && <button title="Export" onClick={() => onExport(flow.id)}><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor"><path d="M9 1h4v4M13 1L7 7M11 13H3V5h6" /></svg></button>}
                             <button title="Run" onClick={() => onRun(flow.id)}>▶</button>
                         </div>
                         <div className="action-row">
@@ -97,15 +69,8 @@ export const FlowItem: React.FC<FlowItemProps> = ({
             {isExpanded && flow.sequence.length > 0 && (
                 <div className="flow-steps">
                     {flow.sequence.map((cmdId, index) => (
-                        <FlowStep
-                            key={`${flow.id}-${index}`}
-                            cmdId={cmdId}
-                            index={index}
-                            command={commands.find(c => c.id === cmdId)}
-                            onRunCommand={onRunCommand}
-                            onRunFlowFromHere={(idx) => onRun(flow.id, idx)}
-                            onCopy={onCopy}
-                        />
+                        <FlowStep key={`${flow.id}-${index}`} cmdId={cmdId} index={index} command={commands.find(c => c.id === cmdId)}
+                            onRunCommand={onRunCommand} onRunFlowFromHere={(idx) => onRun(flow.id, idx)} onCopy={onCopy} />
                     ))}
                 </div>
             )}

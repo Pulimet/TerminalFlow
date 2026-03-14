@@ -1,144 +1,32 @@
 import * as vscode from 'vscode';
 import { DataManager } from '../services/DataManager';
+import { handleWebviewMessage } from './messageHandler';
 
-/**
- * Provider for the Terminal Flow webview view.
- */
 export class TerminalFlowProvider implements vscode.WebviewViewProvider {
     public static readonly viewType = 'terminal-flow-view';
     private _view?: vscode.WebviewView;
     private _scope: 'workspace' | 'user';
     private _tab: 'commands' | 'flows';
 
-    /**
-     * Creates an instance of TerminalFlowProvider.
-     * @param _context The extension context.
-     * @param _dataManager The data manager instance.
-     */
     constructor(private readonly _context: vscode.ExtensionContext, private readonly _dataManager: DataManager) {
         this._scope = this._context.workspaceState.get<'workspace' | 'user'>('terminal-flow.scope', 'workspace');
         this._tab = this._context.workspaceState.get<'commands' | 'flows'>('terminal-flow.tab', 'commands');
         this._dataManager.onDidChangeData(() => this.refreshData());
     }
 
-    /**
-     * Resolves the webview view.
-     * @param webviewView The webview view to resolve.
-     */
     public resolveWebviewView(webviewView: vscode.WebviewView) {
         this._view = webviewView;
         webviewView.webview.options = { enableScripts: true, localResourceRoots: [this._context.extensionUri] };
         webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
 
-        webviewView.webview.onDidReceiveMessage(async (data) => {
-            switch (data.type) {
-                case 'runCommand': vscode.commands.executeCommand('terminal-flow.runCommand', data.id); break;
-                case 'runFlow': vscode.commands.executeCommand('terminal-flow.runFlow', data.id, data.fromIndex); break;
-                case 'saveCommand': await this._dataManager.commandService.saveCommand(data.data); break;
-                case 'deleteCommand': {
-                    const answer = await vscode.window.showWarningMessage('Are you sure you want to delete this command?', { modal: true }, 'Delete');
-                    if (answer === 'Delete') await this._dataManager.commandService.deleteCommand(data.id);
-                    break;
-                }
-                case 'saveFlow': await this._dataManager.flowService.saveFlow(data.data); break;
-                case 'deleteFlow': {
-                    const answer = await vscode.window.showWarningMessage('Are you sure you want to delete this flow?', { modal: true }, 'Delete');
-                    if (answer === 'Delete') await this._dataManager.flowService.deleteFlow(data.id);
-                    break;
-                }
-                case 'reorderCommands': await this._dataManager.commandService.setCommands(data.data); break;
-                case 'reorderFlows': await this._dataManager.flowService.setFlows(data.data); break;
-                case 'saveCommandCategoryOrder': await this._dataManager.commandService.saveCategoryOrder(data.data, this._scope); break;
-                case 'saveFlowCategoryOrder': await this._dataManager.flowService.saveCategoryOrder(data.data, this._scope); break;
-
-                case 'moveCommand': await this._dataManager.commandService.moveCommand(data.id, data.targetSource); break;
-                case 'moveFlow': await this._dataManager.flowService.moveFlow(data.id, data.targetSource); break;
-
-                case 'copyToClipboard': {
-                    await vscode.env.clipboard.writeText(data.text);
-                    vscode.window.showInformationMessage('Command copied to clipboard!');
-                    break;
-                }
-
-                case 'saveScope':
-                    this._scope = data.scope;
-                    await this._context.workspaceState.update('terminal-flow.scope', this._scope);
-                    this.refreshData();
-                    break;
-
-                case 'saveTab':
-                    this._tab = data.tab;
-                    await this._context.workspaceState.update('terminal-flow.tab', this._tab);
-                    this.refreshData();
-                    break;
-
-                case 'refresh': this.refreshData(); break;
-
-                case 'exportCommands': {
-                    const commands = await this._dataManager.commandService.getCommands();
-                    const exportData = data.ids ? commands.filter(c => data.ids.includes(c.id)) : commands.filter(c => (c.source || 'workspace') === this._scope);
-
-                    const uri = await vscode.window.showSaveDialog({ filters: { 'JSON': ['json'] }, saveLabel: 'Export Commands' });
-                    if (uri) {
-                        await vscode.workspace.fs.writeFile(uri, Buffer.from(JSON.stringify(exportData, null, 2)));
-                        vscode.window.showInformationMessage('Commands exported successfully.');
-                    }
-                    break;
-                }
-                case 'importCommands': {
-                    const uri = await vscode.window.showOpenDialog({ filters: { 'JSON': ['json'] }, canSelectMany: false });
-                    if (uri && uri[0]) {
-                        const content = await vscode.workspace.fs.readFile(uri[0]);
-                        const importedData = JSON.parse(content.toString());
-                        const commandsToImport = Array.isArray(importedData) ? importedData : importedData.commands;
-
-                        if (commandsToImport) {
-                            await this._dataManager.commandService.importCommands(commandsToImport);
-                            vscode.window.showInformationMessage('Commands imported successfully.');
-                        }
-                    }
-                    break;
-                }
-                case 'exportFlows': {
-                    const flows = await this._dataManager.flowService.getFlows();
-                    const flowsToExport = data.ids ? flows.filter(f => data.ids.includes(f.id)) : flows.filter(f => (f.source || 'workspace') === this._scope);
-
-                    const commandIds = this._dataManager.flowService.getDependentCommandIds(flowsToExport);
-                    const commandsToExport = await this._dataManager.commandService.getCommandsByIds(commandIds);
-
-                    const exportData = { flows: flowsToExport, commands: commandsToExport };
-
-                    const uri = await vscode.window.showSaveDialog({ filters: { 'JSON': ['json'] }, saveLabel: 'Export Flows' });
-                    if (uri) {
-                        await vscode.workspace.fs.writeFile(uri, Buffer.from(JSON.stringify(exportData, null, 2)));
-                        vscode.window.showInformationMessage('Flows exported successfully.');
-                    }
-                    break;
-                }
-                case 'importFlows': {
-                    const uri = await vscode.window.showOpenDialog({ filters: { 'JSON': ['json'] }, canSelectMany: false });
-                    if (uri && uri[0]) {
-                        const content = await vscode.workspace.fs.readFile(uri[0]);
-                        const importedData = JSON.parse(content.toString());
-
-                        if (importedData.flows) {
-                            await this._dataManager.flowService.importFlows(importedData.flows);
-                        }
-                        if (importedData.commands) {
-                            await this._dataManager.commandService.importCommands(importedData.commands);
-                        }
-                        vscode.window.showInformationMessage('Flows imported successfully.');
-                    }
-                    break;
-                }
-            }
-        });
+        webviewView.webview.onDidReceiveMessage((data) => handleWebviewMessage(
+            data, this._dataManager, this._context,
+            () => this._scope, (s) => { this._scope = s; },
+            (t) => { this._tab = t; }, () => this.refreshData()
+        ));
         this.refreshData();
     }
 
-    /**
-     * Refreshes the data in the webview.
-     */
     private async refreshData() {
         if (this._view) {
             this._view.webview.postMessage({
@@ -153,11 +41,6 @@ export class TerminalFlowProvider implements vscode.WebviewViewProvider {
         }
     }
 
-    /**
-     * Generates the HTML content for the webview.
-     * @param webview The webview instance.
-     * @returns The HTML string.
-     */
     private _getHtmlForWebview(webview: vscode.Webview) {
         const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._context.extensionUri, 'dist', 'webview.js'));
         const styleMainUri = webview.asWebviewUri(vscode.Uri.joinPath(this._context.extensionUri, 'dist', 'webview.css'));
@@ -176,10 +59,6 @@ export class TerminalFlowProvider implements vscode.WebviewViewProvider {
     }
 }
 
-/**
- * Generates a random nonce string.
- * @returns A random 32-character string.
- */
 function getNonce() {
     let text = '';
     const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

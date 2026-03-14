@@ -2,82 +2,24 @@ import React from 'react';
 import { Command, Flow } from '../../types';
 import { FlowList } from './FlowList';
 import { FlowForm } from './FlowForm';
+import { useFlowActions } from '../../hooks/useFlowActions';
 
-/**
- * Props for the FlowView component.
- */
 interface FlowViewProps {
-    /** The list of available flows. */
     flows: Flow[];
-    /** The list of available commands (used within flows). */
     commands: Command[];
-    /** The current scope (workspace or user). */
     scope: 'workspace' | 'user';
-    /** The order of flow categories. */
     categoryOrder: string[];
-    /** The current view mode (list or form). */
     view: 'list' | 'form';
-    /** Function to set the view mode. */
     setView: (view: 'list' | 'form') => void;
-    /** The flow currently being edited, if any. */
     editingItem: Flow | undefined;
-    /** Function to set the flow being edited. */
     setEditingItem: (item: Flow | undefined) => void;
-    /** Function to send messages to the extension. */
     sendMessage: (type: string, payload?: any) => void;
 }
 
-/**
- * The FlowView component.
- * Manages the display and interaction of flows, switching between list and form views.
- * @param props The props for the FlowView component.
- * @returns The rendered FlowView component.
- */
-export const FlowView: React.FC<FlowViewProps> = ({
-    flows,
-    commands,
-    scope,
-    categoryOrder,
-    view,
-    setView,
-    editingItem,
-    setEditingItem,
-    sendMessage
-}) => {
+export const FlowView: React.FC<FlowViewProps> = (props) => {
+    const { flows, commands, scope, categoryOrder, view, setView, editingItem, setEditingItem, sendMessage } = props;
     const filteredFlows = flows.filter(f => (f.source || 'workspace') === scope);
-
-    const handleSave = (data: Flow) => {
-        if (!data.source) data.source = scope;
-        sendMessage('saveFlow', { data });
-        setView('list');
-        setEditingItem(undefined);
-    };
-
-    const handleDelete = (id: string) => {
-        sendMessage('deleteFlow', { id });
-    };
-
-    const handleMove = (id: string) => {
-        const targetSource = scope === 'workspace' ? 'user' : 'workspace';
-        sendMessage('moveFlow', { id, targetSource });
-    };
-
-    const handleDuplicate = (flow: Flow) => {
-        const duplicatedFlow = {
-            ...flow,
-            id: crypto.randomUUID(),
-            title: `${flow.title} (copy)`
-        };
-        sendMessage('saveFlow', { data: duplicatedFlow });
-    };
-
-    const handleExport = (id?: string) => {
-        sendMessage('exportFlows', { ids: id ? [id] : undefined });
-    };
-
-    const handleImport = () => {
-        sendMessage('importFlows');
-    };
+    const actions = useFlowActions({ scope, setView, setEditingItem, sendMessage });
 
     if (view === 'form') {
         const existingCategories = Array.from(new Set(flows.map(f => f.category || 'General'))).sort();
@@ -86,7 +28,7 @@ export const FlowView: React.FC<FlowViewProps> = ({
                 initialFlow={editingItem}
                 availableCommands={commands}
                 existingCategories={existingCategories}
-                onSave={handleSave}
+                onSave={actions.handleSave}
                 onCancel={() => setView('list')}
             />
         );
@@ -100,14 +42,14 @@ export const FlowView: React.FC<FlowViewProps> = ({
             onRun={(id, fromIndex) => sendMessage('runFlow', { id, fromIndex })}
             onRunCommand={(id) => sendMessage('runCommand', { id })}
             onEdit={(f) => { setEditingItem(f); setView('form'); }}
-            onDelete={handleDelete}
-            onMove={handleMove}
+            onDelete={actions.handleDelete}
+            onMove={actions.handleMove}
             onReorderFlows={(fls) => sendMessage('reorderFlows', { data: fls })}
             onReorderCategories={(order) => sendMessage('saveFlowCategoryOrder', { data: order })}
-            onExport={handleExport}
-            onExportAll={() => handleExport()}
-            onImport={handleImport}
-            onDuplicate={handleDuplicate}
+            onExport={actions.handleExport}
+            onExportAll={() => actions.handleExport()}
+            onImport={actions.handleImport}
+            onDuplicate={actions.handleDuplicate}
             onCopy={(text) => sendMessage('copyToClipboard', { text })}
         />
     );

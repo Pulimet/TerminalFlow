@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
 import { Command } from '../../types';
 
-/**
- * Props for the CommandForm component.
- */
 interface CommandFormProps {
     initialCommand?: Command;
     existingCategories: string[];
@@ -11,11 +8,6 @@ interface CommandFormProps {
     onCancel: () => void;
 }
 
-/**
- * Form for creating or editing a command.
- * @param props The component props.
- * @returns The rendered CommandForm component.
- */
 export const CommandForm: React.FC<CommandFormProps> = ({ initialCommand, existingCategories, onSave, onCancel }) => {
     const [title, setTitle] = useState(initialCommand?.title || '');
     const [description, setDescription] = useState(initialCommand?.description || '');
@@ -38,47 +30,14 @@ export const CommandForm: React.FC<CommandFormProps> = ({ initialCommand, existi
 
     return (
         <form className="command-form" onSubmit={handleSubmit}>
-            <div className="form-group">
-                <label>Title</label>
-                <input type="text" value={title} onChange={e => setTitle(e.target.value)} required placeholder="e.g. Build Project" />
+            <div className="form-group"><label>Title</label><input type="text" value={title} onChange={e => setTitle(e.target.value)} required placeholder="e.g. Build Project" /></div>
+            <div className="form-group"><label>Description</label><input type="text" value={description} onChange={e => setDescription(e.target.value)} placeholder="Short description..." /></div>
+            <div className="form-group"><label>Category</label><input type="text" value={category} onChange={e => setCategory(e.target.value)} placeholder="e.g. Build, Test" list="category-suggestions" />
+                <datalist id="category-suggestions">{existingCategories.map(cat => <option key={cat} value={cat} />)}</datalist>
             </div>
-            <div className="form-group">
-                <label>Description</label>
-                <input type="text" value={description} onChange={e => setDescription(e.target.value)} placeholder="Short description..." />
-            </div>
-            <div className="form-group">
-                <label>Category</label>
-                <input
-                    type="text"
-                    value={category}
-                    onChange={e => setCategory(e.target.value)}
-                    placeholder="e.g. Build, Test, Deploy"
-                    list="category-suggestions"
-                />
-                <datalist id="category-suggestions">
-                    {existingCategories.map(cat => (
-                        <option key={cat} value={cat} />
-                    ))}
-                </datalist>
-            </div>
-            <div className="form-group">
-                <label>Command</label>
-                <textarea value={commandString} onChange={e => setCommandString(e.target.value)} required placeholder="npm run build" rows={3} className="code-input" />
-            </div>
-            <div className="form-group checkbox-group">
-                <label className="checkbox-label">
-                    <input
-                        type="checkbox"
-                        checked={runInNewTerminal}
-                        onChange={e => setRunInNewTerminal(e.target.checked)}
-                    />
-                    Run in new terminal
-                </label>
-            </div>
-            <div className="form-actions">
-                <button type="button" onClick={onCancel}>Cancel</button>
-                <button type="submit" className="primary">Save</button>
-            </div>
+            <div className="form-group"><label>Command</label><textarea value={commandString} onChange={e => setCommandString(e.target.value)} required placeholder="npm run build" rows={3} className="code-input" /></div>
+            <div className="form-group checkbox-group"><label className="checkbox-label"><input type="checkbox" checked={runInNewTerminal} onChange={e => setRunInNewTerminal(e.target.checked)} />Run in new terminal</label></div>
+            <div className="form-actions"><button type="button" onClick={onCancel}>Cancel</button><button type="submit" className="primary">Save</button></div>
         </form>
     );
 };

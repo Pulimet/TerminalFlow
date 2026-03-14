@@ -4,9 +4,6 @@ import { CommandCategory } from './CommandCategory';
 import { useListLogic } from '../../hooks/useListLogic';
 import { ListActions } from '../ListActions';
 
-/**
- * Props for the CommandList component.
- */
 interface Props {
     commands: Command[];
     categoryOrder?: string[];
@@ -23,77 +20,37 @@ interface Props {
     onCopy: (id: string) => void;
 }
 
-const STORAGE_KEY = 'tf-cmd-categories';
+const filterCmd = (cmd: Command, q: string) =>
+    cmd.title.toLowerCase().includes(q) || cmd.description.toLowerCase().includes(q) || cmd.command.toLowerCase().includes(q);
 
-/**
- * Renders a list of commands grouped by category.
- * @param props The component props.
- * @returns The rendered CommandList component.
- */
-export const CommandList: React.FC<Props> = ({
-    commands, categoryOrder = [], onRun, onEdit, onDelete, onMove, onReorderCommands, onReorderCategories, onExport, onExportAll, onImport, onDuplicate, onCopy
-}) => {
-    const {
-        searchQuery,
-        setSearchQuery,
-        groupedItems: groupedCommands,
-        sortedCategories: categories,
-        expandedCategories,
-        toggleCategory,
-        expandAll,
-        collapseAll,
-        moveCategoryUp,
-        moveCategoryDown,
-        moveItemUp,
-        moveItemDown,
-        filteredItems: filteredCommands
-    } = useListLogic({
-        items: commands,
-        categoryOrder,
-        storageKey: STORAGE_KEY,
-        filterCallback: (cmd, query) =>
-            cmd.title.toLowerCase().includes(query) ||
-            cmd.description.toLowerCase().includes(query) ||
-            cmd.command.toLowerCase().includes(query),
-        onReorderItems: onReorderCommands,
-        onReorderCategories: onReorderCategories
+export const CommandList: React.FC<Props> = (props) => {
+    const logic = useListLogic({
+        items: props.commands, categoryOrder: props.categoryOrder || [], storageKey: 'tf-cmd-categories',
+        filterCallback: filterCmd, onReorderItems: props.onReorderCommands, onReorderCategories: props.onReorderCategories
     });
 
     return (
         <div className="command-list">
             <ListActions
-                onExpandAll={expandAll}
-                onCollapseAll={collapseAll}
-                searchQuery={searchQuery}
-                onSearch={setSearchQuery}
-                onExport={onExportAll}
-                onImport={onImport}
+                onExpandAll={logic.expandAll} onCollapseAll={logic.collapseAll}
+                searchQuery={logic.searchQuery} onSearch={logic.setSearchQuery}
+                onExport={props.onExportAll} onImport={props.onImport}
             />
-            {categories.map((category, index) => (
+            {logic.sortedCategories.map((cat, i) => (
                 <CommandCategory
-                    key={category}
-                    category={category}
-                    commands={groupedCommands[category]}
-                    isExpanded={expandedCategories[category] !== false}
-                    isFirst={index === 0}
-                    isLast={index === categories.length - 1}
-                    onToggle={toggleCategory}
-                    onRun={onRun}
-                    onEdit={onEdit}
-                    onDelete={onDelete}
-                    onMove={onMove}
-                    onMoveCategoryUp={moveCategoryUp}
-                    onMoveCategoryDown={moveCategoryDown}
-                    onMoveCommandUp={moveItemUp}
-                    onMoveCommandDown={moveItemDown}
-                    onExport={onExport}
-                    onDuplicate={onDuplicate}
-                    onCopy={onCopy}
+                    key={cat} category={cat} commands={logic.groupedItems[cat]}
+                    isExpanded={logic.expandedCategories[cat] !== false}
+                    isFirst={i === 0} isLast={i === logic.sortedCategories.length - 1}
+                    onToggle={logic.toggleCategory} onRun={props.onRun} onEdit={props.onEdit}
+                    onDelete={props.onDelete} onMove={props.onMove}
+                    onMoveCategoryUp={logic.moveCategoryUp} onMoveCategoryDown={logic.moveCategoryDown}
+                    onMoveCommandUp={logic.moveItemUp} onMoveCommandDown={logic.moveItemDown}
+                    onExport={props.onExport} onDuplicate={props.onDuplicate} onCopy={props.onCopy}
                 />
             ))}
-            {filteredCommands.length === 0 && (
+            {logic.filteredItems.length === 0 && (
                 <div className="empty-state">
-                    {searchQuery ? 'No commands match your search.' : 'No commands found. Create one to get started.'}
+                    {logic.searchQuery ? 'No commands match search.' : 'No commands found. Create one.'}
                 </div>
             )}
         </div>

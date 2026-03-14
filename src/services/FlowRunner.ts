@@ -5,30 +5,16 @@ import { TerminalService } from './TerminalService';
 import { getEchoCommand, resolveSpecialCommand } from '../utils/commandUtils';
 import { delay, NEW_TERMINAL_DELAY } from '../utils/common';
 
-/**
- * Service for running flows.
- */
 export class FlowRunner {
-    constructor(
-        private dataManager: DataManager,
-        private terminalService: TerminalService,
-        private commandRunner: CommandRunner
-    ) { }
+    constructor(private dataManager: DataManager, private terminalService: TerminalService, private commandRunner: CommandRunner) { }
 
-    /**
-     * Runs a flow by its ID.
-     * @param flowId The ID of the flow to run.
-     * @param fromIndex The index of the sequence to start from.
-     */
     public async runFlow(flowId: string, fromIndex?: number) {
         const flow = await this.dataManager.getFlow(flowId);
-        if (!flow) { vscode.window.showErrorMessage(`Flow not found: ${flowId}`); return; }
-        if (!flow.sequence || flow.sequence.length === 0) { vscode.window.showWarningMessage(`Flow ${flow.title} is empty.`); return; }
+        if (!flow) return vscode.window.showErrorMessage(`Flow not found: ${flowId}`);
+        if (!flow.sequence || flow.sequence.length === 0) return vscode.window.showWarningMessage(`Flow ${flow.title} is empty.`);
 
-        const config = vscode.workspace.getConfiguration('terminalFlow');
-        const shouldPrintTitle = config.get<boolean>('printCommandTitle', true);
+        const shouldPrintTitle = vscode.workspace.getConfiguration('terminalFlow').get<boolean>('printCommandTitle', true);
         const sequenceToRun = fromIndex !== undefined ? flow.sequence.slice(fromIndex) : flow.sequence;
-
         let baseTerminal: vscode.Terminal;
         let isNew = false;
 
@@ -43,16 +29,9 @@ export class FlowRunner {
 
         baseTerminal.show();
         if (isNew) await delay(NEW_TERMINAL_DELAY);
-
         await this.runSequence(sequenceToRun, shouldPrintTitle, baseTerminal);
     }
 
-    /**
-     * Runs a sequence of commands.
-     * @param sequence The sequence of command IDs to run.
-     * @param shouldPrintTitle Whether to print command titles.
-     * @param baseTerminal The terminal to run the commands in.
-     */
     private async runSequence(sequence: string[], shouldPrintTitle: boolean, baseTerminal: vscode.Terminal) {
         let sharedBuffer: string[] = [];
 
@@ -65,34 +44,21 @@ export class FlowRunner {
             }
 
             const command = await this.dataManager.getCommand(cmdId);
-            if (!command) {
-                vscode.window.showWarningMessage(`Command ${cmdId} in flow not found, skipping.`);
-                continue;
-            }
+            if (!command) { vscode.window.showWarningMessage(`Command ${cmdId} in flow not found.`); continue; }
 
             if (command.runInNewTerminal) {
                 if (sharedBuffer.length > 0) {
                     baseTerminal.sendText(sharedBuffer.join(' && '));
                     sharedBuffer = [];
                 }
-
                 const terminal = this.terminalService.createNewTerminal(`Terminal Flow: ${command.title}`);
                 terminal.show();
                 await delay(NEW_TERMINAL_DELAY);
-                if (shouldPrintTitle) {
-                    terminal.sendText(`${getEchoCommand(command.title)} && ${command.command}`);
-                } else {
-                    terminal.sendText(command.command);
-                }
+                terminal.sendText(shouldPrintTitle ? `${getEchoCommand(command.title)} && ${command.command}` : command.command);
             } else {
-                let cmdStr = command.command;
-                if (shouldPrintTitle) cmdStr = `${getEchoCommand(command.title)} && ${command.command}`;
-                sharedBuffer.push(cmdStr);
+                sharedBuffer.push(shouldPrintTitle ? `${getEchoCommand(command.title)} && ${command.command}` : command.command);
             }
         }
-
-        if (sharedBuffer.length > 0) {
-            baseTerminal.sendText(sharedBuffer.join(' && '));
-        }
+        if (sharedBuffer.length > 0) baseTerminal.sendText(sharedBuffer.join(' && '));
     }
 }

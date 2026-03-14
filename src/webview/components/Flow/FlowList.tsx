@@ -1,12 +1,9 @@
 import React from 'react';
 import { Flow, Command } from '../../types';
 import { FlowCategory } from './FlowCategory';
-import { useCategoryState } from '../../hooks/useCategoryState';
+import { useListLogic } from '../../hooks/useListLogic';
 import { ListActions } from '../ListActions';
 
-/**
- * Props for the FlowList component.
- */
 interface FlowListProps {
     flows: Flow[];
     commands: Command[];
@@ -25,104 +22,49 @@ interface FlowListProps {
     onCopy: (text: string) => void;
 }
 
-import { useListLogic } from '../../hooks/useListLogic';
+const getCmdText = (cmds: Command[], id: string) => {
+    const c = cmds.find(x => x.id === id);
+    return c ? `${c.title} ${c.command} ${c.description}`.toLowerCase() : '';
+};
 
-const STORAGE_KEY = 'tf-flow-categories';
+const filterFlow = (flow: Flow, q: string, cmds: Command[]) => {
+    if (flow.title.toLowerCase().includes(q) || flow.description.toLowerCase().includes(q)) return true;
+    return flow.sequence.some(item => {
+        if (item.startsWith('__echo:')) return item.substring(7).toLowerCase().includes(q);
+        if (item.startsWith('__sleep:')) return false;
+        return getCmdText(cmds, item).includes(q);
+    });
+};
 
-/**
- * Renders a list of flows grouped by category.
- * @param props The component props.
- * @returns The rendered FlowList component.
- */
-export const FlowList: React.FC<FlowListProps> = ({
-    flows, commands, categoryOrder = [], onRun, onEdit, onDelete, onMove, onRunCommand, onReorderFlows, onReorderCategories, onExport, onExportAll, onImport, onDuplicate, onCopy
-}) => {
-    const {
-        searchQuery,
-        setSearchQuery,
-        groupedItems: groupedFlows,
-        sortedCategories: categories,
-        expandedCategories,
-        toggleCategory,
-        expandAll,
-        collapseAll,
-        moveCategoryUp,
-        moveCategoryDown,
-        moveItemUp,
-        moveItemDown,
-        filteredItems: filteredFlows
-    } = useListLogic({
-        items: flows,
-        categoryOrder,
-        storageKey: STORAGE_KEY,
-        filterCallback: (flow, query) => {
-            // Helper to get command content by ID
-            const getCommandContent = (cmdId: string) => {
-                const cmd = commands.find(c => c.id === cmdId);
-                return cmd ? `${cmd.title} ${cmd.command} ${cmd.description}`.toLowerCase() : '';
-            };
-
-            // Check basic flow info
-            if (
-                flow.title.toLowerCase().includes(query) ||
-                flow.description.toLowerCase().includes(query)
-            ) {
-                return true;
-            }
-
-            // Check sequence items
-            return flow.sequence.some(item => {
-                if (item.startsWith('__echo:')) {
-                    return item.substring(7).toLowerCase().includes(query);
-                }
-                if (item.startsWith('__sleep:')) {
-                    return false; // Don't search in sleep duration
-                }
-                // It's a command ID
-                return getCommandContent(item).includes(query);
-            });
-        },
-        onReorderItems: onReorderFlows,
-        onReorderCategories: onReorderCategories
+export const FlowList: React.FC<FlowListProps> = (props) => {
+    const logic = useListLogic({
+        items: props.flows, categoryOrder: props.categoryOrder || [], storageKey: 'tf-flow-categories',
+        filterCallback: (f, q) => filterFlow(f, q, props.commands),
+        onReorderItems: props.onReorderFlows, onReorderCategories: props.onReorderCategories
     });
 
     return (
         <div className="flow-list">
             <ListActions
-                onExpandAll={expandAll}
-                onCollapseAll={collapseAll}
-                searchQuery={searchQuery}
-                onSearch={setSearchQuery}
-                onExport={onExportAll}
-                onImport={onImport}
+                onExpandAll={logic.expandAll} onCollapseAll={logic.collapseAll}
+                searchQuery={logic.searchQuery} onSearch={logic.setSearchQuery}
+                onExport={props.onExportAll} onImport={props.onImport}
             />
-            {categories.map((category, index) => (
+            {logic.sortedCategories.map((cat, i) => (
                 <FlowCategory
-                    key={category}
-                    category={category}
-                    flows={groupedFlows[category]}
-                    commands={commands}
-                    isExpanded={expandedCategories[category] !== false}
-                    isFirst={index === 0}
-                    isLast={index === categories.length - 1}
-                    onToggle={toggleCategory}
-                    onRun={onRun}
-                    onEdit={onEdit}
-                    onDelete={onDelete}
-                    onMove={onMove}
-                    onRunCommand={onRunCommand}
-                    onMoveCategoryUp={moveCategoryUp}
-                    onMoveCategoryDown={moveCategoryDown}
-                    onMoveFlowUp={moveItemUp}
-                    onMoveFlowDown={moveItemDown}
-                    onExport={onExport}
-                    onDuplicate={onDuplicate}
-                    onCopy={onCopy}
+                    key={cat} category={cat} flows={logic.groupedItems[cat]} commands={props.commands}
+                    isExpanded={logic.expandedCategories[cat] !== false}
+                    isFirst={i === 0} isLast={i === logic.sortedCategories.length - 1}
+                    onToggle={logic.toggleCategory} onRun={props.onRun} onEdit={props.onEdit}
+                    onDelete={props.onDelete} onMove={props.onMove} onRunCommand={props.onRunCommand}
+                    onMoveCategoryUp={logic.moveCategoryUp} onMoveCategoryDown={logic.moveCategoryDown}
+                    onMoveFlowUp={logic.moveItemUp} onMoveFlowDown={logic.moveItemDown}
+                    onExport={props.onExport} onDuplicate={props.onDuplicate} onCopy={props.onCopy}
                 />
             ))}
-            {filteredFlows.length === 0 && (
+            {logic.filteredItems.length === 0 && (
                 <div className="empty-state">
-                    {searchQuery ? 'No flows match your search.' : 'No flows found. Create one to get started.'}
+                    {logic.searchQuery ? 'No flows match search.' : 'No flows found.'}
                 </div>
             )}
         </div>

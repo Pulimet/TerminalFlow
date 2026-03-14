@@ -1,130 +1,63 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Flow, Command } from '../../types';
 import { SequenceBuilder } from './SequenceBuilder';
 import { SleepAdder, EchoAdder } from './FlowFormHelpers';
-
-/**
- * Props for the FlowForm component.
- */
-interface FlowFormProps {
-    initialFlow?: Flow;
-    availableCommands: Command[];
-    existingCategories: string[];
-    onSave: (flow: Flow) => void;
-    onCancel: () => void;
-}
-
 import { useCategoryState } from '../../hooks/useCategoryState';
 
-/**
- * Form for creating or editing a flow.
- * @param props The component props.
- * @returns The rendered FlowForm component.
- */
+interface FlowFormProps {
+    initialFlow?: Flow; availableCommands: Command[]; existingCategories: string[];
+    onSave: (flow: Flow) => void; onCancel: () => void;
+}
+
 export const FlowForm: React.FC<FlowFormProps> = ({ initialFlow, availableCommands, existingCategories, onSave, onCancel }) => {
     const [title, setTitle] = useState(initialFlow?.title || '');
-    const [description, setDescription] = useState(initialFlow?.description || '');
+    const [desc, setDesc] = useState(initialFlow?.description || '');
     const [category, setCategory] = useState(initialFlow?.category || '');
-    const [sequence, setSequence] = useState<string[]>(initialFlow?.sequence || []);
-    const [runInNewTerminal, setRunInNewTerminal] = useState(initialFlow?.runInNewTerminal || false);
+    const [seq, setSeq] = useState<string[]>(initialFlow?.sequence || []);
+    const [runNewTerm, setRunNewTerm] = useState(initialFlow?.runInNewTerminal || false);
     const [sleepMs, setSleepMs] = useState('1000');
     const [echoText, setEchoText] = useState('');
 
-    // Group commands by category
-    const commandsByCategory = React.useMemo(() => {
+    const cmdsByCat = useMemo(() => {
         const grouped: Record<string, Command[]> = {};
-        availableCommands.forEach(cmd => {
-            const cat = cmd.category || 'Uncategorized';
-            if (!grouped[cat]) grouped[cat] = [];
-            grouped[cat].push(cmd);
-        });
+        availableCommands.forEach(cmd => { const c = cmd.category || 'Uncategorized'; if (!grouped[c]) grouped[c] = []; grouped[c].push(cmd); });
         return grouped;
     }, [availableCommands]);
 
-    const categories = Object.keys(commandsByCategory).sort();
-    const { expandedCategories, toggleCategory } = useCategoryState(categories, 'flowForm_expandedCategories');
+    const categories = Object.keys(cmdsByCat).sort();
+    const { expandedCategories: expCats, toggleCategory: toggleCat } = useCategoryState(categories, 'flowForm_expandedCategories');
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const onSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSave({
-            id: initialFlow?.id || crypto.randomUUID(),
-            title: title.trim(),
-            description: description.trim(),
-            category: category.trim() || 'General',
-            sequence,
-            runInNewTerminal,
-            source: initialFlow?.source
-        });
+        onSave({ id: initialFlow?.id || crypto.randomUUID(), title: title.trim(), description: desc.trim(), category: category.trim() || 'General', sequence: seq, runInNewTerminal: runNewTerm, source: initialFlow?.source });
     };
 
-    const moveItem = (index: number, direction: 'up' | 'down') => {
-        const newSeq = [...sequence];
-        const swapIndex = direction === 'up' ? index - 1 : index + 1;
-        if (swapIndex < 0 || swapIndex >= sequence.length) return;
-        [newSeq[swapIndex], newSeq[index]] = [newSeq[index], newSeq[swapIndex]];
-        setSequence(newSeq);
+    const moveItem = (i: number, up: boolean) => {
+        const swap = up ? i - 1 : i + 1;
+        if (swap < 0 || swap >= seq.length) return;
+        const nSeq = [...seq]; [nSeq[swap], nSeq[i]] = [nSeq[i], nSeq[swap]]; setSeq(nSeq);
     };
 
     return (
-        <form className="flow-form" onSubmit={handleSubmit}>
-            <div className="form-group"><label>Title</label><input type="text" value={title} onChange={e => setTitle(e.target.value)} required placeholder="e.g. Full Deployment" /></div>
-            <div className="form-group">
-                <label>Description</label>
-                <input type="text" value={description} onChange={e => setDescription(e.target.value)} placeholder="Short description..." />
-            </div>
-            <div className="form-group">
-                <label>Category</label>
-                <input
-                    type="text"
-                    value={category}
-                    onChange={e => setCategory(e.target.value)}
-                    placeholder="e.g. Workflows"
-                    list="flow-category-suggestions"
-                />
-                <datalist id="flow-category-suggestions">
-                    {existingCategories.map(cat => (
-                        <option key={cat} value={cat} />
-                    ))}
-                </datalist>
-            </div>
-            <div className="form-group checkbox-group">
-                <label className="checkbox-label">
-                    <input
-                        type="checkbox"
-                        checked={runInNewTerminal}
-                        onChange={e => setRunInNewTerminal(e.target.checked)}
-                    />
-                    Run in new terminal
-                </label>
-            </div>
-
+        <form className="flow-form" onSubmit={onSubmit}>
+            <div className="form-group"><label>Title</label><input type="text" value={title} onChange={e => setTitle(e.target.value)} required /></div>
+            <div className="form-group"><label>Description</label><input type="text" value={desc} onChange={e => setDesc(e.target.value)} /></div>
+            <div className="form-group"><label>Category</label><input type="text" value={category} onChange={e => setCategory(e.target.value)} list="flow-cats" />
+                <datalist id="flow-cats">{existingCategories.map(c => <option key={c} value={c} />)}</datalist></div>
+            <div className="form-group checkbox-group"><label className="checkbox-label"><input type="checkbox" checked={runNewTerm} onChange={e => setRunNewTerm(e.target.checked)} />Run in new terminal</label></div>
             <div className="flow-builder">
                 <div className="available-commands">
                     <h4>Available Commands</h4>
-                    <div className="command-picker-list">
-                        {categories.map(cat => (
+                    <div className="command-picker-list">{categories.map(cat => (
                             <div key={cat} className="picker-category-group">
-                                <div className="picker-category-header" onClick={() => toggleCategory(cat)}>
-                                    <span className={`chevron ${expandedCategories[cat] ? 'expanded' : ''}`}>▶</span>
-                                    <span>{cat}</span>
-                                    <span className="category-count">{commandsByCategory[cat].length}</span>
-                                </div>
-                                {expandedCategories[cat] && (
-                                    <div className="picker-category-items">
-                                        {commandsByCategory[cat].map(cmd => (
-                                            <div key={cmd.id} className="picker-item" onClick={() => setSequence([...sequence, cmd.id])}>
-                                                <span className="picker-title">{cmd.title}</span><span className="picker-add">+</span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
+                                <div className="picker-category-header" onClick={() => toggleCat(cat)}><span className={`chevron ${expCats[cat] ? 'expanded' : ''}`}>▶</span><span>{cat}</span><span className="category-count">{cmdsByCat[cat].length}</span></div>
+                                {expCats[cat] && <div className="picker-category-items">{cmdsByCat[cat].map(cmd => (<div key={cmd.id} className="picker-item" onClick={() => setSeq([...seq, cmd.id])}><span className="picker-title">{cmd.title}</span><span className="picker-add">+</span></div>))}</div>}
                             </div>
-                        ))}
-                    </div>
-                    <SleepAdder sleepMs={sleepMs} setSleepMs={setSleepMs} onAdd={() => { if (!isNaN(parseInt(sleepMs))) setSequence([...sequence, `__sleep:${sleepMs}`]); }} />
-                    <EchoAdder echoText={echoText} setEchoText={setEchoText} onAdd={() => { if (echoText.trim()) setSequence([...sequence, `__echo:${echoText.trim()}`]); setEchoText(''); }} />
+                        ))}</div>
+                    <SleepAdder sleepMs={sleepMs} setSleepMs={setSleepMs} onAdd={() => { if (!isNaN(parseInt(sleepMs))) setSeq([...seq, `__sleep:${sleepMs}`]); }} />
+                    <EchoAdder echoText={echoText} setEchoText={setEchoText} onAdd={() => { if (echoText.trim()) setSeq([...seq, `__echo:${echoText.trim()}`]); setEchoText(''); }} />
                 </div>
-                <SequenceBuilder sequence={sequence} availableCommands={availableCommands} onMoveUp={(i) => moveItem(i, 'up')} onMoveDown={(i) => moveItem(i, 'down')} onRemove={(i) => setSequence(sequence.filter((_, idx) => idx !== i))} />
+                <SequenceBuilder sequence={seq} availableCommands={availableCommands} onMoveUp={(i) => moveItem(i, true)} onMoveDown={(i) => moveItem(i, false)} onRemove={(i) => setSeq(seq.filter((_, idx) => idx !== i))} />
             </div>
             <div className="form-actions"><button type="button" onClick={onCancel}>Cancel</button><button type="submit" className="primary">Save</button></div>
         </form>
