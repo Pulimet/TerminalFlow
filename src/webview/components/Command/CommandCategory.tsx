@@ -21,6 +21,7 @@ interface CommandCategoryProps {
     onMoveCommandUp: (id: string) => void;
     onMoveCommandDown: (id: string) => void;
     onExport?: (id: string) => void;
+    onDuplicate: (command: Command) => void;
     onCopy: (id: string) => void;
 }
 
@@ -31,7 +32,7 @@ interface CommandCategoryProps {
  */
 export const CommandCategory: React.FC<CommandCategoryProps> = ({
     category, commands, isExpanded, isFirst, isLast, onToggle, onRun, onEdit, onDelete, onMove,
-    onMoveCategoryUp, onMoveCategoryDown, onMoveCommandUp, onMoveCommandDown, onExport, onCopy
+    onMoveCategoryUp, onMoveCategoryDown, onMoveCommandUp, onMoveCommandDown, onExport, onDuplicate, onCopy
 }) => {
     return (
         <div className="category-group">
@@ -61,6 +62,7 @@ export const CommandCategory: React.FC<CommandCategoryProps> = ({
                             onMoveUp={onMoveCommandUp}
                             onMoveDown={onMoveCommandDown}
                             onExport={onExport}
+                            onDuplicate={onDuplicate}
                             onCopy={onCopy}
                         />
                     ))}

@@ -62,6 +62,15 @@ export const FlowView: React.FC<FlowViewProps> = ({
         sendMessage('moveFlow', { id, targetSource });
     };
 
+    const handleDuplicate = (flow: Flow) => {
+        const duplicatedFlow = {
+            ...flow,
+            id: crypto.randomUUID(),
+            title: `${flow.title} (copy)`
+        };
+        sendMessage('saveFlow', { data: duplicatedFlow });
+    };
+
     const handleExport = (id?: string) => {
         sendMessage('exportFlows', { ids: id ? [id] : undefined });
     };
@@ -98,6 +107,7 @@ export const FlowView: React.FC<FlowViewProps> = ({
             onExport={handleExport}
             onExportAll={() => handleExport()}
             onImport={handleImport}
+            onDuplicate={handleDuplicate}
             onCopy={(text) => sendMessage('copyToClipboard', { text })}
         />
     );

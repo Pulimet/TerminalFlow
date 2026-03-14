@@ -23,6 +23,7 @@ interface FlowCategoryProps {
     onMoveFlowUp: (id: string) => void;
     onMoveFlowDown: (id: string) => void;
     onExport?: (id: string) => void;
+    onDuplicate: (flow: Flow) => void;
     onCopy: (text: string) => void;
 }
 
@@ -33,7 +34,7 @@ interface FlowCategoryProps {
  */
 export const FlowCategory: React.FC<FlowCategoryProps> = ({
     category, flows, commands, isExpanded, isFirst, isLast, onToggle, onRun, onEdit, onDelete, onMove, onRunCommand,
-    onMoveCategoryUp, onMoveCategoryDown, onMoveFlowUp, onMoveFlowDown, onExport, onCopy
+    onMoveCategoryUp, onMoveCategoryDown, onMoveFlowUp, onMoveFlowDown, onExport, onDuplicate, onCopy
 }) => {
     return (
         <div className="category-group">
@@ -65,6 +66,7 @@ export const FlowCategory: React.FC<FlowCategoryProps> = ({
                             onMoveUp={onMoveFlowUp}
                             onMoveDown={onMoveFlowDown}
                             onExport={onExport}
+                            onDuplicate={onDuplicate}
                             onCopy={onCopy}
                         />
                     ))}

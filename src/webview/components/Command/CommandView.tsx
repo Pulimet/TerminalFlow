@@ -59,6 +59,15 @@ export const CommandView: React.FC<CommandViewProps> = ({
         sendMessage('moveCommand', { id, targetSource });
     };
 
+    const handleDuplicate = (command: Command) => {
+        const duplicatedCommand = {
+            ...command,
+            id: crypto.randomUUID(),
+            title: `${command.title} (copy)`
+        };
+        sendMessage('saveCommand', { data: duplicatedCommand });
+    };
+
     const handleExport = (id?: string) => {
         sendMessage('exportCommands', { ids: id ? [id] : undefined });
     };
@@ -92,6 +101,7 @@ export const CommandView: React.FC<CommandViewProps> = ({
             onExport={handleExport}
             onExportAll={() => handleExport()}
             onImport={handleImport}
+            onDuplicate={handleDuplicate}
             onCopy={(id) => {
                 const cmd = commands.find(c => c.id === id);
                 if (cmd) sendMessage('copyToClipboard', { text: cmd.command });
