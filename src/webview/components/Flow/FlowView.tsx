@@ -98,6 +98,7 @@ export const FlowView: React.FC<FlowViewProps> = ({
             onExport={handleExport}
             onExportAll={() => handleExport()}
             onImport={handleImport}
+            onCopy={(text) => sendMessage('copyToClipboard', { text })}
         />
     );
 };

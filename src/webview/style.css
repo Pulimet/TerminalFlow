@@ -360,10 +360,26 @@ body {
     color: var(--vscode-terminal-ansiGreen, #89d185);
 }
 
+.flow-step-actions {
+    display: flex;
+    gap: 6px;
+    margin-left: auto;
+    align-items: center;
+}
+
+.flow-step-action {
+    cursor: pointer;
+    opacity: 0.6;
+    font-size: 12px;
+}
+
+.flow-step-action:hover {
+    opacity: 1;
+}
+
 .flow-step-run-from-here {
     cursor: pointer;
     opacity: 0.6;
-    margin-left: auto;
     font-size: 12px;
 }
 

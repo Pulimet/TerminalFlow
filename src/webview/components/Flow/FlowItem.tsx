@@ -18,6 +18,7 @@ interface FlowItemProps {
     onMoveUp: (id: string) => void;
     onMoveDown: (id: string) => void;
     onExport?: (id: string) => void;
+    onCopy: (text: string) => void;
 }
 
 /**
@@ -26,7 +27,7 @@ interface FlowItemProps {
  * @returns The rendered FlowItem component.
  */
 export const FlowItem: React.FC<FlowItemProps> = ({
-    flow, commands, isFirst, isLast, onRun, onEdit, onDelete, onMove, onRunCommand, onMoveUp, onMoveDown, onExport
+    flow, commands, isFirst, isLast, onRun, onEdit, onDelete, onMove, onRunCommand, onMoveUp, onMoveDown, onExport, onCopy
 }) => {
     const [isExpanded, setIsExpanded] = useState(false);
 
@@ -81,6 +82,7 @@ export const FlowItem: React.FC<FlowItemProps> = ({
                             command={commands.find(c => c.id === cmdId)}
                             onRunCommand={onRunCommand}
                             onRunFlowFromHere={(idx) => onRun(flow.id, idx)}
+                            onCopy={onCopy}
                         />
                     ))}
                 </div>

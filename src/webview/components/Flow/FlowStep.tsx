@@ -10,6 +10,7 @@ interface FlowStepProps {
     command?: Command;
     onRunCommand: (id: string) => void;
     onRunFlowFromHere: (index: number) => void;
+    onCopy: (text: string) => void;
 }
 
 /**
@@ -17,7 +18,7 @@ interface FlowStepProps {
  * @param props The component props.
  * @returns The rendered FlowStep component.
  */
-export const FlowStep: React.FC<FlowStepProps> = ({ cmdId, index, command, onRunCommand, onRunFlowFromHere }) => {
+export const FlowStep: React.FC<FlowStepProps> = ({ cmdId, index, command, onRunCommand, onRunFlowFromHere, onCopy }) => {
     if (cmdId.startsWith('__sleep:')) {
         const ms = cmdId.replace('__sleep:', '');
         return (
@@ -27,6 +28,9 @@ export const FlowStep: React.FC<FlowStepProps> = ({ cmdId, index, command, onRun
                 <div className="flow-step-details">
                     <span className="flow-step-name">Sleep</span>
                     <span className="flow-step-command">sleep {Number(ms) / 1000}s</span>
+                </div>
+                <div className="flow-step-actions">
+                    <span className="flow-step-action" title="Copy command" onClick={(e) => { e.stopPropagation(); onCopy(`sleep ${Number(ms) / 1000}s`); }}>📋</span>
                 </div>
             </div>
         );
@@ -42,6 +46,9 @@ export const FlowStep: React.FC<FlowStepProps> = ({ cmdId, index, command, onRun
                     <span className="flow-step-name">Echo</span>
                     <span className="flow-step-command">echo "{text}"</span>
                 </div>
+                <div className="flow-step-actions">
+                    <span className="flow-step-action" title="Copy command" onClick={(e) => { e.stopPropagation(); onCopy(`echo "${text}"`); }}>📋</span>
+                </div>
             </div>
         );
     }
@@ -54,7 +61,10 @@ export const FlowStep: React.FC<FlowStepProps> = ({ cmdId, index, command, onRun
                 <span className="flow-step-name">{command ? command.title : `Unknown`}</span>
                 <span className="flow-step-command">{command ? command.command : cmdId}</span>
             </div>
-            <span className="flow-step-run-from-here" title="Run flow from here" onClick={(e) => { e.stopPropagation(); onRunFlowFromHere(index); }}>⬇</span>
+            <div className="flow-step-actions">
+                <span className="flow-step-action" title="Copy command" onClick={(e) => { e.stopPropagation(); onCopy(command ? command.command : cmdId); }}>📋</span>
+                <span className="flow-step-run-from-here" title="Run flow from here" onClick={(e) => { e.stopPropagation(); onRunFlowFromHere(index); }}>⬇</span>
+            </div>
         </div>
     );
 };
