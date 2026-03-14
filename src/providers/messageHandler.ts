@@ -11,9 +11,17 @@ export const handleWebviewMessage = async (
         case 'runCommand': vscode.commands.executeCommand('terminal-flow.runCommand', data.id); break;
         case 'runFlow': vscode.commands.executeCommand('terminal-flow.runFlow', data.id, data.fromIndex); break;
         case 'saveCommand': await dataManager.commandService.saveCommand(data.data); break;
-        case 'deleteCommand':
+        case 'deleteCommand': {
+            const allFlows = await dataManager.flowService.getFlows();
+            const usingFlows = allFlows.filter(f => f.sequence.includes(data.id));
+            if (usingFlows.length > 0) {
+                const names = usingFlows.map(f => `"${f.title}"`).join(', ');
+                vscode.window.showErrorMessage(`Cannot delete: command is used in flows: ${names}`);
+                break;
+            }
             if (await vscode.window.showWarningMessage('Are you sure you want to delete this command?', { modal: true }, 'Delete') === 'Delete') await dataManager.commandService.deleteCommand(data.id);
             break;
+        }
         case 'saveFlow': await dataManager.flowService.saveFlow(data.data); break;
         case 'deleteFlow':
             if (await vscode.window.showWarningMessage('Are you sure you want to delete this flow?', { modal: true }, 'Delete') === 'Delete') await dataManager.flowService.deleteFlow(data.id);
