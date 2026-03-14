@@ -19,6 +19,7 @@ interface Props {
     onExport?: (id: string) => void;
     onExportAll?: () => void;
     onImport?: () => void;
+    onCopy: (id: string) => void;
 }
 
 const STORAGE_KEY = 'tf-cmd-categories';
@@ -29,7 +30,7 @@ const STORAGE_KEY = 'tf-cmd-categories';
  * @returns The rendered CommandList component.
  */
 export const CommandList: React.FC<Props> = ({
-    commands, categoryOrder = [], onRun, onEdit, onDelete, onMove, onReorderCommands, onReorderCategories, onExport, onExportAll, onImport
+    commands, categoryOrder = [], onRun, onEdit, onDelete, onMove, onReorderCommands, onReorderCategories, onExport, onExportAll, onImport, onCopy
 }) => {
     const {
         searchQuery,
@@ -85,6 +86,7 @@ export const CommandList: React.FC<Props> = ({
                     onMoveCommandUp={moveItemUp}
                     onMoveCommandDown={moveItemDown}
                     onExport={onExport}
+                    onCopy={onCopy}
                 />
             ))}
             {filteredCommands.length === 0 && (

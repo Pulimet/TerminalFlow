@@ -54,6 +54,12 @@ export class TerminalFlowProvider implements vscode.WebviewViewProvider {
                 case 'moveCommand': await this._dataManager.commandService.moveCommand(data.id, data.targetSource); break;
                 case 'moveFlow': await this._dataManager.flowService.moveFlow(data.id, data.targetSource); break;
 
+                case 'copyToClipboard': {
+                    await vscode.env.clipboard.writeText(data.text);
+                    vscode.window.showInformationMessage('Command copied to clipboard!');
+                    break;
+                }
+
                 case 'saveScope':
                     this._scope = data.scope;
                     await this._context.workspaceState.update('terminal-flow.scope', this._scope);

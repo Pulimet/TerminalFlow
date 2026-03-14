@@ -15,6 +15,7 @@ interface CommandItemProps {
     onMoveUp: (id: string) => void;
     onMoveDown: (id: string) => void;
     onExport?: (id: string) => void;
+    onCopy: (id: string) => void;
 }
 
 /**
@@ -23,7 +24,7 @@ interface CommandItemProps {
  * @returns The rendered CommandItem component.
  */
 export const CommandItem: React.FC<CommandItemProps> = ({
-    command, isFirst, isLast, onRun, onEdit, onDelete, onMove, onMoveUp, onMoveDown, onExport
+    command, isFirst, isLast, onRun, onEdit, onDelete, onMove, onMoveUp, onMoveDown, onExport, onCopy
 }) => {
     return (
         <div className="command-item">
@@ -54,6 +55,7 @@ export const CommandItem: React.FC<CommandItemProps> = ({
                 </div>
                 <div className="action-row">
                     <button title="Transfer" onClick={() => onMove(command.id)}>⇄</button>
+                    <button title="Copy" onClick={() => onCopy(command.id)}>📋</button>
                     <button title="Delete" onClick={() => onDelete(command.id)}>🗑</button>
                 </div>
             </div>

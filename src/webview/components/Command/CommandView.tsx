@@ -92,6 +92,10 @@ export const CommandView: React.FC<CommandViewProps> = ({
             onExport={handleExport}
             onExportAll={() => handleExport()}
             onImport={handleImport}
+            onCopy={(id) => {
+                const cmd = commands.find(c => c.id === id);
+                if (cmd) sendMessage('copyToClipboard', { text: cmd.command });
+            }}
         />
     );
 };
