@@ -61,19 +61,37 @@ export const useListLogic = <T extends BaseItem>({
 
     const { expandedCategories, toggleCategory, expandAll, collapseAll } = useCategoryState(sortedCategories, storageKey);
 
+    const ensureCategoriesInOrder = () => {
+        const newOrder = [...categoryOrder];
+        sortedCategories.forEach(c => {
+            if (!newOrder.includes(c)) newOrder.push(c);
+        });
+        return newOrder;
+    };
+
     const handleMoveCategoryUp = (category: string) => {
         const idx = sortedCategories.indexOf(category);
         if (idx <= 0) return;
-        const newOrder = [...sortedCategories];
-        [newOrder[idx - 1], newOrder[idx]] = [newOrder[idx], newOrder[idx - 1]];
+        const prevCategory = sortedCategories[idx - 1];
+        
+        const newOrder = ensureCategoriesInOrder();
+        const idx1 = newOrder.indexOf(category);
+        const idx2 = newOrder.indexOf(prevCategory);
+        
+        [newOrder[idx1], newOrder[idx2]] = [newOrder[idx2], newOrder[idx1]];
         onReorderCategories(newOrder);
     };
 
     const handleMoveCategoryDown = (category: string) => {
         const idx = sortedCategories.indexOf(category);
         if (idx === -1 || idx === sortedCategories.length - 1) return;
-        const newOrder = [...sortedCategories];
-        [newOrder[idx], newOrder[idx + 1]] = [newOrder[idx + 1], newOrder[idx]];
+        const nextCategory = sortedCategories[idx + 1];
+
+        const newOrder = ensureCategoriesInOrder();
+        const idx1 = newOrder.indexOf(category);
+        const idx2 = newOrder.indexOf(nextCategory);
+        
+        [newOrder[idx1], newOrder[idx2]] = [newOrder[idx2], newOrder[idx1]];
         onReorderCategories(newOrder);
     };
 

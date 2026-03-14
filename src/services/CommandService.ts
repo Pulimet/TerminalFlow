@@ -136,26 +136,33 @@ export class CommandService {
     }
 
     /**
-     * Retrieves the merged category order from both stores.
+     * Retrieves the category order for the specified scope.
+     * @param scope The scope to get the order for.
      * @returns A promise resolving to an array of category names.
      */
-    public async getCategoryOrder(): Promise<string[]> {
-        const workspaceOrder = await this.workspaceCategoryStore.read();
-        const userOrder = this.userCategoryStore ? await this.userCategoryStore.read() : [];
-        // Merge unique categories
-        return Array.from(new Set([...workspaceOrder, ...userOrder]));
+    public async getCategoryOrder(scope: 'workspace' | 'user' = 'workspace'): Promise<string[]> {
+        if (scope === 'user' && this.userCategoryStore) {
+            return await this.userCategoryStore.read();
+        }
+        return await this.workspaceCategoryStore.read();
     }
 
     /**
-     * Saves the category order.
+     * Saves the category order for the specified scope.
      * @param order The new order of categories.
+     * @param scope The scope to save to.
      */
-    public async saveCategoryOrder(order: string[]) {
-
-        await this.workspaceCategoryStore.write(order);
-
-        if (this.userCategoryStore) {
-            await this.userCategoryStore.write(order);
+    public async saveCategoryOrder(order: string[], scope: 'workspace' | 'user' = 'workspace') {
+        if (scope === 'user' && this.userCategoryStore && this.userStore) {
+            const userCmds = await this.userStore.read();
+            const userCategories = new Set(userCmds.map(c => c.category || 'Uncategorized'));
+            const userOrder = order.filter(c => userCategories.has(c));
+            await this.userCategoryStore.write(userOrder);
+        } else {
+            const workspaceCmds = await this.workspaceStore.read();
+            const workspaceCategories = new Set(workspaceCmds.map(c => c.category || 'Uncategorized'));
+            const workspaceOrder = order.filter(c => workspaceCategories.has(c));
+            await this.workspaceCategoryStore.write(workspaceOrder);
         }
         this.fireChange();
     }

@@ -48,8 +48,8 @@ export class TerminalFlowProvider implements vscode.WebviewViewProvider {
                 }
                 case 'reorderCommands': await this._dataManager.commandService.setCommands(data.data); break;
                 case 'reorderFlows': await this._dataManager.flowService.setFlows(data.data); break;
-                case 'saveCommandCategoryOrder': await this._dataManager.commandService.saveCategoryOrder(data.data); break;
-                case 'saveFlowCategoryOrder': await this._dataManager.flowService.saveCategoryOrder(data.data); break;
+                case 'saveCommandCategoryOrder': await this._dataManager.commandService.saveCategoryOrder(data.data, this._scope); break;
+                case 'saveFlowCategoryOrder': await this._dataManager.flowService.saveCategoryOrder(data.data, this._scope); break;
 
                 case 'moveCommand': await this._dataManager.commandService.moveCommand(data.id, data.targetSource); break;
                 case 'moveFlow': await this._dataManager.flowService.moveFlow(data.id, data.targetSource); break;
@@ -57,11 +57,13 @@ export class TerminalFlowProvider implements vscode.WebviewViewProvider {
                 case 'saveScope':
                     this._scope = data.scope;
                     await this._context.workspaceState.update('terminal-flow.scope', this._scope);
+                    this.refreshData();
                     break;
 
                 case 'saveTab':
                     this._tab = data.tab;
                     await this._context.workspaceState.update('terminal-flow.tab', this._tab);
+                    this.refreshData();
                     break;
 
                 case 'refresh': this.refreshData(); break;
@@ -137,8 +139,8 @@ export class TerminalFlowProvider implements vscode.WebviewViewProvider {
                 type: 'updateData',
                 commands: await this._dataManager.commandService.getCommands(),
                 flows: await this._dataManager.flowService.getFlows(),
-                commandCategoryOrder: await this._dataManager.commandService.getCategoryOrder(),
-                flowCategoryOrder: await this._dataManager.flowService.getCategoryOrder(),
+                commandCategoryOrder: await this._dataManager.commandService.getCategoryOrder(this._scope),
+                flowCategoryOrder: await this._dataManager.flowService.getCategoryOrder(this._scope),
                 scope: this._scope,
                 tab: this._tab
             });

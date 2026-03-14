@@ -4,8 +4,8 @@
  * @param items The list of items (commands or flows) that have a category property.
  * @returns A new array of categories if changes are needed, or null if the order is unchanged.
  */
-export function cleanupCategories(currentOrder: string[], items: { category: string }[]): string[] | null {
-    const existingCategories = new Set(items.map(i => i.category));
+export function cleanupCategories(currentOrder: string[], items: { category?: string }[]): string[] | null {
+    const existingCategories = new Set(items.map(i => i.category || 'Uncategorized'));
     const newOrder = currentOrder.filter(c => existingCategories.has(c));
 
     if (newOrder.length !== currentOrder.length) {
