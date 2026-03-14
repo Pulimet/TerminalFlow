@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.13] - 2026-03-14
+
+### Added
+- **Copy to Clipboard**: Added copy-to-clipboard button for individual Commands.
+- **Copy Flow Steps**: Added copy-to-clipboard button for individual Flow steps.
+- **Copy Flow as Script**: Added button to copy a Flow's entire sequence as a single shell script.
+- **Duplicate**: Added duplicate functionality for both Commands and Flows.
+- **Protected Command Deletion**: Commands that are referenced by existing Flows can no longer be deleted; a warning lists the Flows using the command.
+
+### Fixed
+- **Scope-Aware Category Order**: Fixed category reordering to correctly handle Workspace vs. Personal scope, including proper cleanup of stale category entries.
+
 ## [0.0.12] - 2026-02-18
 
 ### Added

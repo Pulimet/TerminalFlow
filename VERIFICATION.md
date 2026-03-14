@@ -85,7 +85,31 @@ Follow these steps to validate that the **Terminal Flow** extension is working c
   - **Verify**: "Command 2" is now above "Command 1".
   - **Verify**: The order persists after reload.
 
-## 8. Export/Import Validation
+## 9. Copy to Clipboard Validation
+- [ ] **Copy Command**:
+  - Click the clipboard icon on any command.
+  - Paste into a text editor.
+  - **Verify**: The pasted text matches the command's shell text.
+- [ ] **Copy Flow Step**:
+  - Expand a flow and click the clipboard icon on a step.
+  - **Verify**: The pasted text matches that step's command.
+- [ ] **Copy Flow as Script**:
+  - Click the script/copy icon on a flow's header.
+  - **Verify**: The pasted text contains all flow steps joined as a single shell script.
+
+## 10. Duplicate Validation
+- [ ] Click the duplicate icon on a command.
+- [ ] **Verify**: A new command with "Copy of" prefix appears in the list.
+- [ ] Click the duplicate icon on a flow.
+- [ ] **Verify**: A new flow with "Copy of" prefix appears in the list.
+
+## 11. Protected Command Deletion Validation
+- [ ] Create a command (e.g., "Shared Command") and add it as a step to a flow.
+- [ ] Attempt to delete "Shared Command" from the Commands tab.
+- [ ] **Verify**: Deletion is blocked with a warning listing the flow(s) that use this command.
+- [ ] Remove the command from the flow, then delete it again.
+- [ ] **Verify**: Deletion succeeds.
+
 88: - [ ] **Export Commands**:
 89:   - Navigate to the **Commands** tab.
 90:   - Click the **Export** icon (download arrow) in the header.
@@ -120,7 +144,7 @@ Follow these steps to validate that the **Terminal Flow** extension is working c
 113: ### Package the Extension
 114: - [ ] Run `npm run compile` to ensure a clean build.
 115: - [ ] Run `vsce package` from the project root.
-116: - [ ] **Verify**: A file named `terminal-flow-0.0.10.vsix` is created in the project root.
+116: - [ ] **Verify**: A file named `terminal-flow-0.0.13.vsix` is created in the project root.
 117: 
 118: ### Install in VS Code
 119: - [ ] Open VS Code.
@@ -162,7 +186,7 @@ Use this method to install and test the extension in your regular VS Code (not j
 ### Package the Extension
 - [ ] Run `npm run compile` to ensure a clean build.
 - [ ] Run `vsce package` from the project root.
-- [ ] **Verify**: A file named `terminal-flow-0.0.10.vsix` is created in the project root.
+- [ ] **Verify**: A file named `terminal-flow-0.0.13.vsix` is created in the project root.
 
 ### Install in VS Code
 - [ ] Open VS Code.

@@ -33,6 +33,8 @@ In **TerminalFlow**, the extension activates on startup (`onStartupFinished`), i
 | `src/webview/hooks/useExtensionData.ts` | A custom React hook that manages communication with the VS Code extension backend. | Frontend |
 | `src/webview/hooks/useCategoryState.ts` | Hook for managing the expanded/collapsed state of categories. | Frontend |
 | `src/webview/hooks/useListLogic.ts` | Shared hook for managing list state, filtering/searching, and reordering of items and categories. | Frontend |
+| `src/webview/hooks/useCommandActions.ts` | Hook encapsulating all command-level actions (save, delete, duplicate, copy, transfer). | Frontend |
+| `src/webview/hooks/useFlowActions.ts` | Hook encapsulating all flow-level actions (save, delete, duplicate, copy as script, transfer). | Frontend |
 | `src/webview/components/Command/CommandCategory.tsx` | Renders a collapsible category section containing a list of `CommandItem`s. | Frontend |
 | `src/webview/components/Command/CommandForm.tsx` | A form component for creating and editing Commands. | Frontend |
 | `src/webview/components/Command/CommandItem.tsx` | Displays a single Command with options to run, edit, or delete it. | Frontend |
@@ -135,6 +137,21 @@ A hook to bridge React state with the VS Code Extension backend.
     - Uses `SequenceBuilder` to manage the order of steps.
 - **`SequenceBuilder.tsx`**: A list allowing reordering (move up/down) and deletion of steps in a flow.
 - **`FlowStep.tsx`**: Renders individual steps inside `FlowItem`'s expanded view or `SequenceBuilder`. Handles the visual distinction between regular commands, sleep, and echo.
+
+---
+
+## Clipboard & Duplicate
+
+### Copy to Clipboard
+- **Copy Command**: Click the clipboard icon on any command to copy its shell text.
+- **Copy Flow Step**: Click the clipboard icon on an individual flow step to copy that step's command.
+- **Copy Flow as Script**: Click the script icon in a flow's header to copy the entire sequence as a single chained shell script.
+
+### Duplicate
+- **Duplicate Command / Flow**: Click the duplicate icon on any command or flow to instantly create a copy with a "Copy of" prefix, ready to edit.
+
+### Protected Deletion
+- **Guarded Command Delete**: Deleting a command that is referenced by existing flows is blocked. The extension displays a warning message listing all affected flows by name.
 
 ---
 

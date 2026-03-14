@@ -44,6 +44,15 @@ Edit the JSON files directly or use the UI — both stay in sync instantly via f
 ### 📤 Export & Import
 Easily backup or share your commands and flows. Supports exporting individual items or your entire collection, with automatic dependency handling for flows.
 
+### 📋 Copy to Clipboard
+Copy any command's shell text in one click. For flows, copy individual step commands or the entire flow sequence as a single shell script.
+
+### 🔁 Duplicate
+Quickly duplicate existing commands or flows as a starting point for new ones.
+
+### 🔒 Protected Command Deletion
+When attempting to delete a command that is used by one or more flows, the extension warns you and lists the affected flows — preventing accidental breakage.
+
 ---
 
 ## 📦 Installation
