@@ -31,6 +31,25 @@ export const FlowItem: React.FC<FlowItemProps> = ({
 }) => {
     const [isExpanded, setIsExpanded] = useState(false);
 
+    const handleCopyFlow = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        const cmdStrings: string[] = [];
+        flow.sequence.forEach(cmdId => {
+            if (cmdId.startsWith('__sleep:')) {
+                const ms = parseInt(cmdId.replace('__sleep:', ''), 10);
+                if (!isNaN(ms) && ms > 0) cmdStrings.push(`echo "Sleeping ${ms}ms..." && sleep ${ms / 1000}`);
+            } else if (cmdId.startsWith('__echo:')) {
+                cmdStrings.push(`echo "${cmdId.replace('__echo:', '')}"`);
+            } else {
+                const cmd = commands.find(c => c.id === cmdId);
+                if (cmd) cmdStrings.push(cmd.command);
+            }
+        });
+        if (cmdStrings.length > 0) {
+            onCopy(cmdStrings.join(' && '));
+        }
+    };
+
     return (
         <div className="flow-item-wrapper">
             <div className="flow-item">
@@ -61,6 +80,7 @@ export const FlowItem: React.FC<FlowItemProps> = ({
                         </div>
                         <div className="action-row">
                             <button title="Transfer" onClick={() => onMove(flow.id)}>⇄</button>
+                            <button title="Copy Flow Script" onClick={handleCopyFlow}>📋</button>
                             <button title="Delete" onClick={() => onDelete(flow.id)}>🗑</button>
                         </div>
                     </div>
