@@ -42,6 +42,10 @@
         },
         "commands": [
             {
+                "command": "terminal-flow.searchAndRun",
+                "title": "Terminal Flow: Search and Run"
+            },
+            {
                 "command": "terminal-flow.runCommand",
                 "title": "Terminal Flow: Run Command"
             },
