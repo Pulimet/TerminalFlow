@@ -7,7 +7,7 @@ import { ListActions } from '../ListActions';
 interface Props {
     commands: Command[];
     categoryOrder?: string[];
-    onRun: (id: string) => void;
+    onRun: (id: string, interpolatedCommand?: string) => void;
     onEdit: (command: Command) => void;
     onDelete: (id: string) => void;
     onMove: (id: string) => void;
@@ -17,7 +17,7 @@ interface Props {
     onExportAll?: () => void;
     onImport?: () => void;
     onDuplicate: (command: Command) => void;
-    onCopy: (id: string) => void;
+    onCopy: (id: string, interpolatedCommand?: string) => void;
 }
 
 const filterCmd = (cmd: Command, q: string) =>

@@ -439,6 +439,32 @@ body {
     word-break: break-all;
 }
 
+.command-inputs {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.command-variable-input {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.command-variable-input label {
+    font-size: 11px;
+    font-family: var(--vscode-editor-font-family);
+    min-width: 40px;
+    color: var(--vscode-descriptionForeground);
+}
+
+.command-variable-input input {
+    flex: 1;
+    font-size: 11px;
+    padding: 4px;
+}
+
 .flow-badge {
     font-size: 10px;
     background-color: var(--vscode-badge-background);

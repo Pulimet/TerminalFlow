@@ -14,7 +14,7 @@ export class CommandRunner {
      * Executes a command by its ID.
      * @param commandId The ID of the command to execute.
      */
-    public async runCommand(commandId: string) {
+    public async runCommand(commandId: string, interpolatedCommand?: string) {
         const command = await this.dataManager.getCommand(commandId);
         if (!command) { vscode.window.showErrorMessage(`Command not found: ${commandId}`); return; }
 
@@ -40,9 +40,9 @@ export class CommandRunner {
         }
 
         if (shouldPrintTitle) {
-            terminal.sendText(`${getEchoCommand(command.title)} && ${command.command}`);
+            terminal.sendText(`${getEchoCommand(command.title)} && ${interpolatedCommand || command.command}`);
         } else {
-            terminal.sendText(command.command);
+            terminal.sendText(interpolatedCommand || command.command);
         }
     }
 

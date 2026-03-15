@@ -8,7 +8,7 @@ export const handleWebviewMessage = async (
 ) => {
     const scope = getScope();
     switch (data.type) {
-        case 'runCommand': vscode.commands.executeCommand('terminal-flow.runCommand', data.id); break;
+        case 'runCommand': vscode.commands.executeCommand('terminal-flow.runCommand', data.id, data.interpolatedCommand); break;
         case 'runFlow': vscode.commands.executeCommand('terminal-flow.runFlow', data.id, data.fromIndex); break;
         case 'saveCommand': await dataManager.commandService.saveCommand(data.data); break;
         case 'deleteCommand': {

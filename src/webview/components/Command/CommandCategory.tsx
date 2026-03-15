@@ -12,7 +12,7 @@ interface CommandCategoryProps {
     isFirst: boolean;
     isLast: boolean;
     onToggle: (category: string) => void;
-    onRun: (id: string) => void;
+    onRun: (id: string, interpolatedCommand?: string) => void;
     onEdit: (command: Command) => void;
     onDelete: (id: string) => void;
     onMove: (id: string) => void;
@@ -22,7 +22,7 @@ interface CommandCategoryProps {
     onMoveCommandDown: (id: string) => void;
     onExport?: (id: string) => void;
     onDuplicate: (command: Command) => void;
-    onCopy: (id: string) => void;
+    onCopy: (id: string, interpolatedCommand?: string) => void;
 }
 
 /**

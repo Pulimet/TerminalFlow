@@ -36,7 +36,7 @@ export const CommandView: React.FC<CommandViewProps> = (props) => {
         <CommandList
             commands={filteredCommands}
             categoryOrder={categoryOrder}
-            onRun={(id) => sendMessage('runCommand', { id })}
+            onRun={(id, interpolatedCommand) => sendMessage('runCommand', { id, interpolatedCommand })}
             onEdit={(c) => { setEditingItem(c); setView('form'); }}
             onDelete={actions.handleDelete}
             onMove={actions.handleMove}
@@ -46,9 +46,9 @@ export const CommandView: React.FC<CommandViewProps> = (props) => {
             onExportAll={() => actions.handleExport()}
             onImport={actions.handleImport}
             onDuplicate={actions.handleDuplicate}
-            onCopy={(id) => {
+            onCopy={(id, interpolatedCommand) => {
                 const cmd = commands.find(c => c.id === id);
-                if (cmd) sendMessage('copyToClipboard', { text: cmd.command });
+                if (cmd) sendMessage('copyToClipboard', { text: interpolatedCommand || cmd.command });
             }}
         />
     );

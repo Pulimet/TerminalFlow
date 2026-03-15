@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { Command } from '../../types';
 
 /**
@@ -8,7 +8,7 @@ interface CommandItemProps {
     command: Command;
     isFirst: boolean;
     isLast: boolean;
-    onRun: (id: string) => void;
+    onRun: (id: string, interpolatedCommand?: string) => void;
     onEdit: (command: Command) => void;
     onDelete: (id: string) => void;
     onMove: (id: string) => void;
@@ -16,7 +16,7 @@ interface CommandItemProps {
     onMoveDown: (id: string) => void;
     onExport?: (id: string) => void;
     onDuplicate: (command: Command) => void;
-    onCopy: (id: string) => void;
+    onCopy: (id: string, interpolatedCommand?: string) => void;
 }
 
 /**
@@ -27,6 +27,35 @@ interface CommandItemProps {
 export const CommandItem: React.FC<CommandItemProps> = ({
     command, isFirst, isLast, onRun, onEdit, onDelete, onMove, onMoveUp, onMoveDown, onExport, onDuplicate, onCopy
 }) => {
+    const [inputs, setInputs] = useState<Record<string, string>>({});
+
+    const variables = useMemo(() => {
+        const regex = /\$([a-zA-Z0-9_]+)/g;
+        const matches = [...command.command.matchAll(regex)];
+        return Array.from(new Set(matches.map(m => m[1])));
+    }, [command.command]);
+
+    const handleInputChange = (variable: string, value: string) => {
+        setInputs(prev => ({ ...prev, [variable]: value }));
+    };
+
+    const getInterpolatedCommand = () => {
+        let result = command.command;
+        variables.forEach(v => {
+            const value = inputs[v] || '';
+            result = result.replace(new RegExp(`\\$${v}(?!\\w)`, 'g'), value);
+        });
+        return result;
+    };
+
+    const handleRun = () => {
+        onRun(command.id, variables.length ? getInterpolatedCommand() : undefined);
+    };
+
+    const handleCopy = () => {
+        onCopy(command.id, variables.length ? getInterpolatedCommand() : undefined);
+    };
+
     return (
         <div className="command-item">
             <div className="move-left">
@@ -41,6 +70,21 @@ export const CommandItem: React.FC<CommandItemProps> = ({
                 </div>
                 <div className="command-description">{command.description}</div>
                 <div className="command-code">{command.command}</div>
+                {variables.length > 0 && (
+                    <div className="command-inputs">
+                        {variables.map(v => (
+                            <div key={v} className="command-variable-input">
+                                <label>${v}</label>
+                                <input
+                                    type="text"
+                                    value={inputs[v] || ''}
+                                    onChange={(e) => handleInputChange(v, e.target.value)}
+                                    placeholder={`Value for $${v}`}
+                                />
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
             <div className="command-actions">
                 <div className="action-row">
@@ -53,11 +97,11 @@ export const CommandItem: React.FC<CommandItemProps> = ({
                             </svg>
                         </button>
                     )}
-                    <button title="Run" onClick={() => onRun(command.id)}>▶</button>
+                    <button title="Run" onClick={handleRun}>▶</button>
                 </div>
                 <div className="action-row">
                     <button title="Transfer" onClick={() => onMove(command.id)}>⇄</button>
-                    <button title="Copy" onClick={() => onCopy(command.id)}>📋</button>
+                    <button title="Copy" onClick={handleCopy}>📋</button>
                     <button title="Delete" onClick={() => onDelete(command.id)}>🗑</button>
                 </div>
             </div>

@@ -24,7 +24,7 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(vscode.window.registerWebviewViewProvider(TerminalFlowProvider.viewType, provider));
 
     context.subscriptions.push(
-        vscode.commands.registerCommand('terminal-flow.runCommand', (id: string) => commandRunner.runCommand(id)),
+        vscode.commands.registerCommand('terminal-flow.runCommand', (id: string, interpolatedCommand?: string) => commandRunner.runCommand(id, interpolatedCommand)),
         vscode.commands.registerCommand('terminal-flow.runFlow', (id: string, fromIndex?: number) => flowRunner.runFlow(id, fromIndex)),
         vscode.commands.registerCommand('terminal-flow.openSettings', () => vscode.commands.executeCommand('workbench.action.openSettings', '@ext:AlexeyKorolev.terminal-flow'))
     );
