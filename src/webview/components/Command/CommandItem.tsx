@@ -1,5 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Command } from '../../types';
+import { CommandInputs } from './CommandInputs';
+import { CommandActions } from './CommandActions';
 
 /**
  * Props for the CommandItem component.
@@ -39,23 +41,6 @@ export const CommandItem: React.FC<CommandItemProps> = ({
         setInputs(prev => ({ ...prev, [variable]: value }));
     };
 
-    const getInterpolatedCommand = () => {
-        let result = command.command;
-        variables.forEach(v => {
-            const value = inputs[v] || '';
-            result = result.replace(new RegExp(`\\$${v}(?!\\w)`, 'g'), value);
-        });
-        return result;
-    };
-
-    const handleRun = () => {
-        onRun(command.id, variables.length ? getInterpolatedCommand() : undefined);
-    };
-
-    const handleCopy = () => {
-        onCopy(command.id, variables.length ? getInterpolatedCommand() : undefined);
-    };
-
     return (
         <div className="command-item">
             <div className="move-left">
@@ -70,41 +55,24 @@ export const CommandItem: React.FC<CommandItemProps> = ({
                 </div>
                 <div className="command-description">{command.description}</div>
                 <div className="command-code">{command.command}</div>
-                {variables.length > 0 && (
-                    <div className="command-inputs">
-                        {variables.map(v => (
-                            <div key={v} className="command-variable-input">
-                                <label>${v}</label>
-                                <input
-                                    type="text"
-                                    value={inputs[v] || ''}
-                                    onChange={(e) => handleInputChange(v, e.target.value)}
-                                    placeholder={`Value for $${v}`}
-                                />
-                            </div>
-                        ))}
-                    </div>
-                )}
+                <CommandInputs
+                    variables={variables}
+                    inputs={inputs}
+                    onInputChange={handleInputChange}
+                />
             </div>
-            <div className="command-actions">
-                <div className="action-row">
-                    <button title="Duplicate" onClick={() => onDuplicate(command)}>⧉</button>
-                    <button title="Edit" onClick={() => onEdit(command)}>✎</button>
-                    {onExport && (
-                        <button title="Export" onClick={() => onExport(command.id)}>
-                            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor">
-                                <path d="M9 1h4v4M13 1L7 7M11 13H3V5h6" />
-                            </svg>
-                        </button>
-                    )}
-                    <button title="Run" onClick={handleRun}>▶</button>
-                </div>
-                <div className="action-row">
-                    <button title="Transfer" onClick={() => onMove(command.id)}>⇄</button>
-                    <button title="Copy" onClick={handleCopy}>📋</button>
-                    <button title="Delete" onClick={() => onDelete(command.id)}>🗑</button>
-                </div>
-            </div>
+            <CommandActions
+                command={command}
+                variables={variables}
+                inputs={inputs}
+                onRun={onRun}
+                onEdit={onEdit}
+                onDelete={onDelete}
+                onMove={onMove}
+                onExport={onExport}
+                onDuplicate={onDuplicate}
+                onCopy={onCopy}
+            />
         </div>
     );
 };
