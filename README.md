@@ -17,6 +17,12 @@ Manage your private commands and flows in a global `~/.terminal` folder. Toggle 
 ### ⚡️ One-Click Execution
 Run complex shell commands instantly from the sidebar — no need to remember or retype them.
 
+### 🔍 Quick Pick Execution
+Use the **Terminal Flow: Search and Run** command from the command palette to instantly find and run your commands or flows without opening the sidebar.
+
+### 📝 Variable Interpolation
+Use variables like `$filename` or `$branch` in your commands. Terminal Flow will prompt you to fill in these values before execution, making your commands reusable and dynamic.
+
 ### 🔗 Command Flows
 Chain multiple commands together into reproducible workflows (e.g., *Build → Test → Deploy*). Commands execute sequentially, each waiting for the previous to succeed.
 

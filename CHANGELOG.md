@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.14] - 2026-03-15
+
+### Added
+- **Search and Run via Quick Pick**: Added a new VS Code command (`Terminal Flow: Search and Run`) to quickly search and execute existing commands or flows using the native Quick Pick UI.
+- **Variable Interpolation**: Added support for variables (e.g. `$variable`) in commands, allowing dynamic user input before execution or copying.
+
 ## [0.0.13] - 2026-03-14
 
 ### Added

@@ -23,6 +23,7 @@ In **TerminalFlow**, the extension activates on startup (`onStartupFinished`), i
 | `src/providers/TerminalFlowProvider.ts` | Manages the Webview View, handling initialization and message passing between the UI and backend. | Backend |
 | `src/services/CommandRunner.ts` | Handles the execution of shell commands and flows in the VS Code integrated terminal. | Backend |
 | `src/services/DataManager.ts` | Central entry point for data management, coordinating `CommandService` and `FlowService`. | Backend |
+| `src/utils/searchAndRun.ts` | VS Code command handler for searching and running existing commands/flows via Quick Pick. | Backend |
 | `src/services/CommandService.ts` | Manages CRUD operations and persistence for Commands (`commands.json`). | Backend |
 | `src/services/FlowService.ts` | Manages CRUD operations and persistence for Flows (`flows.json`). | Backend |
 | `src/utils/Store.ts` | A generic file-based storage utility used by services to read/write JSON files. | Backend |
@@ -75,7 +76,7 @@ This is the **entry point** of the extension.
     - Initializes `DataManager` for handling data.
     - Initializes `CommandRunner` for executing commands.
     - Registers the `TerminalFlowProvider` for the Webview.
-    - Registers VS Code commands: `terminal-flow.runCommand`, `terminal-flow.runFlow`, `terminal-flow.refresh`.
+    - Registers VS Code commands: `terminal-flow.runCommand`, `terminal-flow.runFlow`, `terminal-flow.refresh`, `terminal-flow.searchAndRun`.
 - **`deactivate()`**: Cleanup function (currently empty).
 
 #### `src/providers/TerminalFlowProvider.ts`
@@ -129,14 +130,34 @@ A hook to bridge React state with the VS Code Extension backend.
 - **`CommandCategory.tsx`**: A collapsible section implementation. Supports reordering of the category itself via up/down buttons.
 - **`CommandItem.tsx`**: The visualization of a single command row. Supports reordering logic.
 - **`CommandForm.tsx`**: A form for adding/editing commands. Handles local form state before calling `onSave`.
+- **`CommandInputs.tsx`**: Renders text inputs for any variables (e.g., `$filename`) found in a command, allowing the user to provide values before execution.
+- **`CommandActions.tsx`**: Contains the action buttons for a command item.
 
 #### `src/webview/components/Flow/*`
 - **`FlowList.tsx`**, **`FlowCategory.tsx`**, **`FlowItem.tsx`**: Analogous to the Command components but for Flows. Supports search and reordering.
 - **`FlowForm.tsx`**: Complex form for creating flows.
-    - Allows adding existing commands, sleep, or echo steps.
-    - Uses `SequenceBuilder` to manage the order of steps.
-- **`SequenceBuilder.tsx`**: A list allowing reordering (move up/down) and deletion of steps in a flow.
-- **`FlowStep.tsx`**: Renders individual steps inside `FlowItem`'s expanded view or `SequenceBuilder`. Handles the visual distinction between regular commands, sleep, and echo.
+    - Uses `FlowBuilder` to manage picking commands and the order of steps.
+- **`FlowBuilder.tsx`**: Manages the sequence of steps and integrates the command picker.
+- **`FlowCommandPicker.tsx`**: Allows adding existing commands, sleep, or echo steps.
+- **`FlowStep.tsx`**: Renders individual steps inside `FlowItem`'s expanded view or `FlowBuilder`. Handles the visual distinction between regular commands, sleep, and echo.
+
+---
+
+## Variable Interpolation
+
+Commands can include variables identified by a `$` prefix (e.g., `echo $message`). When variables are present:
+- The UI automatically displays input fields for each variable below the command text.
+- Running or copying the command uses the provided input values, replacing `$message` with the user's input.
+- If no input is provided, the command might fail or run with empty substitutions depending on the shell, but the capability allows dynamic executions without editing the underlying configuration.
+
+---
+
+## Search & Run (Quick Pick)
+
+The extension contributes a command to the VS Code Command Palette: `Terminal Flow: Search and Run`.
+- When triggered, it presents a native VS Code Quick Pick interface containing all your saved commands and flows.
+- Typing filters the list instantly.
+- Selecting an item immediately executes it using the `CommandRunner`.
 
 ---
 

@@ -85,6 +85,21 @@ Follow these steps to validate that the **Terminal Flow** extension is working c
   - **Verify**: "Command 2" is now above "Command 1".
   - **Verify**: The order persists after reload.
 
+## 8. Export/Import Validation
+- [ ] **Export Commands**:
+  - Navigate to the **Commands** tab.
+  - Click the **Export** icon (download arrow) in the header.
+  - Save as `commands.json`.
+  - **Verify**: The file contains your commands in JSON format.
+- [ ] **Import Commands**:
+  - Delete a command from the list.
+  - Click the **Import** icon (upload arrow) in the header.
+  - Select `commands.json`.
+  - **Verify**: The deleted command reappears.
+- [ ] **Export Flow with Dependencies**:
+  - Export a Flow that uses a specific command.
+  - **Verify**: The exported JSON contains both the Flow and the dependent Command.
+
 ## 9. Copy to Clipboard Validation
 - [ ] **Copy Command**:
   - Click the clipboard icon on any command.
@@ -110,21 +125,23 @@ Follow these steps to validate that the **Terminal Flow** extension is working c
 - [ ] Remove the command from the flow, then delete it again.
 - [ ] **Verify**: Deletion succeeds.
 
-88: - [ ] **Export Commands**:
-89:   - Navigate to the **Commands** tab.
-90:   - Click the **Export** icon (download arrow) in the header.
-91:   - Save as `commands.json`.
-92:   - **Verify**: The file contains your commands in JSON format.
-93: - [ ] **Import Commands**:
-94:   - Delete a command from the list.
-95:   - Click the **Import** icon (upload arrow) in the header.
-96:   - Select `commands.json`.
-97:   - **Verify**: The deleted command reappears.
-98: - [ ] **Export Flow with Dependencies**:
-99:   - Export a Flow that uses a specific command.
-100:   - **Verify**: The exported JSON contains both the Flow and the dependent Command.
-101: 
-102: ## 9. Persistence & Sync
+## 12. Variable Interpolation Validation
+- [ ] Create a command using a variable: `echo "Hello $name"`
+- [ ] **Verify**: An input field labeled `name` appears beneath the command.
+- [ ] Type `World` into the input field.
+- [ ] Run the command.
+- [ ] **Verify**: The terminal prints "Hello World".
+- [ ] Clear the input and run again.
+- [ ] **Verify**: The variable remains uninterpolated (e.g., echoes "Hello ") or acts according to shell behavior.
+
+## 13. Search and Run (Quick Pick) Validation
+- [ ] Open the VS Code Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`).
+- [ ] Type and select `Terminal Flow: Search and Run`.
+- [ ] **Verify**: A Quick Pick menu appears showing your commands and flows.
+- [ ] Filter for a specific command and press `Enter`.
+- [ ] **Verify**: The selected item executes in the integrated terminal just like from the sidebar.
+
+## 14. Persistence & Sync
 - [ ] Close the Extension Development Host window.
 - [ ] Relaunch formatting `F5`.
 - [ ] **Verify**: Your `Test Echo` and `Test Flow` are still there (Persistence works).
@@ -134,49 +151,7 @@ Follow these steps to validate that the **Terminal Flow** extension is working c
   - Save the file.
 - [ ] **Verify**: The Sidebar UI immediately updates to show "Renamed Echo" (Live Sync works).
 
-## 10. Install Locally as a VSIX Package
-107: 
-108: Use this method to install and test the extension in your regular VS Code (not just the Extension Development Host).
-109: 
-110: ### Prerequisites
-111: - [ ] Install the packaging tool: `npm install -g @vscode/vsce`
-112: 
-113: ### Package the Extension
-114: - [ ] Run `npm run compile` to ensure a clean build.
-115: - [ ] Run `vsce package` from the project root.
-116: - [ ] **Verify**: A file named `terminal-flow-0.0.13.vsix` is created in the project root.
-117: 
-118: ### Install in VS Code
-119: - [ ] Open VS Code.
-120: - [ ] Go to **Extensions** view (`Cmd+Shift+X`).
-121: - [ ] Click the `...` menu (top-right of Extensions panel) → **Install from VSIX...**.
-122: - [ ] Select the generated `.vsix` file.
-123: - [ ] **Verify**: "Terminal Flow" appears in the Extensions list as installed.
-124: - [ ] **Verify**: The Terminal Flow icon appears in the Activity Bar.
-125: - [ ] Repeat steps 2–5 above to validate full functionality in the installed version.
-126: 
-127: ### Uninstall (if needed)
-128: - [ ] Go to **Extensions** → find "Terminal Flow" → click **Uninstall**.
-129: 
-130: ## 11. Publish to the VS Code Marketplace
-131: 
-132: ### One-Time Setup
-133: - [ ] Create an **Azure DevOps** account at [dev.azure.com](https://dev.azure.com).
-134: - [ ] Create a **Personal Access Token (PAT)**:
-135:   1. Go to your Azure DevOps org → User Settings → Personal Access Tokens.
-136:   2. Click **+ New Token**.
-137:   3. Set **Organization** to "All accessible organizations".
-138:   4. Under **Scopes**, select **Marketplace → Manage**.
-139:   5. Copy the generated token.
-140: - [ ] Create a publisher at [marketplace.visualstudio.com/manage](https://marketplace.visualstudio.com/manage).
-141: - [ ] Add your publisher name to `package.json`:
-142:   ```json
-143:   "publisher": "your-publisher-name"
-144:   ```
-145: 
-146: ### Login & Publish
-147: - [ ] Run `vsce login <your-publisher-name>` and paste your PAT when prompted.
-148: - [ ] Run `vsce publish` to publish (or `vsce publish minor` to bump the version).
+## 15. Install Locally as a VSIX Package
 
 Use this method to install and test the extension in your regular VS Code (not just the Extension Development Host).
 
@@ -186,7 +161,7 @@ Use this method to install and test the extension in your regular VS Code (not j
 ### Package the Extension
 - [ ] Run `npm run compile` to ensure a clean build.
 - [ ] Run `vsce package` from the project root.
-- [ ] **Verify**: A file named `terminal-flow-0.0.13.vsix` is created in the project root.
+- [ ] **Verify**: A file named `terminal-flow-0.0.14.vsix` is created in the project root.
 
 ### Install in VS Code
 - [ ] Open VS Code.
@@ -200,7 +175,7 @@ Use this method to install and test the extension in your regular VS Code (not j
 ### Uninstall (if needed)
 - [ ] Go to **Extensions** → find "Terminal Flow" → click **Uninstall**.
 
-## 10. Publish to the VS Code Marketplace
+## 16. Publish to the VS Code Marketplace
 
 ### One-Time Setup
 - [ ] Create an **Azure DevOps** account at [dev.azure.com](https://dev.azure.com).
